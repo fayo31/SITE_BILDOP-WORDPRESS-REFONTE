@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Découvre la santé de ton entreprise en quelques minutes. Diagnostic gratuit par Bildop.">
+  <title>Bildop — Diagnostic Santé Bildop</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo">BILDOP</a>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="index.html">← Retour au site</a></li>
+      </ul>
+      <button class="nav__toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Diagnostic -->
+  <div class="questionnaire">
+    <div class="questionnaire__container">
+
+      <!-- Intro Screen (shown first) -->
+      <div id="diagnosticIntro" class="diagnostic-intro">
+        <div class="diagnostic-intro__icon">🩺</div>
+        <h1>Diagnostic Santé Bildop</h1>
+        <p class="diagnostic-intro__subtitle">Réponds à quelques questions simples et découvre ce qui fonctionne, ce qui fragilise et ce qui saigne dans ton entreprise.</p>
+
+        <div class="diagnostic-intro__features">
+          <div class="diagnostic-intro__feature">
+            <span>⚡</span>
+            <div>
+              <strong>Le temps d'un café</strong>
+              <p>Une conversation guidée, pas un examen</p>
+            </div>
+          </div>
+          <div class="diagnostic-intro__feature">
+            <span>📊</span>
+            <div>
+              <strong>Score de santé instantané</strong>
+              <p>Chaque aspect de ton entreprise, mesuré</p>
+            </div>
+          </div>
+          <div class="diagnostic-intro__feature">
+            <span>💊</span>
+            <div>
+              <strong>Remèdes concrets</strong>
+              <p>Pas juste des constats — des solutions</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn--primary btn--large" id="btnStartDiag">Commencer le diagnostic →</button>
+        <p class="diagnostic-intro__note">Aucune expérience requise · Gratuit · Résultats immédiats</p>
+      </div>
+
+      <!-- Quiz Section (hidden initially) -->
+      <div id="diagnosticQuiz" style="display: none;">
+        <!-- Progress -->
+        <div class="progress-bar">
+          <div class="progress-bar__fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div class="progress-info">
+          <span><strong id="categoryName">Acquisition Client</strong></span>
+          <span id="questionProgress">Flux 1 de 5</span>
+        </div>
+
+        <!-- Category Steps -->
+        <div class="category-stepper" id="categoryStepper"></div>
+
+        <!-- Question Card -->
+        <div class="question-card" id="questionCard"></div>
+
+        <!-- Navigation -->
+        <div class="question-nav">
+          <button class="btn btn--secondary" id="btnPrev" disabled>← Précédent</button>
+          <button class="btn btn--primary" id="btnNext">Continuer →</button>
+        </div>
+      </div>
+
+      <!-- Results (hidden initially) -->
+      <div id="diagnosticResults" style="display: none;"></div>
+
+    </div>
+  </div>
+
+  <script src="js/diagnostic.js"></script>
+</body>
+</html>
