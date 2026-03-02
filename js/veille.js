@@ -22,6 +22,45 @@ const analysisSections = [
   { id: 'opportunities', name: 'Opportunités', icon: '💡', description: 'Failles à exploiter, différenciation, recommandations' },
 ];
 
+// --- ADN Reader (Module 1 data) ---
+function getAdnData() {
+  try {
+    const raw = localStorage.getItem('bildop_questionnaire');
+    if (!raw) return null;
+    const answers = JSON.parse(raw);
+    // Need at least company name and description to be useful
+    if (!answers['1'] && !answers['2']) return null;
+    return {
+      nom: answers['1'] || '',
+      description: answers['2'] || '',
+      secteur: answers['3'] || '',
+      localisation: answers['4'] || '',
+      structure: answers['5'] || '',
+      stade: answers['6'] || '',
+      motivation: answers['8'] || '',
+      mission: answers['9'] || '',
+      vision: answers['10'] || '',
+      clientIdeal: answers['11'] || '',
+      problemeResolu: answers['12'] || '',
+      concurrents: answers['13'] || '',
+      differenciation: answers['14'] || '',
+      tailleMarche: answers['15'] || '',
+      croissanceMarche: answers['16'] || '',
+      produitPrincipal: answers['21'] || '',
+      prixVente: answers['24'] || '',
+      modelRevenu: answers['31'] || '',
+      canauxMarketing: answers['41'] || '',
+      positionnementPrix: answers['50'] || '',
+      presenceEnLigne: answers['43'] || '',
+      objectifRevenus: answers['63'] || '',
+      risques: answers['79'] || '',
+      slogan: answers['46'] || '',
+    };
+  } catch(e) {
+    return null;
+  }
+}
+
 // --- State ---
 let state = {
   view: 'intro', // intro | loading | results | error | history
@@ -29,10 +68,12 @@ let state = {
   queryType: 'url', // url | name
   currentAnalysis: null,
   history: [],
+  adnData: null, // Module 1 data if available
 };
 
 // --- Init ---
 function init() {
+  state.adnData = getAdnData();
   loadHistory();
   render();
   setupNavToggle();
@@ -115,6 +156,24 @@ function renderIntro() {
         </p>
       </div>
 
+      ${state.adnData ? `
+        <div class="veille-adn-banner">
+          <div class="veille-adn-banner__icon">🧬</div>
+          <div>
+            <strong>ADN détecté : ${escapeHtml(state.adnData.nom)}</strong>
+            <p>Ton plan d'affaires est connecté. L'analyse va comparer ton projet avec le compétiteur — positionnement, prix, marché, différenciation.</p>
+          </div>
+        </div>
+      ` : `
+        <div class="veille-adn-banner veille-adn-banner--empty">
+          <div class="veille-adn-banner__icon">💡</div>
+          <div>
+            <strong>Connecte ton ADN pour une analyse personnalisée</strong>
+            <p><a href="questionnaire.html">Remplis le Module 1</a> et reviens ici — on comparera automatiquement ton projet avec la compétition.</p>
+          </div>
+        </div>
+      `}
+
       <div class="veille-intro__features">
         ${analysisSections.map(s => `
           <div class="veille-feature-card">
@@ -196,6 +255,9 @@ function renderResults() {
         <p class="veille-score-bar__verdict">${getScoreVerdict(a.globalScore)}</p>
       </div>
 
+      <!-- ADN Comparison -->
+      ${state.adnData ? renderAdnComparison(a) : ''}
+
       <!-- Sections tabs -->
       <div class="veille-tabs">
         ${analysisSections.map((s, i) => `
@@ -223,7 +285,7 @@ function renderResults() {
             <ul>${a.swot.faiblesses.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>
           </div>
           <div class="veille-swot__card veille-swot__card--opportunites">
-            <h4>Opportunits</h4>
+            <h4>Opportunités</h4>
             <ul>${a.swot.opportunites.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>
           </div>
           <div class="veille-swot__card veille-swot__card--menaces">
@@ -235,7 +297,7 @@ function renderResults() {
 
       <!-- Recommendations -->
       <div class="veille-recommendations">
-        <h3>💡 Recommandations stratgiques</h3>
+        <h3>💡 Recommandations stratégiques</h3>
         <div class="veille-recommendations__list">
           ${a.recommendations.map((r, i) => `
             <div class="veille-recommendation">
@@ -251,6 +313,212 @@ function renderResults() {
       </div>
     </div>
   `;
+}
+
+// --- ADN vs Competitor Comparison ---
+function renderAdnComparison(analysis) {
+  const adn = state.adnData;
+  if (!adn) return '';
+
+  const comparisons = generateComparisons(adn, analysis);
+
+  return `
+    <div class="veille-comparison">
+      <div class="veille-comparison__header">
+        <h3>🧬 Ton ADN vs ${escapeHtml(analysis.companyName)}</h3>
+        <p>Comparaison directe entre ton projet et ce compétiteur</p>
+      </div>
+
+      <!-- Side by side cards -->
+      <div class="veille-comparison__versus">
+        <div class="veille-comparison__card veille-comparison__card--adn">
+          <div class="veille-comparison__card-badge">🧬 Ton projet</div>
+          <h4>${escapeHtml(adn.nom || 'Mon projet')}</h4>
+          <p>${escapeHtml(adn.description || '')}</p>
+          <ul>
+            <li><strong>Secteur :</strong> ${escapeHtml(adn.secteur || 'Non défini')}</li>
+            <li><strong>Marché :</strong> ${escapeHtml(adn.localisation || 'Non défini')}</li>
+            <li><strong>Client cible :</strong> ${escapeHtml(truncate(adn.clientIdeal, 80) || 'Non défini')}</li>
+            <li><strong>Prix :</strong> ${escapeHtml(adn.prixVente || 'Non défini')}</li>
+            <li><strong>Différenciation :</strong> ${escapeHtml(truncate(adn.differenciation, 80) || 'Non défini')}</li>
+          </ul>
+        </div>
+        <div class="veille-comparison__vs">VS</div>
+        <div class="veille-comparison__card veille-comparison__card--competitor">
+          <div class="veille-comparison__card-badge">🏢 Compétiteur</div>
+          <h4>${escapeHtml(analysis.companyName)}</h4>
+          <p>${analysis.url ? escapeHtml(analysis.url) : 'Analyse en cours'}</p>
+          <ul>
+            <li><strong>Secteur :</strong> ${escapeHtml(analysis.sections.overview?.[1]?.value || 'N/A')}</li>
+            <li><strong>Marché :</strong> ${escapeHtml(analysis.sections.overview?.[2]?.value || 'N/A')}</li>
+            <li><strong>Client cible :</strong> ${escapeHtml(analysis.sections.pricing?.[5]?.value || 'N/A')}</li>
+            <li><strong>Prix :</strong> ${escapeHtml(analysis.sections.pricing?.[1]?.value || 'N/A')} — ${escapeHtml(analysis.sections.pricing?.[3]?.value || 'N/A')}</li>
+            <li><strong>Modèle :</strong> ${escapeHtml(analysis.sections.pricing?.[0]?.value || 'N/A')}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Strategic comparison grid -->
+      <div class="veille-comparison__grid">
+        ${comparisons.map(c => `
+          <div class="veille-comparison__item veille-comparison__item--${c.verdict}">
+            <div class="veille-comparison__item-icon">${c.icon}</div>
+            <div class="veille-comparison__item-content">
+              <strong>${escapeHtml(c.dimension)}</strong>
+              <p>${escapeHtml(c.insight)}</p>
+            </div>
+            <div class="veille-comparison__item-verdict">
+              ${c.verdict === 'avantage' ? '✅ Ton avantage' : c.verdict === 'attention' ? '⚠️ Attention' : '🔄 Similaire'}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- CEO Suggestions -->
+      <div class="veille-ceo">
+        <h4>🎯 Insights CEO — Ce que ça veut dire pour toi</h4>
+        <div class="veille-ceo__suggestions">
+          ${generateCeoSuggestions(adn, analysis).map(s => `
+            <div class="veille-ceo__suggestion">
+              <div class="veille-ceo__suggestion-icon">${s.icon}</div>
+              <div>
+                <strong>${escapeHtml(s.title)}</strong>
+                <p>${escapeHtml(s.text)}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function generateComparisons(adn, analysis) {
+  const items = [];
+
+  // Market positioning
+  const adnPrix = adn.positionnementPrix || '';
+  items.push({
+    icon: '💰',
+    dimension: 'Positionnement prix',
+    insight: adnPrix.includes('premium') || adnPrix.includes('Plus haut')
+      ? `Tu vises le premium. Le compétiteur est sur ${analysis.sections.pricing?.[1]?.value || 'un modèle standard'}. Tu peux justifier ton prix par la valeur ajoutée.`
+      : `Tu es positionné compétitif. Assure-toi que ta proposition de valeur est claire pour te différencier autrement que par le prix.`,
+    verdict: adnPrix.includes('premium') || adnPrix.includes('Plus haut') ? 'avantage' : 'similaire',
+  });
+
+  // Market coverage
+  items.push({
+    icon: '🌍',
+    dimension: 'Couverture marché',
+    insight: adn.localisation
+      ? `Ton marché : ${adn.localisation}. Le compétiteur cible "${analysis.sections.overview?.[2]?.value || 'un marché large'}". ${adn.localisation.toLowerCase().includes('ligne') ? 'Ton modèle en ligne te donne un avantage de scalabilité.' : 'Ta connaissance locale est un avantage.'}`
+      : 'Définis ton marché cible pour mieux comparer.',
+    verdict: adn.localisation ? 'avantage' : 'attention',
+  });
+
+  // Differentiation
+  items.push({
+    icon: '⚡',
+    dimension: 'Différenciation',
+    insight: adn.differenciation
+      ? `Ta différenciation : "${truncate(adn.differenciation, 60)}". Vérifie que le compétiteur ne revendique pas la même chose.`
+      : 'Tu n\'as pas encore défini ta différenciation. C\'est critique face à ce compétiteur.',
+    verdict: adn.differenciation ? 'avantage' : 'attention',
+  });
+
+  // Digital presence
+  const presence = adn.presenceEnLigne || '';
+  items.push({
+    icon: '🌐',
+    dimension: 'Présence digitale',
+    insight: presence.includes('site web + réseaux') || presence.includes('Oui —')
+      ? `Tu as déjà une présence en ligne. Le compétiteur aussi. La bataille se joue sur le contenu et l'expérience.`
+      : `Le compétiteur a une présence en ligne établie. Tu dois rattraper rapidement pour ne pas être invisible.`,
+    verdict: presence.includes('site web') ? 'similaire' : 'attention',
+  });
+
+  // Client knowledge
+  items.push({
+    icon: '👥',
+    dimension: 'Connaissance client',
+    insight: adn.clientIdeal
+      ? `Tu connais ton client idéal : "${truncate(adn.clientIdeal, 50)}". C'est un avantage — tu peux cibler plus précisément que le compétiteur.`
+      : 'Tu n\'as pas défini ton client idéal. Le compétiteur cible déjà un segment précis.',
+    verdict: adn.clientIdeal ? 'avantage' : 'attention',
+  });
+
+  // Revenue model
+  items.push({
+    icon: '💵',
+    dimension: 'Modèle de revenus',
+    insight: adn.modelRevenu
+      ? `Ton modèle : "${truncate(adn.modelRevenu, 60)}". Compare avec le "${analysis.sections.pricing?.[0]?.value || 'modèle du compétiteur'}" pour voir si tu peux offrir plus de flexibilité.`
+      : 'Définis ton modèle de revenus pour comparer ta stratégie de monétisation.',
+    verdict: adn.modelRevenu ? 'similaire' : 'attention',
+  });
+
+  return items;
+}
+
+function generateCeoSuggestions(adn, analysis) {
+  const suggestions = [];
+
+  // Suggestion 1: Based on differentiation
+  if (adn.differenciation) {
+    suggestions.push({
+      icon: '🎯',
+      title: 'Double down sur ta différenciation',
+      text: `"${truncate(adn.differenciation, 60)}" — c'est ton arme. Assure-toi que chaque point de contact client (site, pitch, réseaux) communique cet avantage clairement. Le compétiteur ne l'a pas.`,
+    });
+  } else {
+    suggestions.push({
+      icon: '🚨',
+      title: 'Urgence : Définis ta différenciation',
+      text: `Sans différenciation claire, tu te bats sur le prix — et le compétiteur a une longueur d'avance. Retourne dans ton plan d'affaires et cristallise ce qui te rend unique.`,
+    });
+  }
+
+  // Suggestion 2: Based on market
+  if (adn.localisation && !adn.localisation.toLowerCase().includes('ligne')) {
+    suggestions.push({
+      icon: '📍',
+      title: 'Exploite ton ancrage local',
+      text: `Tu es à ${adn.localisation}. Le compétiteur opère probablement de façon plus générique. Ton réseau local, ta compréhension du marché québécois et ta proximité client sont des avantages impossibles à copier.`,
+    });
+  }
+
+  // Suggestion 3: Based on problem solved
+  if (adn.problemeResolu) {
+    suggestions.push({
+      icon: '💡',
+      title: 'Reformule ton problème en urgence',
+      text: `Tu résous : "${truncate(adn.problemeResolu, 50)}". Si le compétiteur adresse le même problème, transforme ton message — passe de "on fait X" à "on élimine Y en Z temps". L'urgence vend mieux que la feature.`,
+    });
+  }
+
+  // Suggestion 4: Pricing strategy
+  suggestions.push({
+    icon: '💰',
+    title: 'Stratégie de prix offensive',
+    text: `Le compétiteur charge ${analysis.sections.pricing?.[1]?.value || 'un prix standard'}. ${adn.prixVente ? `Toi, tu es à ${adn.prixVente}.` : ''} Considère un modèle freemium ou un essai gratuit pour voler ses clients insatisfaits.`,
+  });
+
+  // Suggestion 5: Weaknesses to exploit
+  if (analysis.swot?.faiblesses?.length > 0) {
+    suggestions.push({
+      icon: '🏹',
+      title: 'Attaque leurs faiblesses',
+      text: `Leur plus grosse faiblesse : "${analysis.swot.faiblesses[0]}". Fais-en ton argument de vente #1. Montre aux clients ce que TOI tu fais mieux, concrètement.`,
+    });
+  }
+
+  return suggestions;
+}
+
+function truncate(str, max) {
+  if (!str) return '';
+  return str.length > max ? str.substring(0, max) + '...' : str;
 }
 
 function renderSectionContent(sectionId, analysis) {

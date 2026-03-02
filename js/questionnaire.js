@@ -130,6 +130,12 @@ let currentQuestion = 0;
 let maxReachedCatIdx = 0; // Highest category the user has reached
 const answers = {};
 
+// Restore saved answers if any
+try {
+  const saved = localStorage.getItem('bildop_questionnaire');
+  if (saved) Object.assign(answers, JSON.parse(saved));
+} catch(e) {}
+
 // --- DOM Elements ---
 const questionCard = document.getElementById('questionCard');
 const progressFill = document.getElementById('progressFill');
@@ -303,6 +309,8 @@ function saveCurrentAnswer() {
 
   if (value) {
     answers[q.id] = value;
+    // Persist to localStorage for cross-module data flow
+    try { localStorage.setItem('bildop_questionnaire', JSON.stringify(answers)); } catch(e) {}
   }
 
   return value;
