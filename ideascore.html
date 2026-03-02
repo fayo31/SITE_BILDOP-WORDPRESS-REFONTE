@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ton idée a-t-elle du potentiel? Score de viabilité gratuit en 2 minutes. 42 industries analysées. IdeaScore Pro par Bildop.">
+  <title>IdeaScore Pro — Valide ton idée d'affaires en 2 minutes | Bildop</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo">BILDOP</a>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="index.html">← Retour au site</a></li>
+        <li><a href="questionnaire.html">Plan d'affaires</a></li>
+        <li><a href="financier.html">Simulateur</a></li>
+        <li><a href="diagnostic.html">Diagnostic</a></li>
+      </ul>
+      <button class="nav__toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- IdeaScore App -->
+  <div class="questionnaire">
+    <div class="questionnaire__container" style="max-width: 800px;">
+      <div id="ideascoreApp"></div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/ideascore.js"></script>
+</body>
+</html>

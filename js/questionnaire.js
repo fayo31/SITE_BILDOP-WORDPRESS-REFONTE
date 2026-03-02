@@ -136,6 +136,28 @@ try {
   if (saved) Object.assign(answers, JSON.parse(saved));
 } catch(e) {}
 
+// Pre-fill from IdeaScore Pro if available
+try {
+  const isData = localStorage.getItem('bildop_ideascore');
+  if (isData) {
+    const is = JSON.parse(isData);
+    // Pre-fill idea description if q-description or q-idee-affaires is empty
+    if (is.ideaText && !answers['q-description'] && !answers['q-idee-affaires'] && !answers[2]) {
+      answers['q-idee-affaires'] = is.ideaText;
+      answers[2] = is.ideaText;
+    }
+    // Pre-fill sector from category name
+    if (is.categoryName && !answers['q-secteur'] && !answers['q-industrie'] && !answers[3]) {
+      answers['q-secteur'] = is.categoryName;
+      answers[3] = is.categoryName;
+    }
+    // Pre-fill revenue goal from projections
+    if (is.projections?.year1Revenue && !answers['q-revenu-an1'] && !answers['q-revenue-goal']) {
+      answers['q-revenu-an1'] = String(is.projections.year1Revenue);
+    }
+  }
+} catch(e) {}
+
 // --- DOM Elements ---
 const questionCard = document.getElementById('questionCard');
 const progressFill = document.getElementById('progressFill');
