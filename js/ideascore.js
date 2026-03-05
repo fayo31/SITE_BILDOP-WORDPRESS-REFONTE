@@ -1026,7 +1026,7 @@ function calculateFinalScore(subScores, bonusPoints) {
 
 function getVerdict(score) {
   if (score >= 85) return { text: 'Excellent — Fonce!', cls: 'is-verdict--excellent', color: '#22c55e', emoji: '🏆' };
-  if (score >= 70) return { text: 'Bon — Viable avec bonne exécution', cls: 'is-verdict--good', color: '#6fb8d8', emoji: '👍' };
+  if (score >= 70) return { text: 'Bon — Viable avec bonne exécution', cls: 'is-verdict--good', color: '#00C1FF', emoji: '👍' };
   if (score >= 50) return { text: 'Moyen — Procède avec prudence', cls: 'is-verdict--moderate', color: '#f59e0b', emoji: '⚠️' };
   if (score >= 30) return { text: 'Risqué — À reconsidérer', cls: 'is-verdict--risky', color: '#ef4444', emoji: '🔴' };
   return { text: 'Non recommandé', cls: 'is-verdict--risky', color: '#ef4444', emoji: '❌' };
@@ -1116,6 +1116,11 @@ function renderIdea() {
         <div class="is-idea-counter"><span id="charCount">${state.ideaText.length}</span>/500</div>
       </div>
 
+      <div class="is-detected-live" id="detectedLive" style="display:none">
+        <div class="is-detected-live__label">Industrie détectée</div>
+        <div class="is-detected-live__value" id="detectedValue"></div>
+      </div>
+
       <p class="is-idea-examples">Essaie : boulangerie, SaaS, cours de natation, salon de coiffure, food truck, consultant marketing, boutique en ligne...</p>
 
       <button class="btn btn--primary is-analyze-btn" id="analyzeBtn" ${state.ideaText.length < 20 ? 'disabled' : ''}>
@@ -1127,11 +1132,26 @@ function renderIdea() {
   const input = document.getElementById('ideaInput');
   const btn = document.getElementById('analyzeBtn');
   const counter = document.getElementById('charCount');
+  const detectedEl = document.getElementById('detectedLive');
+  const detectedVal = document.getElementById('detectedValue');
 
   input.addEventListener('input', () => {
     state.ideaText = input.value;
     counter.textContent = input.value.length;
     btn.disabled = input.value.length < 20;
+
+    // Live industry detection
+    if (input.value.length >= 10) {
+      const result = classifyIdea(input.value);
+      if (result.detected) {
+        detectedVal.textContent = result.detected.icon + ' ' + result.detected.name + ' — ' + result.detected.group;
+        detectedEl.style.display = 'block';
+      } else {
+        detectedEl.style.display = 'none';
+      }
+    } else {
+      detectedEl.style.display = 'none';
+    }
   });
 
   btn.addEventListener('click', () => {

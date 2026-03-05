@@ -404,7 +404,7 @@ function showCompletion() {
         <h2>C'est tout! On a tout ce qu'il faut.</h2>
         <p>Notre IA va maintenant transformer ce que tu nous as partagé en un plan d'affaires complet et personnalisé.</p>
 
-        <div style="background: rgba(111,184,216,0.08); border-radius: 12px; padding: 24px; margin: 32px 0; text-align: left;">
+        <div style="background: rgba(0,193,255,0.08); border-radius: 12px; padding: 24px; margin: 32px 0; text-align: left;">
           <h3 style="margin-bottom: 12px;">📄 Ton plan va inclure :</h3>
           <ul style="list-style: none; line-height: 2;">
             <li>✅ Sommaire exécutif</li>
