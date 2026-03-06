@@ -865,6 +865,7 @@ const CATEGORY_GROUPS = [
 ];
 
 // --- QUESTIONS UNIVERSELLES ---
+// Budget (uq2) et revenu (uq3) sont maintenant des sliders dans la phase ajustements
 const UNIVERSAL_QUESTIONS = [
   {
     id: 'uq1', question: 'As-tu de l\'expérience dans ce domaine?',
@@ -873,25 +874,6 @@ const UNIVERSAL_QUESTIONS = [
       { text: 'Oui, plus de 3 ans', score: 3 },
       { text: 'Un peu — 1 à 3 ans', score: 2 },
       { text: 'Non, c\'est nouveau pour moi', score: 1 }
-    ]
-  },
-  {
-    id: 'uq2', question: 'Quel budget es-tu prêt à investir?',
-    hint: 'Tout ce que tu peux mettre avant de lancer.',
-    options: [
-      { text: 'Moins de 10 000 $', value: 5000, score: 2 },
-      { text: '10 000 $ - 50 000 $', value: 30000, score: 2 },
-      { text: '50 000 $ - 100 000 $', value: 75000, score: 2 },
-      { text: 'Plus de 100 000 $', value: 150000, score: 2 }
-    ]
-  },
-  {
-    id: 'uq3', question: 'Quel revenu annuel vises-tu en année 1?',
-    options: [
-      { text: 'Moins de 50 000 $', value: 35000, score: 1 },
-      { text: '50 000 $ - 100 000 $', value: 75000, score: 2 },
-      { text: '100 000 $ - 250 000 $', value: 175000, score: 2 },
-      { text: 'Plus de 250 000 $', value: 500000, score: 3 }
     ]
   },
   {
@@ -910,6 +892,13 @@ const UNIVERSAL_QUESTIONS = [
       { text: 'Oui, j\'ai déjà des clients payants', score: 3 },
       { text: 'Quelques prospects intéressés', score: 2 },
       { text: 'Pas encore', score: 1 }
+    ]
+  },
+  {
+    id: 'uq6', question: 'C\'est un projet à...',
+    options: [
+      { text: 'Temps plein', value: 'full', score: 2 },
+      { text: 'Temps partiel / side-hustle', value: 'part', score: 1 }
     ]
   }
 ];
@@ -943,13 +932,14 @@ const SCENARIOS = {
 
 // --- STATE ---
 let state = {
-  phase: 'idea',  // idea | classification | questions | calculating | dashboard
+  phase: 'idea',  // idea | classification | questions | adjustments | calculating | dashboard
   ideaText: '',
   detectedCategory: null,
   selectedCategory: null,
   allQuestions: [],
   currentQuestion: 0,
   answers: {},
+  adjustments: {}, // budget, cogs, avgPrice, rent from sliders
   score: null,
   subScores: null,
   projections: null,
@@ -1073,7 +1063,7 @@ function saveResults() {
     geo: state.geo,
     projections: state.projections ? {
       year1Revenue: state.projections.reduce((s, m) => s + m.revenue, 0),
-      investment: state.answers.uq2 != null ? (UNIVERSAL_QUESTIONS[1].options[state.answers.uq2]?.value || cat.medianInvestment) : cat.medianInvestment,
+      investment: state.adjustments.budget || cat.medianInvestment,
       breakEvenMonth: (state.projections.findIndex(m => m.cumul >= 0) + 1) || null
     } : null,
     timestamp: Date.now()
@@ -1098,6 +1088,7 @@ function render() {
     case 'idea': renderIdea(); break;
     case 'classification': renderClassification(); break;
     case 'questions': renderQuestions(); break;
+    case 'adjustments': renderAdjustments(); break;
     case 'calculating': renderCalculating(); break;
     case 'dashboard': renderDashboard(); break;
   }
@@ -1186,10 +1177,13 @@ function renderClassification() {
 
   setTimeout(() => {
     if (result.detected && result.confidence === 'high') {
-      renderCategoryConfirm(result);
+      // Confiance élevée → on skip la confirmation, direct aux questions
+      selectCategory(result.detected);
     } else if (result.detected) {
+      // Confiance faible → on montre les suggestions
       renderCategoryConfirm(result);
     } else {
+      // Rien détecté → grille complète
       renderCategoryGrid(null);
     }
   }, 2500);
@@ -1197,6 +1191,10 @@ function renderClassification() {
 
 function renderCategoryConfirm(result) {
   const cat = result.detected;
+  const ltvCac = (cat.ltv / Math.max(1, cat.cac)).toFixed(1);
+  const marginLevel = cat.grossMargin >= 0.70 ? 'excellente' : cat.grossMargin >= 0.50 ? 'bonne' : cat.grossMargin >= 0.35 ? 'moyenne' : 'faible';
+  const beLevel = cat.breakEvenMonths <= 6 ? 'rapide' : cat.breakEvenMonths <= 12 ? 'raisonnable' : cat.breakEvenMonths <= 24 ? 'long' : 'très long';
+
   app().innerHTML = `
     <div class="is-category-confirm">
       <h2>On a détecté ton industrie</h2>
@@ -1204,6 +1202,7 @@ function renderCategoryConfirm(result) {
       <div class="is-detected-card">
         <span class="is-detected-card__icon">${cat.icon}</span>
         <div>
+          <div class="is-detected-card__group">${cat.group}</div>
           <strong>${cat.name}</strong>
           <span class="is-detected-card__badge ${result.confidence === 'high' ? 'is-detected-card__badge--high' : 'is-detected-card__badge--low'}">
             ${result.confidence === 'high' ? 'Confiance élevée' : 'Meilleure correspondance'}
@@ -1211,7 +1210,29 @@ function renderCategoryConfirm(result) {
         </div>
       </div>
 
-      <button class="btn btn--primary is-confirm-btn" id="confirmBtn">Oui, c'est ça →</button>
+      <div class="is-sector-context">
+        <div class="is-sector-context__title">Ce que ça implique dans ton secteur :</div>
+        <div class="is-sector-context__grid">
+          <div class="is-sector-stat">
+            <span class="is-sector-stat__value">${Math.round(cat.grossMargin * 100)}%</span>
+            <span class="is-sector-stat__label">Marge brute ${marginLevel}</span>
+          </div>
+          <div class="is-sector-stat">
+            <span class="is-sector-stat__value">${cat.medianInvestment.toLocaleString('fr-CA')} $</span>
+            <span class="is-sector-stat__label">Investissement médian</span>
+          </div>
+          <div class="is-sector-stat">
+            <span class="is-sector-stat__value">${cat.breakEvenMonths} mois</span>
+            <span class="is-sector-stat__label">Break-even ${beLevel}</span>
+          </div>
+          <div class="is-sector-stat">
+            <span class="is-sector-stat__value">${ltvCac}:1</span>
+            <span class="is-sector-stat__label">Ratio LTV:CAC</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn--primary is-confirm-btn" id="confirmBtn">C'est mon secteur →</button>
 
       ${result.suggestions.length > 1 ? `
         <p class="is-alternatives-label">Ou choisir :</p>
@@ -1294,13 +1315,31 @@ function renderQuestions() {
   const progress = ((state.currentQuestion + 1) / total) * 100;
   const isUniversal = state.currentQuestion < UNIVERSAL_QUESTIONS.length;
 
+  const cat = state.selectedCategory;
+  const ltvCac = (cat.ltv / Math.max(1, cat.cac)).toFixed(1);
+
   app().innerHTML = `
     <div class="is-questions">
+      <div class="is-sector-banner">
+        <div class="is-sector-banner__info">
+          <span class="is-sector-banner__icon">${cat.icon}</span>
+          <div>
+            <span class="is-sector-banner__group">${cat.group}</span>
+            <strong>${cat.name}</strong>
+          </div>
+        </div>
+        <div class="is-sector-banner__stats">
+          <span>Marge ${Math.round(cat.grossMargin * 100)}%</span>
+          <span>BE ${cat.breakEvenMonths} mois</span>
+          <span>LTV:CAC ${ltvCac}</span>
+        </div>
+        <button class="is-sector-banner__change" id="changeSector">Changer</button>
+      </div>
       <div class="is-questions__progress">
         <div class="is-questions__bar" style="width: ${progress}%"></div>
       </div>
       <div class="is-questions__meta">
-        <span>${isUniversal ? '📋 Questions générales' : `${state.selectedCategory.icon} ${state.selectedCategory.name}`}</span>
+        <span>${isUniversal ? '📋 Questions générales' : `${cat.icon} ${cat.name}`}</span>
         <span>${state.currentQuestion + 1} / ${total}</span>
       </div>
 
@@ -1333,6 +1372,11 @@ function renderQuestions() {
     });
   });
 
+  document.getElementById('changeSector')?.addEventListener('click', () => {
+    const result = classifyIdea(state.ideaText);
+    renderCategoryGrid(result);
+  });
+
   document.getElementById('prevBtn').addEventListener('click', () => {
     if (state.currentQuestion > 0) { state.currentQuestion--; render(); }
   });
@@ -1343,20 +1387,125 @@ function renderQuestions() {
       state.currentQuestion++;
       render();
     } else {
-      state.phase = 'calculating';
+      state.phase = 'adjustments';
       render();
     }
   });
 }
 
+// --- PHASE 3B : ADJUSTMENTS (sliders calibrés par industrie) ---
+function renderAdjustments() {
+  const cat = state.selectedCategory;
+  const startupLow = Math.round(cat.medianInvestment * 0.3);
+  const startupHigh = Math.round(cat.medianInvestment * 3);
+  const budgetStep = Math.max(500, Math.round(startupLow / 10));
+  const defaultBudget = state.adjustments.budget || cat.medianInvestment;
+  const defaultCogs = state.adjustments.cogs != null ? state.adjustments.cogs : Math.round(cat.cogs * 100);
+  const defaultPrice = state.adjustments.avgPrice || cat.avgTicket;
+  const defaultRent = state.adjustments.rent || 0;
+
+  app().innerHTML = `
+    <div class="is-adjustments">
+      <div class="is-adjustments__header">
+        <div class="is-adjustments__icon">${cat.icon}</div>
+        <h2>Ajuste tes paramètres</h2>
+        <p>Benchmarks de <strong>${cat.name}</strong>. Si tu connais tes vrais chiffres, ajuste-les. Sinon, on utilise les moyennes de ton industrie.</p>
+      </div>
+
+      <div class="is-slider-group">
+        <label>Budget initial disponible</label>
+        <div class="is-slider-value" id="budgetVal">${defaultBudget.toLocaleString('fr-CA')} $</div>
+        <input type="range" class="is-slider" id="sliderBudget" min="${startupLow}" max="${startupHigh}" value="${defaultBudget}" step="${budgetStep}">
+        <div class="is-slider-hint">Investissement médian pour ${cat.name} : <strong>${cat.medianInvestment.toLocaleString('fr-CA')} $</strong></div>
+      </div>
+
+      <div class="is-slider-group">
+        <label>Coût des marchandises (COGS)</label>
+        <div class="is-slider-value" id="cogsVal">${defaultCogs}%</div>
+        <input type="range" class="is-slider" id="sliderCogs" min="5" max="85" value="${defaultCogs}" step="1">
+        <div class="is-slider-hint">Moyenne industrie : <strong>${Math.round(cat.cogs * 100)}%</strong> — Marge brute : <span id="marginPreview">${100 - defaultCogs}%</span></div>
+      </div>
+
+      <div class="is-slider-group">
+        <label>Prix moyen par transaction</label>
+        <div class="is-slider-value" id="priceVal">${defaultPrice.toLocaleString('fr-CA')} $</div>
+        <input type="range" class="is-slider" id="sliderPrice" min="${Math.max(5, Math.round(cat.avgTicket * 0.3))}" max="${Math.round(cat.avgTicket * 5)}" value="${defaultPrice}" step="${Math.max(1, Math.round(cat.avgTicket * 0.05))}">
+        <div class="is-slider-hint">Moyenne industrie : <strong>${cat.avgTicket.toLocaleString('fr-CA')} $</strong></div>
+      </div>
+
+      <div class="is-slider-group">
+        <label>Loyer mensuel estimé</label>
+        <div class="is-slider-value" id="rentVal">${defaultRent.toLocaleString('fr-CA')} $</div>
+        <input type="range" class="is-slider" id="sliderRent" min="0" max="10000" value="${defaultRent}" step="100">
+        <div class="is-slider-hint">0 $ si tu travailles de chez toi ou en ligne</div>
+      </div>
+
+      <div class="is-questions__nav">
+        <button class="is-nav-btn" id="adjBack">← Questions</button>
+        <button class="btn btn--primary is-nav-btn is-calc-btn" id="adjCalc">Calculer mon IdeaScore →</button>
+      </div>
+    </div>
+  `;
+
+  // Bind sliders
+  const sliderBudget = document.getElementById('sliderBudget');
+  const sliderCogs = document.getElementById('sliderCogs');
+  const sliderPrice = document.getElementById('sliderPrice');
+  const sliderRent = document.getElementById('sliderRent');
+
+  sliderBudget.addEventListener('input', () => {
+    document.getElementById('budgetVal').textContent = parseInt(sliderBudget.value).toLocaleString('fr-CA') + ' $';
+  });
+  sliderCogs.addEventListener('input', () => {
+    const v = parseInt(sliderCogs.value);
+    document.getElementById('cogsVal').textContent = v + '%';
+    document.getElementById('marginPreview').textContent = (100 - v) + '%';
+  });
+  sliderPrice.addEventListener('input', () => {
+    document.getElementById('priceVal').textContent = parseInt(sliderPrice.value).toLocaleString('fr-CA') + ' $';
+  });
+  sliderRent.addEventListener('input', () => {
+    document.getElementById('rentVal').textContent = parseInt(sliderRent.value).toLocaleString('fr-CA') + ' $';
+  });
+
+  document.getElementById('adjBack').addEventListener('click', () => {
+    // Save current slider values
+    state.adjustments = {
+      budget: parseInt(sliderBudget.value),
+      cogs: parseInt(sliderCogs.value),
+      avgPrice: parseInt(sliderPrice.value),
+      rent: parseInt(sliderRent.value)
+    };
+    state.phase = 'questions';
+    render();
+  });
+
+  document.getElementById('adjCalc').addEventListener('click', () => {
+    state.adjustments = {
+      budget: parseInt(sliderBudget.value),
+      cogs: parseInt(sliderCogs.value),
+      avgPrice: parseInt(sliderPrice.value),
+      rent: parseInt(sliderRent.value)
+    };
+    state.phase = 'calculating';
+    render();
+  });
+}
+
 // --- PHASE 4 : CALCULATING ---
 function renderCalculating() {
-  // Calculate everything
+  // Calculate everything using slider adjustments
   const cat = state.selectedCategory;
+  const adj = state.adjustments;
+  const geoQ = UNIVERSAL_QUESTIONS.find(q => q.id === 'uq4');
+  const geoIdx = state.answers.uq4;
   const inputs = {
-    investment: state.answers.uq2 != null ? UNIVERSAL_QUESTIONS[1].options[state.answers.uq2].value : cat.medianInvestment,
-    expectedRevenue: state.answers.uq3 != null ? UNIVERSAL_QUESTIONS[2].options[state.answers.uq3].value : cat.avgTicket * 20 * 12,
-    geo: state.answers.uq4 != null ? UNIVERSAL_QUESTIONS[3].options[state.answers.uq4].value : 'suburban'
+    investment: adj.budget || cat.medianInvestment,
+    expectedRevenue: (adj.avgPrice || cat.avgTicket) * 20 * 12,
+    geo: geoIdx != null && geoQ ? geoQ.options[geoIdx].value : 'suburban',
+    cogs: adj.cogs != null ? adj.cogs / 100 : cat.cogs,
+    avgPrice: adj.avgPrice || cat.avgTicket,
+    rent: adj.rent || 0
   };
   state.geo = inputs.geo;
 
@@ -1377,36 +1526,67 @@ function renderCalculating() {
   state.projections = calculateProjections(cat, inputs, 'modere');
   saveResults();
 
-  // Show animated score reveal
+  // Show animated calculation steps, then score reveal
   const verdict = getVerdict(state.score);
   app().innerHTML = `
     <div class="is-calculating">
-      <div class="is-score-gauge" style="--score: 0; --color: ${verdict.color}">
-        <span class="is-score-gauge__value" id="scoreCounter">0</span>
-        <span class="is-score-gauge__label">/100</span>
+      <div class="is-calc-steps" id="calcSteps">
+        <div class="is-analyzing__spinner"></div>
+        <p class="is-calc-status">Analyse en cours...</p>
+        <div class="is-calc-step-list">
+          <div class="is-analyzing__step" id="cs1">Classification de l'industrie...</div>
+          <div class="is-analyzing__step" id="cs2">Chargement des benchmarks ${cat.name}...</div>
+          <div class="is-analyzing__step" id="cs3">Calcul des 8 facteurs de viabilité...</div>
+          <div class="is-analyzing__step" id="cs4">Ajustement géographique et saisonnier...</div>
+          <div class="is-analyzing__step" id="cs5">Génération du score final...</div>
+        </div>
       </div>
-      <p class="is-calculating__verdict" id="verdictText" style="opacity: 0">${verdict.emoji} ${verdict.text}</p>
-      <button class="btn btn--primary is-reveal-btn" id="revealBtn" style="opacity: 0">Voir mon rapport complet →</button>
+      <div class="is-score-reveal" id="scoreReveal" style="display:none">
+        <div class="is-score-gauge" style="--score: 0; --color: ${verdict.color}">
+          <span class="is-score-gauge__value" id="scoreCounter">0</span>
+          <span class="is-score-gauge__label">/100</span>
+        </div>
+        <p class="is-calculating__verdict" id="verdictText" style="opacity: 0">${verdict.emoji} ${verdict.text}</p>
+        <button class="btn btn--primary is-reveal-btn" id="revealBtn" style="opacity: 0">Voir mon rapport complet →</button>
+      </div>
     </div>
   `;
 
-  // Animate counter
-  const counter = document.getElementById('scoreCounter');
-  const gauge = document.querySelector('.is-score-gauge');
-  let current = 0;
-  const step = Math.max(1, Math.floor(state.score / 30));
-  const interval = setInterval(() => {
-    current = Math.min(current + step, state.score);
-    counter.textContent = current;
-    gauge.style.setProperty('--score', current);
-    if (current >= state.score) {
-      clearInterval(interval);
-      document.getElementById('verdictText').style.opacity = '1';
-      setTimeout(() => {
-        document.getElementById('revealBtn').style.opacity = '1';
-      }, 400);
-    }
-  }, 40);
+  // Progressive step animation
+  setTimeout(() => document.getElementById('cs1')?.classList.add('is-analyzing__step--done'), 500);
+  setTimeout(() => document.getElementById('cs2')?.classList.add('is-analyzing__step--done'), 1200);
+  setTimeout(() => document.getElementById('cs3')?.classList.add('is-analyzing__step--done'), 2000);
+  setTimeout(() => document.getElementById('cs4')?.classList.add('is-analyzing__step--done'), 2800);
+  setTimeout(() => document.getElementById('cs5')?.classList.add('is-analyzing__step--done'), 3500);
+
+  // Transition to score reveal
+  setTimeout(() => {
+    const steps = document.getElementById('calcSteps');
+    const reveal = document.getElementById('scoreReveal');
+    if (steps) steps.style.display = 'none';
+    if (reveal) reveal.style.display = 'block';
+  }, 4000);
+
+  // Animate counter after steps complete
+  setTimeout(() => {
+    const counter = document.getElementById('scoreCounter');
+    const gauge = document.querySelector('.is-score-gauge');
+    if (!counter || !gauge) return;
+    let current = 0;
+    const step = Math.max(1, Math.floor(state.score / 30));
+    const interval = setInterval(() => {
+      current = Math.min(current + step, state.score);
+      counter.textContent = current;
+      gauge.style.setProperty('--score', current);
+      if (current >= state.score) {
+        clearInterval(interval);
+        document.getElementById('verdictText').style.opacity = '1';
+        setTimeout(() => {
+          document.getElementById('revealBtn').style.opacity = '1';
+        }, 400);
+      }
+    }, 40);
+  }, 4200);
 
   document.getElementById('revealBtn').addEventListener('click', () => {
     state.phase = 'dashboard';
@@ -1516,8 +1696,8 @@ function renderDashboard() {
         <div class="is-scenarios-grid">
           ${Object.entries(SCENARIOS).map(([key, s]) => {
             const scenProj = calculateProjections(cat, {
-              investment: state.answers.uq2 != null ? UNIVERSAL_QUESTIONS[1].options[state.answers.uq2].value : cat.medianInvestment,
-              expectedRevenue: state.answers.uq3 != null ? UNIVERSAL_QUESTIONS[2].options[state.answers.uq3].value : cat.avgTicket * 20 * 12,
+              investment: state.adjustments.budget || cat.medianInvestment,
+              expectedRevenue: (state.adjustments.avgPrice || cat.avgTicket) * 20 * 12,
               geo: state.geo
             }, key);
             const sRev = scenProj.reduce((sum, m) => sum + m.revenue, 0);
@@ -1549,6 +1729,12 @@ function renderDashboard() {
         </div>
       ` : ''}
 
+      <!-- ACTIONS -->
+      <div class="is-dash-actions">
+        <button class="btn btn--secondary" id="restartBtn2">Scorer une autre idée</button>
+        <button class="btn btn--secondary" id="shareBtn">Partager mon score</button>
+      </div>
+
       <!-- NOTES -->
       <div class="is-notes">
         <p>Données basées sur les moyennes sectorielles (NYU Stern, BDC, Statistique Canada). Score calculé sur 8 facteurs pondérés. Les projections sont des estimations à des fins de planification — pas des garanties.</p>
@@ -1564,6 +1750,28 @@ function renderDashboard() {
     state.answers = {};
     state.score = null;
     render();
+  });
+
+  document.getElementById('restartBtn2')?.addEventListener('click', () => {
+    state.phase = 'idea';
+    state.ideaText = '';
+    state.selectedCategory = null;
+    state.answers = {};
+    state.adjustments = {};
+    state.score = null;
+    render();
+  });
+
+  document.getElementById('shareBtn')?.addEventListener('click', () => {
+    const text = `Mon idée de business a obtenu un score de ${state.score}/100 sur IdeaScore Pro!\n${cat.icon} ${cat.name} — ${state.score >= 70 ? 'Viable!' : 'À travailler...'}\n\nScore ton idée gratuitement sur bildop.com`;
+    if (navigator.share) {
+      navigator.share({ title: 'Mon IdeaScore', text });
+    } else {
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('shareBtn');
+        if (btn) { btn.textContent = 'Copié!'; setTimeout(() => btn.textContent = 'Partager mon score', 2000); }
+      });
+    }
   });
 
   document.getElementById('unlockBtn')?.addEventListener('click', () => {
@@ -1633,8 +1841,8 @@ function init() {
         state.geo = data.geo || 'suburban';
         if (state.selectedCategory) {
           const inputs = {
-            investment: state.answers.uq2 != null ? UNIVERSAL_QUESTIONS[1].options[state.answers.uq2]?.value : state.selectedCategory.medianInvestment,
-            expectedRevenue: state.answers.uq3 != null ? UNIVERSAL_QUESTIONS[2].options[state.answers.uq3]?.value : state.selectedCategory.avgTicket * 20 * 12,
+            investment: state.adjustments.budget || state.selectedCategory.medianInvestment,
+            expectedRevenue: (state.adjustments.avgPrice || state.selectedCategory.avgTicket) * 20 * 12,
             geo: state.geo
           };
           state.projections = calculateProjections(state.selectedCategory, inputs, 'modere');

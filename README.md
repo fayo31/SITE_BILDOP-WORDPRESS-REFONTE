@@ -22,9 +22,19 @@ Le **Module 1 (Plan d'affaires)** est gratuit et sert d'**ADN** — toutes les d
 | 2 | **Diagnostic** | ✅ Complet | Teal/Sky | 25 questions → score de santé d'entreprise + rapport PDF |
 | 3 | **Remèdes** | ✅ Complet | Green | Catalogue de 45 remèdes basés sur le diagnostic (freemium) |
 | 4 | **Architecture de Marque** | ✅ Complet | Purple | Audit de maturité branding + builder interactif (freemium) |
-| 5 | Modèle financier avancé | 📋 Planifié | — | Projections détaillées, scénarios, breakeven |
+| IS | **IdeaScore Pro** | ✅ Complet | Orange/Red | Score de viabilité d'idée — 42 industries, 8 facteurs, projections 12 mois |
+| 5 | **Simulateur financier** | ✅ Complet | — | Projections détaillées, scénarios, breakeven |
 | 6 | Plan d'exécution 90 jours | 📋 Planifié | — | Sprint planning pour entrepreneurs |
 | 7 | Tableau de bord fondateur | 📋 Planifié | — | KPIs, suivi, alertes |
+
+### IdeaScore Pro (outil gratuit — lead magnet)
+Score de viabilité d'idée d'affaires en 2 minutes. 42 industries avec benchmarks réels, classification par mots-clés avec détection live, scoring sur 8 facteurs, projections financières 12 mois, graphiques Chart.js.
+
+**Deux versions :**
+- `ideascore.html` — intégré au site avec navigation Bildop
+- `ideascore-pro.html` — standalone landing page pour acquisition (email gate avant le dashboard)
+
+**Flow :** Idée → Détection industrie (live) → Questions universelles + spécifiques → Sliders d'ajustement (budget, COGS, prix, loyer) → Animation calcul → Dashboard avec score, radar, projections, recommandations.
 
 ### Intelligence compétitive (intégrée)
 Fonctionnalité intégrée (pas un module séparé) — l'utilisateur entre un URL ou nom de compagnie et reçoit une analyse compétitive automatique via API (n8n / Supabase Edge Functions).
@@ -33,19 +43,23 @@ Fonctionnalité intégrée (pas un module séparé) — l'utilisateur entre un U
 
 ```
 bildop-redesign/
-├── index.html              # Landing page (4 modules + pricing + FAQ)
+├── index.html              # Landing page (modules + pricing + FAQ)
 ├── questionnaire.html      # Module 1 — Plan d'affaires (gratuit)
 ├── diagnostic.html         # Module 2 — Diagnostic (gratuit)
 ├── remedes.html            # Module 3 — Remèdes (freemium)
 ├── marque.html             # Module 4 — Architecture de marque (freemium)
+├── financier.html          # Module 5 — Simulateur financier
+├── ideascore.html          # IdeaScore Pro — intégré au site (avec nav)
+├── ideascore-pro.html      # IdeaScore Pro — standalone landing page (lead magnet)
 ├── css/
-│   └── style.css           # Styles globaux (~2000 lignes)
+│   └── style.css           # Styles globaux (~4700 lignes)
 ├── js/
 │   ├── main.js             # Navigation, animations, scroll
 │   ├── questionnaire.js    # Module 1 — logique quiz + localStorage
 │   ├── diagnostic.js       # Module 2 — 25 questions, scoring, radar
 │   ├── remedes.js          # Module 3 — catalogue remèdes, paywall
-│   └── marque.js           # Module 4 — audit branding, builder, paywall
+│   ├── marque.js           # Module 4 — audit branding, builder, paywall
+│   └── ideascore.js        # IdeaScore Pro — 42 catégories, classification, scoring 8 facteurs
 └── images/                 # Assets visuels
 ```
 
@@ -53,7 +67,7 @@ bildop-redesign/
 - **Frontend** : HTML/CSS/JS vanilla (aucun framework, aucun build tool)
 - **CSS** : BEM-like naming, responsive mobile-first
 - **Data** : localStorage pour persistance cross-module
-- **Charts** : SVG pur (radar charts, pas de librairie externe)
+- **Charts** : Chart.js (IdeaScore) + SVG pur (radar charts diagnostic)
 - **Backend** : À venir (n8n workflows + Supabase Edge Functions)
 
 ### Flow de données inter-modules

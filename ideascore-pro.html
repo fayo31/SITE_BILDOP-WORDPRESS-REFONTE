@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://ideascore.bildop.com/">
+  <meta name="description" content="Valide ton idee de business gratuitement. Score de viabilite sur 100, benchmarks par industrie, recommandations personnalisees. IdeaScore Pro par Bildop.">
+  <meta property="og:title" content="IdeaScore Pro — Score ton idee de business en 2 minutes">
+  <meta property="og:description" content="Decouvre si ton idee est viable avant d'investir un seul dollar. Score de viabilite sur 100, base sur les donnees reelles de 42 industries.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ideascore.bildop.com">
+  <title>IdeaScore Pro — Score ton idee de business en 2 minutes | Bildop</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+  <!-- Styles (standalone — inline critical + link full) -->
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Standalone overrides */
+    body { background: var(--pale, #B3E8F5); }
+
+    .is-standalone-topbar {
+      text-align: center;
+      padding: 12px 20px;
+      font-size: 0.8rem;
+      color: var(--slate, #5a6270);
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .is-standalone-topbar a {
+      text-decoration: none;
+      font-family: 'Audiowide', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .is-standalone-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* Email gate overlay */
+    .is-email-gate {
+      text-align: center;
+      animation: fadeInLive 0.4s ease;
+    }
+    .is-email-gate h2 {
+      font-family: 'Audiowide', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .is-email-gate__sub {
+      color: var(--slate, #5a6270);
+      font-size: 1rem;
+      margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .is-email-gate__preview {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .is-email-gate__preview-item {
+      font-size: 0.85rem;
+      color: var(--navy, #00045C);
+      font-weight: 600;
+    }
+    .is-email-gate__preview-item::before {
+      content: "\2713  ";
+      color: #22c55e;
+      font-weight: 700;
+    }
+    .is-email-form {
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .is-email-form input[type="email"] {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid var(--gray-200, #e2e8f0);
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-family: inherit;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .is-email-form input[type="email"]:focus {
+      outline: none;
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+    }
+    .is-email-form button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .is-email-form button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(245,158,11,0.3);
+    }
+    .is-email-form button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .is-email-skip {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--slate, #5a6270);
+    }
+    .is-email-skip a {
+      color: var(--slate, #5a6270);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .is-email-skip a:hover { color: #f59e0b; }
+    .is-email-privacy {
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: var(--slate, #5a6270);
+    }
+
+    /* Trust bar */
+    .is-trust-bar {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 24px 0;
+      font-size: 0.8rem;
+      color: var(--slate, #5a6270);
+    }
+    .is-trust-bar span::before {
+      content: "\2713  ";
+      color: #22c55e;
+      font-weight: 700;
+    }
+
+    /* Standalone footer */
+    .is-standalone-footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 0.8rem;
+      color: var(--slate, #5a6270);
+      border-top: 1px solid var(--gray-200, #e2e8f0);
+      margin-top: 40px;
+    }
+    .is-standalone-footer a {
+      color: var(--sky, #00C1FF);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .is-standalone-footer__links {
+      margin-top: 8px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .is-standalone-footer__links a {
+      color: var(--slate, #5a6270);
+      font-weight: 400;
+    }
+
+    /* Override hero for standalone */
+    .is-standalone-wrap .is-hero {
+      padding-top: 60px;
+    }
+    .is-standalone-wrap .is-hero h1 {
+      font-size: 2.8rem;
+    }
+    @media (max-width: 640px) {
+      .is-standalone-wrap .is-hero h1 { font-size: 1.9rem; }
+      .is-email-gate h2 { font-size: 1.4rem; }
+      .is-trust-bar { flex-direction: column; align-items: center; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="is-standalone-topbar">
+  Un outil gratuit par <a href="https://bildop.com"><span style="color:var(--sky)">bild</span><span style="color:var(--navy)">op</span></a>
+</div>
+
+<!-- App container -->
+<div class="is-standalone-wrap">
+  <div class="questionnaire">
+    <div class="questionnaire__container" style="max-width: 800px;">
+      <div id="ideascoreApp"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="is-standalone-footer">
+  <p>IdeaScore Pro — Un outil propulse par <a href="https://bildop.com">BILDOP</a> | Groupe REMES &copy; 2026</p>
+  <div class="is-standalone-footer__links">
+    <a href="https://bildop.com">bildop.com</a>
+    <a href="https://bildop.com/conditions">Conditions</a>
+    <a href="https://bildop.com/confidentialite">Confidentialite</a>
+  </div>
+  <p style="margin-top:4px">Les scores et projections sont des estimations basees sur des donnees publiques. Ce n'est pas un avis financier.</p>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/ideascore.js"></script>
+<script>
+// --- STANDALONE EMAIL GATE ---
+// Override render() to intercept dashboard phase and show email capture
+(function() {
+  const origRender = render;
+
+  window.render = function() {
+    // Intercept: when transitioning to dashboard, show email gate first (once)
+    if (state.phase === 'dashboard' && !localStorage.getItem('bildop_ideascore_email')) {
+      showEmailGate();
+      return;
+    }
+    origRender();
+  };
+
+  function showEmailGate() {
+    const appEl = document.getElementById('ideascoreApp');
+    appEl.innerHTML = `
+      <div class="is-email-gate">
+        <h2>Ton score est pr\u00eat!</h2>
+        <p class="is-email-gate__sub">Entre ton courriel pour voir ton rapport complet — score de viabilit\u00e9, benchmarks de ton industrie, et recommandations personnalis\u00e9es.</p>
+
+        <div class="is-email-gate__preview">
+          <span class="is-email-gate__preview-item">Score sur 100</span>
+          <span class="is-email-gate__preview-item">8 facteurs analys\u00e9s</span>
+          <span class="is-email-gate__preview-item">Projections 12 mois</span>
+          <span class="is-email-gate__preview-item">Recommandations</span>
+        </div>
+
+        <div class="is-email-form">
+          <input type="email" id="emailInput" placeholder="ton@courriel.com" autocomplete="email">
+          <button id="emailSubmit" disabled>Voir mon rapport gratuit &rarr;</button>
+        </div>
+
+        <p class="is-email-skip"><a id="emailSkip">Continuer sans courriel</a></p>
+        <p class="is-email-privacy">Aucun spam. On t'envoie ton rapport + 1 courriel de suivi. C'est tout.</p>
+
+        <div class="is-trust-bar">
+          <span>42 industries analys\u00e9es</span>
+          <span>Donn\u00e9es r\u00e9elles 2024-2026</span>
+          <span>100% gratuit</span>
+        </div>
+      </div>
+    `;
+
+    const emailInput = document.getElementById('emailInput');
+    const emailSubmit = document.getElementById('emailSubmit');
+    const emailSkip = document.getElementById('emailSkip');
+
+    emailInput.addEventListener('input', () => {
+      emailSubmit.disabled = !emailInput.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+    });
+
+    emailSubmit.addEventListener('click', () => {
+      const email = emailInput.value.trim();
+      if (email) {
+        localStorage.setItem('bildop_ideascore_email', email);
+        // TODO: send email to your backend / n8n webhook / Notion
+        console.log('Email captured:', email);
+      }
+      localStorage.setItem('bildop_ideascore_email', email || 'submitted');
+      origRender(); // now render the actual dashboard
+    });
+
+    emailSkip.addEventListener('click', () => {
+      localStorage.setItem('bildop_ideascore_email', 'skipped');
+      origRender(); // now render the actual dashboard
+    });
+
+    emailInput.focus();
+  }
+})();
+</script>
+</body>
+</html>
