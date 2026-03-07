@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market Intelligence — BILDOP.ai</title>
+  <meta name="description" content="Analyse ton marché en 2 minutes. Concurrents, avatar client, contenu viral, accroches gagnantes — propulsé par IA.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --navy: #1e3a5f;
+      --violet: #5b21b6;
+      --sky: #0ea5e9;
+      --sky-dark: #0284c7;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-page); color: var(--text-dark); min-height: 100vh; }
+
+    /* ===== TOPBAR ===== */
+    .mi-topbar {
+      background: linear-gradient(135deg, var(--navy) 0%, #0f2744 100%);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    }
+    .mi-topbar__logo {
+      font-family: 'Audiowide', sans-serif;
+      font-size: 1.1rem;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mi-topbar__logo span {
+      font-size: 0.7rem;
+      background: linear-gradient(135deg, var(--sky), #8b5cf6);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      letter-spacing: .5px;
+    }
+    .mi-topbar__back {
+      color: rgba(255,255,255,.7);
+      text-decoration: none;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .2s;
+    }
+    .mi-topbar__back:hover { color: #fff; }
+
+    /* ===== HERO ===== */
+    .mi-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a1a2e 50%, #0f2744 100%);
+      padding: 56px 24px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .mi-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(14,165,233,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .mi-hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(14,165,233,.15);
+      border: 1px solid rgba(14,165,233,.3);
+      color: var(--sky);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      letter-spacing: .5px;
+    }
+    .mi-hero h1 {
+      font-family: 'Audiowide', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      color: #fff;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .mi-hero h1 span {
+      background: linear-gradient(135deg, var(--sky), #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .mi-hero p {
+      color: rgba(255,255,255,.7);
+      font-size: 1.05rem;
+      max-width: 560px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    /* ===== NICHE INPUT ===== */
+    .mi-niche-box {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      padding: 28px 24px;
+      max-width: 640px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .mi-niche-box__label {
+      color: rgba(255,255,255,.6);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .mi-niche-row {
+      display: flex;
+      gap: 10px;
+    }
+    .mi-niche-input {
+      flex: 1;
+      background: rgba(255,255,255,.08);
+      border: 1.5px solid rgba(255,255,255,.2);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .2s, background .2s;
+    }
+    .mi-niche-input::placeholder { color: rgba(255,255,255,.35); }
+    .mi-niche-input:focus {
+      border-color: var(--sky);
+      background: rgba(14,165,233,.08);
+    }
+    .mi-niche-btn {
+      background: linear-gradient(135deg, var(--sky), #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Audiowide', sans-serif;
+      white-space: nowrap;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .mi-niche-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(14,165,233,.4);
+    }
+    .mi-niche-examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .mi-niche-tag {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.7);
+      font-size: 0.78rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .mi-niche-tag:hover {
+      background: rgba(14,165,233,.2);
+      border-color: var(--sky);
+      color: var(--sky);
+    }
+    .mi-adn-suggestion {
+      display: none;
+      margin-top: 14px;
+      background: rgba(16,185,129,.1);
+      border: 1px solid rgba(16,185,129,.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .mi-adn-suggestion.show { display: flex; }
+    .mi-adn-suggestion__text {
+      color: rgba(255,255,255,.8);
+      font-size: 0.85rem;
+      flex: 1;
+    }
+    .mi-adn-suggestion__text strong { color: var(--emerald); }
+    .mi-adn-suggestion__btn {
+      background: var(--emerald);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* ===== LAYOUT PRINCIPAL ===== */
+    .mi-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 60px);
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .mi-sidebar {
+      background: #fff;
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      position: sticky;
+      top: 60px;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
+    }
+    .mi-sidebar__section {
+      padding: 0 16px;
+      margin-bottom: 8px;
+    }
+    .mi-sidebar__section-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 8px 8px 6px;
+    }
+    .mi-step-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      background: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: all .2s;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+    }
+    .mi-step-btn:hover { background: #f1f5f9; color: var(--text-dark); }
+    .mi-step-btn.active {
+      background: linear-gradient(135deg, rgba(14,165,233,.1), rgba(139,92,246,.1));
+      color: var(--navy);
+      font-weight: 600;
+    }
+    .mi-step-btn.completed { color: var(--emerald); }
+    .mi-step-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
+    .mi-step-label { flex: 1; line-height: 1.3; }
+    .mi-step-label small { display: block; font-size: 0.72rem; color: var(--text-muted); font-weight: 400; margin-top: 1px; }
+
+    /* Progress bar */
+    .mi-progress {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+    }
+    .mi-progress__label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .mi-progress__bar {
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .mi-progress__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sky), #8b5cf6);
+      border-radius: 2px;
+      width: 0%;
+      transition: width .5s ease;
+    }
+
+    /* Outputs */
+    .mi-outputs {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+    .mi-outputs__title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .mi-output-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .mi-output-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+    .mi-output-dot.ready { background: var(--emerald); box-shadow: 0 0 6px rgba(16,185,129,.4); }
+
+    /* Export button */
+    .mi-export-btn {
+      display: block;
+      width: calc(100% - 32px);
+      margin: 12px 16px 0;
+      padding: 10px;
+      background: linear-gradient(135deg, var(--sky), #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: opacity .2s;
+    }
+    .mi-export-btn:hover { opacity: .9; }
+
+    /* ===== MAIN CONTENT ===== */
+    .mi-main {
+      padding: 32px 28px;
+      overflow-y: auto;
+    }
+
+    /* Panel */
+    .mi-panel { display: none; }
+    .mi-panel.active { display: block; }
+
+    /* Panel header */
+    .mi-panel__header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .mi-panel__icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--sky), #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .mi-panel__title { font-family: 'Audiowide', sans-serif; font-size: 1.2rem; color: var(--navy); margin-bottom: 4px; }
+    .mi-panel__sub { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+    .mi-niche-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(14,165,233,.1), rgba(139,92,246,.1));
+      border: 1px solid rgba(14,165,233,.3);
+      color: var(--sky-dark);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    /* Analyzing animation */
+    .mi-analyzing {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      text-align: center;
+    }
+    .mi-analyzing__spinner {
+      width: 48px; height: 48px;
+      border: 3px solid #e2e8f0;
+      border-top-color: var(--sky);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .mi-analyzing__title {
+      font-family: 'Audiowide', sans-serif;
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 24px;
+    }
+    .mi-analyzing__steps { text-align: left; max-width: 400px; margin: 0 auto; }
+    .mi-analyzing__step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all .4s ease;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .mi-analyzing__step.visible {
+      opacity: 1;
+      transform: translateY(0);
+      color: var(--navy);
+      font-weight: 500;
+    }
+    .mi-analyzing__step.done {
+      opacity: .5;
+      color: var(--emerald);
+    }
+    .mi-analyzing__step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      flex-shrink: 0;
+    }
+    .mi-analyzing__step.visible .mi-analyzing__step-dot { background: var(--sky); }
+    .mi-analyzing__step.done .mi-analyzing__step-dot { background: var(--emerald); }
+
+    /* Cards */
+    .mi-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .mi-card__title {
+      font-family: 'Audiowide', sans-serif;
+      font-size: 0.85rem;
+      color: var(--navy);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Stats grid */
+    .mi-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .mi-stat {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .mi-stat__value {
+      font-family: 'Audiowide', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--sky), #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+    }
+    .mi-stat__label { font-size: 0.8rem; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; }
+    .mi-stat__sub { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* Insight box */
+    .mi-insight {
+      background: linear-gradient(135deg, rgba(14,165,233,.06), rgba(139,92,246,.06));
+      border: 1px solid rgba(14,165,233,.2);
+      border-left: 4px solid var(--sky);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .mi-insight__label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--sky-dark);
+      margin-bottom: 8px;
+    }
+    .mi-insight__text {
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* Tags */
+    .mi-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .mi-tag {
+      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    .mi-tag--sky { background: rgba(14,165,233,.1); color: var(--sky-dark); border: 1px solid rgba(14,165,233,.2); }
+    .mi-tag--violet { background: rgba(139,92,246,.1); color: #6d28d9; border: 1px solid rgba(139,92,246,.2); }
+    .mi-tag--emerald { background: rgba(16,185,129,.1); color: #047857; border: 1px solid rgba(16,185,129,.2); }
+
+    /* Table */
+    .mi-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+    .mi-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .mi-table th {
+      background: #f8fafc;
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .mi-table td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    .mi-table tr:last-child td { border-bottom: none; }
+    .mi-table tr:hover td { background: #fafbfc; }
+    .mi-score-pill {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .mi-score-pill--high { background: rgba(244,63,94,.1); color: #be123c; }
+    .mi-score-pill--mid { background: rgba(245,158,11,.1); color: #92400e; }
+    .mi-score-pill--low { background: rgba(16,185,129,.1); color: #047857; }
+
+    /* Avatar */
+    .mi-avatar-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .mi-avatar-photo {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--sky), #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+    .mi-avatar-name { font-family: 'Audiowide', sans-serif; font-size: 1rem; color: var(--navy); }
+    .mi-avatar-role { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+    .mi-avatar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .mi-avatar-box { background: #f8fafc; border-radius: 12px; padding: 16px; }
+    .mi-avatar-box__title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .mi-avatar-box__title.pains { color: var(--rose); }
+    .mi-avatar-box__title.desires { color: var(--emerald); }
+    .mi-avatar-box__title.objections { color: var(--amber); }
+    .mi-avatar-box__title.vocab { color: var(--sky-dark); }
+    .mi-avatar-item {
+      font-size: 0.83rem;
+      color: var(--text-dark);
+      padding: 5px 0;
+      border-bottom: 1px solid #e2e8f0;
+      line-height: 1.4;
+    }
+    .mi-avatar-item:last-child { border-bottom: none; }
+
+    /* Content grid */
+    .mi-content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .mi-content-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .mi-content-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .mi-content-card__thumb {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .mi-content-card__plays {
+      position: absolute;
+      bottom: 8px; right: 8px;
+      background: rgba(0,0,0,.6);
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .mi-content-card__body { padding: 12px; }
+    .mi-content-card__hook { font-size: 0.83rem; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; line-height: 1.4; }
+    .mi-content-card__meta { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* Hooks */
+    .mi-hook-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all .2s;
+      background: #fff;
+    }
+    .mi-hook-item:hover { border-color: var(--sky); background: rgba(14,165,233,.03); }
+    .mi-hook-item.selected { border-color: var(--sky); background: rgba(14,165,233,.06); }
+    .mi-hook-item__num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .mi-hook-item.selected .mi-hook-item__num { background: var(--sky); color: #fff; }
+    .mi-hook-item__text { flex: 1; font-size: 0.88rem; color: var(--text-dark); line-height: 1.5; }
+    .mi-hook-item__score {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--emerald);
+      white-space: nowrap;
+    }
+
+    /* Pitch deck panel */
+    .mi-pitch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .mi-slide-preview {
+      background: linear-gradient(135deg, var(--navy), #1a1a2e);
+      border-radius: 12px;
+      padding: 20px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .mi-slide-preview:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+    .mi-slide-preview__num {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,.4);
+      font-family: 'Audiowide', sans-serif;
+    }
+    .mi-slide-preview__title {
+      font-family: 'Audiowide', sans-serif;
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+    .mi-slide-preview__icon { font-size: 1.5rem; }
+
+    /* CTA generate */
+    .mi-generate-cta {
+      background: linear-gradient(135deg, var(--navy), #1a1a2e);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      color: #fff;
+      margin-top: 20px;
+    }
+    .mi-generate-cta h3 {
+      font-family: 'Audiowide', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+    .mi-generate-cta p {
+      color: rgba(255,255,255,.7);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .mi-generate-cta__btn {
+      background: linear-gradient(135deg, var(--sky), #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 28px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Audiowide', sans-serif;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .mi-generate-cta__btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(14,165,233,.4);
+    }
+
+    /* Welcome panel */
+    .mi-welcome {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 32px;
+      text-align: center;
+    }
+    .mi-welcome__icon { font-size: 3rem; margin-bottom: 20px; }
+    .mi-welcome h2 {
+      font-family: 'Audiowide', sans-serif;
+      font-size: 1.3rem;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+    .mi-welcome p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      max-width: 480px;
+      margin: 0 auto 28px;
+    }
+    .mi-welcome-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .mi-welcome-step {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .mi-welcome-step__icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .mi-welcome-step__label { font-size: 0.8rem; font-weight: 600; color: var(--text-dark); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .mi-layout { grid-template-columns: 1fr; }
+      .mi-sidebar { display: none; }
+      .mi-main { padding: 20px 16px; }
+      .mi-avatar-grid { grid-template-columns: 1fr; }
+      .mi-niche-row { flex-direction: column; }
+      .mi-hero { padding: 40px 16px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="mi-topbar">
+  <a href="index.html" class="mi-topbar__logo">
+    BILDOP <span>Market Intelligence</span>
+  </a>
+  <a href="index.html" class="mi-topbar__back">← Retour aux modules</a>
+</nav>
+
+<!-- HERO + INPUT -->
+<div class="mi-hero">
+  <div class="mi-hero__badge">🔬 Module 6 · Propulsé par IA</div>
+  <h1>La <span>vérité sur ton marché</span><br>avant de dépenser un dollar</h1>
+  <p>Entre ta niche. Notre IA scanne le marché, cartographie tes concurrents, construit ton avatar client et génère les accroches qui convertissent — en 2 minutes.</p>
+
+  <div class="mi-niche-box">
+    <div class="mi-niche-box__label">🎯 Ta niche ou ton secteur</div>
+    <div class="mi-niche-row">
+      <input
+        type="text"
+        id="nicheInput"
+        class="mi-niche-input"
+        placeholder="Ex: coaching fitness femmes 40+, soins à domicile, SaaS RH..."
+        onkeydown="if(event.key==='Enter') startAnalysis()"
+      >
+      <button class="mi-niche-btn" onclick="startAnalysis()">Analyser →</button>
+    </div>
+    <div class="mi-niche-examples">
+      <span class="mi-niche-tag" onclick="setNiche('Coaching fitness femmes 40+')">Coaching fitness femmes 40+</span>
+      <span class="mi-niche-tag" onclick="setNiche('Soins à domicile seniors')">Soins à domicile seniors</span>
+      <span class="mi-niche-tag" onclick="setNiche('Formation en ligne entrepreneurs')">Formation en ligne</span>
+      <span class="mi-niche-tag" onclick="setNiche('Agence marketing PME')">Agence marketing PME</span>
+      <span class="mi-niche-tag" onclick="setNiche('E-commerce mode durable')">E-commerce mode durable</span>
+    </div>
+    <div class="mi-adn-suggestion" id="adnSuggestion">
+      <div class="mi-adn-suggestion__text">
+        🧬 Détecté depuis ton ADN : <strong id="adnText"></strong>
+      </div>
+      <button class="mi-adn-suggestion__btn" onclick="useAdnSuggestion()">Utiliser →</button>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT PRINCIPAL -->
+<div class="mi-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="mi-sidebar">
+    <div class="mi-sidebar__section">
+      <div class="mi-sidebar__section-title">Analyse de marché</div>
+      <button class="mi-step-btn active" data-step="0" onclick="goToStep(0)">
+        <span class="mi-step-icon">🏠</span>
+        <span class="mi-step-label">Accueil<small>Entrer ta niche</small></span>
+      </button>
+      <button class="mi-step-btn" data-step="1" onclick="goToStep(1)">
+        <span class="mi-step-icon">📊</span>
+        <span class="mi-step-label">Analyse de marché<small>Taille, croissance, opportunités</small></span>
+      </button>
+      <button class="mi-step-btn" data-step="2" onclick="goToStep(2)">
+        <span class="mi-step-icon">🕵️</span>
+        <span class="mi-step-label">Concurrents<small>Qui gagne et comment</small></span>
+      </button>
+    </div>
+    <div class="mi-sidebar__section">
+      <div class="mi-sidebar__section-title">Intelligence client</div>
+      <button class="mi-step-btn" data-step="3" onclick="goToStep(3)">
+        <span class="mi-step-icon">👤</span>
+        <span class="mi-step-label">Avatar client<small>Douleurs, désirs, objections</small></span>
+      </button>
+      <button class="mi-step-btn" data-step="4" onclick="goToStep(4)">
+        <span class="mi-step-icon">🎬</span>
+        <span class="mi-step-label">Contenu viral<small>Ce qui fonctionne dans ta niche</small></span>
+      </button>
+      <button class="mi-step-btn" data-step="5" onclick="goToStep(5)">
+        <span class="mi-step-icon">🔥</span>
+        <span class="mi-step-label">Accroches gagnantes<small>Hooks qui convertissent</small></span>
+      </button>
+    </div>
+    <div class="mi-sidebar__section">
+      <div class="mi-sidebar__section-title">Pitch & Stratégie</div>
+      <button class="mi-step-btn" data-step="6" onclick="goToStep(6)">
+        <span class="mi-step-icon">🎯</span>
+        <span class="mi-step-label">Pitch deck<small>Structure de présentation</small></span>
+      </button>
+    </div>
+
+    <!-- Progress -->
+    <div class="mi-progress">
+      <div class="mi-progress__label">
+        <span>Progression</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="mi-progress__bar">
+        <div class="mi-progress__fill" id="progressBar"></div>
+      </div>
+    </div>
+
+    <!-- Outputs -->
+    <div class="mi-outputs">
+      <div class="mi-outputs__title">Outputs générés</div>
+      <div class="mi-output-item"><div class="mi-output-dot" id="out-market"></div> Analyse de marché</div>
+      <div class="mi-output-item"><div class="mi-output-dot" id="out-comp"></div> Cartographie concurrents</div>
+      <div class="mi-output-item"><div class="mi-output-dot" id="out-avatar"></div> Avatar client</div>
+      <div class="mi-output-item"><div class="mi-output-dot" id="out-content"></div> Contenu viral</div>
+      <div class="mi-output-item"><div class="mi-output-dot" id="out-hooks"></div> Accroches gagnantes</div>
+    </div>
+
+    <button class="mi-export-btn" onclick="exportReport()">📥 Exporter le rapport</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="mi-main">
+
+    <!-- PANEL 0 : Welcome -->
+    <div class="mi-panel active" id="panel-0">
+      <div class="mi-welcome">
+        <div class="mi-welcome__icon">🔬</div>
+        <h2>Market Intelligence — BILDOP.ai</h2>
+        <p>Entre ta niche dans le champ ci-dessus et notre IA va scanner le marché pour toi. Tu obtiendras en 2 minutes ce que les consultants facturent des milliers de dollars.</p>
+        <div class="mi-welcome-steps">
+          <div class="mi-welcome-step">
+            <div class="mi-welcome-step__icon">📊</div>
+            <div class="mi-welcome-step__label">Analyse de marché</div>
+          </div>
+          <div class="mi-welcome-step">
+            <div class="mi-welcome-step__icon">🕵️</div>
+            <div class="mi-welcome-step__label">Concurrents</div>
+          </div>
+          <div class="mi-welcome-step">
+            <div class="mi-welcome-step__icon">👤</div>
+            <div class="mi-welcome-step__label">Avatar client</div>
+          </div>
+          <div class="mi-welcome-step">
+            <div class="mi-welcome-step__icon">🎬</div>
+            <div class="mi-welcome-step__label">Contenu viral</div>
+          </div>
+          <div class="mi-welcome-step">
+            <div class="mi-welcome-step__icon">🔥</div>
+            <div class="mi-welcome-step__label">Accroches</div>
+          </div>
+          <div class="mi-welcome-step">
+            <div class="mi-welcome-step__icon">🎯</div>
+            <div class="mi-welcome-step__label">Pitch deck</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 1 : Analyse de marché -->
+    <div class="mi-panel" id="panel-1">
+      <div class="mi-panel__header">
+        <div class="mi-panel__icon">📊</div>
+        <div>
+          <div class="mi-panel__title">Analyse de marché</div>
+          <div class="mi-panel__sub">Taille du marché, croissance, niveau de compétition et opportunités identifiées</div>
+          <div class="mi-niche-badge" id="nicheTitle1"></div>
+        </div>
+      </div>
+
+      <!-- Analyzing -->
+      <div class="mi-analyzing" id="analyzing-1">
+        <div class="mi-analyzing__spinner"></div>
+        <div class="mi-analyzing__title">Scan du marché en cours...</div>
+        <div class="mi-analyzing__steps" id="steps-1">
+          <div class="mi-analyzing__step" data-delay="200"><div class="mi-analyzing__step-dot"></div> Analyse des volumes de recherche</div>
+          <div class="mi-analyzing__step" data-delay="900"><div class="mi-analyzing__step-dot"></div> Estimation de la taille du marché</div>
+          <div class="mi-analyzing__step" data-delay="1600"><div class="mi-analyzing__step-dot"></div> Évaluation du niveau de compétition</div>
+          <div class="mi-analyzing__step" data-delay="2300"><div class="mi-analyzing__step-dot"></div> Identification des opportunités</div>
+          <div class="mi-analyzing__step" data-delay="3000"><div class="mi-analyzing__step-dot"></div> Génération des insights stratégiques</div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="results-1" style="display:none;">
+        <div class="mi-stats-grid">
+          <div class="mi-stat">
+            <div class="mi-stat__value" id="r1-volume"></div>
+            <div class="mi-stat__label">Volume de recherche</div>
+            <div class="mi-stat__sub" id="r1-volume-desc"></div>
+          </div>
+          <div class="mi-stat">
+            <div class="mi-stat__value" id="r1-size"></div>
+            <div class="mi-stat__label">Taille du marché</div>
+            <div class="mi-stat__sub" id="r1-size-desc"></div>
+          </div>
+          <div class="mi-stat">
+            <div class="mi-stat__value" id="r1-comp"></div>
+            <div class="mi-stat__label">Compétition</div>
+            <div class="mi-stat__sub" id="r1-comp-desc"></div>
+          </div>
+          <div class="mi-stat">
+            <div class="mi-stat__value" id="r1-opp"></div>
+            <div class="mi-stat__label">Opportunité</div>
+            <div class="mi-stat__sub" id="r1-opp-desc"></div>
+          </div>
+        </div>
+
+        <div class="mi-insight">
+          <div class="mi-insight__label">💡 Insight principal</div>
+          <div class="mi-insight__text" id="r1-insight"></div>
+        </div>
+
+        <div class="mi-card">
+          <div class="mi-card__title">⚡ Tes 3 prochains mouvements</div>
+          <div id="r1-moves"></div>
+        </div>
+
+        <div class="mi-card">
+          <div class="mi-card__title">🎯 Gaps identifiés dans le marché</div>
+          <div class="mi-tags" id="r1-gaps"></div>
+        </div>
+
+        <div style="text-align:right;margin-top:16px;">
+          <button onclick="goToStep(2)" style="background:linear-gradient(135deg,var(--sky),#8b5cf6);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Audiowide',sans-serif;">
+            Analyser les concurrents →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2 : Concurrents -->
+    <div class="mi-panel" id="panel-2">
+      <div class="mi-panel__header">
+        <div class="mi-panel__icon">🕵️</div>
+        <div>
+          <div class="mi-panel__title">Cartographie concurrentielle</div>
+          <div class="mi-panel__sub">Qui gagne dans ton marché, comment ils se positionnent, et où sont leurs failles</div>
+          <div class="mi-niche-badge" id="nicheTitle2"></div>
+        </div>
+      </div>
+
+      <div class="mi-analyzing" id="analyzing-2">
+        <div class="mi-analyzing__spinner"></div>
+        <div class="mi-analyzing__title">Scan des concurrents...</div>
+        <div class="mi-analyzing__steps" id="steps-2">
+          <div class="mi-analyzing__step" data-delay="200"><div class="mi-analyzing__step-dot"></div> Identification des acteurs principaux</div>
+          <div class="mi-analyzing__step" data-delay="900"><div class="mi-analyzing__step-dot"></div> Analyse des positionnements</div>
+          <div class="mi-analyzing__step" data-delay="1600"><div class="mi-analyzing__step-dot"></div> Évaluation des niveaux de menace</div>
+          <div class="mi-analyzing__step" data-delay="2300"><div class="mi-analyzing__step-dot"></div> Détection des failles exploitables</div>
+        </div>
+      </div>
+
+      <div id="results-2" style="display:none;">
+        <div class="mi-card">
+          <div class="mi-card__title">🏆 Acteurs identifiés dans ton marché</div>
+          <div class="mi-table-wrap">
+            <table class="mi-table">
+              <thead>
+                <tr>
+                  <th>Acteur</th>
+                  <th>Positionnement</th>
+                  <th>Prix</th>
+                  <th>Menace</th>
+                  <th>Faille</th>
+                </tr>
+              </thead>
+              <tbody id="compTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mi-insight">
+          <div class="mi-insight__label">🎯 Ton opportunité de différenciation</div>
+          <div class="mi-insight__text" id="r2-diff"></div>
+        </div>
+
+        <div style="text-align:right;margin-top:16px;">
+          <button onclick="goToStep(3)" style="background:linear-gradient(135deg,var(--sky),#8b5cf6);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Audiowide',sans-serif;">
+            Construire l'avatar client →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 3 : Avatar client -->
+    <div class="mi-panel" id="panel-3">
+      <div class="mi-panel__header">
+        <div class="mi-panel__icon">👤</div>
+        <div>
+          <div class="mi-panel__title">Avatar client</div>
+          <div class="mi-panel__sub">Profil psychographique ultra-précis — douleurs, désirs, objections, vocabulaire</div>
+          <div class="mi-niche-badge" id="nicheTitle3"></div>
+        </div>
+      </div>
+
+      <div class="mi-analyzing" id="analyzing-3">
+        <div class="mi-analyzing__spinner"></div>
+        <div class="mi-analyzing__title">Construction de l'avatar...</div>
+        <div class="mi-analyzing__steps" id="steps-3">
+          <div class="mi-analyzing__step" data-delay="200"><div class="mi-analyzing__step-dot"></div> Analyse des données démographiques</div>
+          <div class="mi-analyzing__step" data-delay="900"><div class="mi-analyzing__step-dot"></div> Identification des douleurs profondes</div>
+          <div class="mi-analyzing__step" data-delay="1600"><div class="mi-analyzing__step-dot"></div> Cartographie des désirs et aspirations</div>
+          <div class="mi-analyzing__step" data-delay="2300"><div class="mi-analyzing__step-dot"></div> Analyse des objections courantes</div>
+          <div class="mi-analyzing__step" data-delay="3000"><div class="mi-analyzing__step-dot"></div> Extraction du vocabulaire émotionnel</div>
+        </div>
+      </div>
+
+      <div id="results-3" style="display:none;">
+        <div class="mi-card">
+          <div class="mi-avatar-header">
+            <div class="mi-avatar-photo">👤</div>
+            <div>
+              <div class="mi-avatar-name" id="avatarName"></div>
+              <div class="mi-avatar-role" id="avatarRole"></div>
+            </div>
+          </div>
+
+          <div class="mi-avatar-grid">
+            <div class="mi-avatar-box">
+              <div class="mi-avatar-box__title pains">😣 Douleurs</div>
+              <div id="avatarPains"></div>
+            </div>
+            <div class="mi-avatar-box">
+              <div class="mi-avatar-box__title desires">✨ Désirs</div>
+              <div id="avatarDesires"></div>
+            </div>
+            <div class="mi-avatar-box">
+              <div class="mi-avatar-box__title objections">🚧 Objections</div>
+              <div id="avatarObjections"></div>
+            </div>
+            <div class="mi-avatar-box">
+              <div class="mi-avatar-box__title vocab">💬 Vocabulaire</div>
+              <div id="avatarVocab"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mi-insight">
+          <div class="mi-insight__label">🎯 Le message qui résonne</div>
+          <div class="mi-insight__text" id="avatarMessage" style="font-style:italic;font-size:1rem;"></div>
+        </div>
+
+        <div style="text-align:right;margin-top:16px;">
+          <button onclick="goToStep(4)" style="background:linear-gradient(135deg,var(--sky),#8b5cf6);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Audiowide',sans-serif;">
+            Trouver le contenu viral →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 4 : Contenu viral -->
+    <div class="mi-panel" id="panel-4">
+      <div class="mi-panel__header">
+        <div class="mi-panel__icon">🎬</div>
+        <div>
+          <div class="mi-panel__title">Contenu viral</div>
+          <div class="mi-panel__sub">Les formats et accroches qui génèrent le plus d'engagement dans ta niche</div>
+          <div class="mi-niche-badge" id="nicheTitle4"></div>
+        </div>
+      </div>
+
+      <div class="mi-analyzing" id="analyzing-4">
+        <div class="mi-analyzing__spinner"></div>
+        <div class="mi-analyzing__title">Scan du contenu viral...</div>
+        <div class="mi-analyzing__steps" id="steps-4">
+          <div class="mi-analyzing__step" data-delay="200"><div class="mi-analyzing__step-dot"></div> Analyse des contenus top performers</div>
+          <div class="mi-analyzing__step" data-delay="900"><div class="mi-analyzing__step-dot"></div> Identification des formats gagnants</div>
+          <div class="mi-analyzing__step" data-delay="1600"><div class="mi-analyzing__step-dot"></div> Extraction des patterns d'engagement</div>
+          <div class="mi-analyzing__step" data-delay="2300"><div class="mi-analyzing__step-dot"></div> Analyse des CTR et taux de conversion</div>
+        </div>
+      </div>
+
+      <div id="results-4" style="display:none;">
+        <div class="mi-card">
+          <div class="mi-card__title">🔥 Contenus qui performent dans ta niche</div>
+          <div class="mi-content-grid" id="contentGrid"></div>
+        </div>
+
+        <div class="mi-card">
+          <div class="mi-card__title">💡 Ce que tu dois retenir</div>
+          <div id="contentLessons"></div>
+        </div>
+
+        <div style="text-align:right;margin-top:16px;">
+          <button onclick="goToStep(5)" style="background:linear-gradient(135deg,var(--sky),#8b5cf6);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Audiowide',sans-serif;">
+            Générer les accroches →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 5 : Accroches -->
+    <div class="mi-panel" id="panel-5">
+      <div class="mi-panel__header">
+        <div class="mi-panel__icon">🔥</div>
+        <div>
+          <div class="mi-panel__title">Accroches gagnantes</div>
+          <div class="mi-panel__sub">Les hooks qui convertissent dans ta niche — clique pour sélectionner ceux que tu veux utiliser</div>
+          <div class="mi-niche-badge" id="nicheTitle5"></div>
+        </div>
+      </div>
+
+      <div class="mi-analyzing" id="analyzing-5">
+        <div class="mi-analyzing__spinner"></div>
+        <div class="mi-analyzing__title">Génération des accroches...</div>
+        <div class="mi-analyzing__steps" id="steps-5">
+          <div class="mi-analyzing__step" data-delay="200"><div class="mi-analyzing__step-dot"></div> Analyse des patterns de conversion</div>
+          <div class="mi-analyzing__step" data-delay="900"><div class="mi-analyzing__step-dot"></div> Identification des déclencheurs émotionnels</div>
+          <div class="mi-analyzing__step" data-delay="1600"><div class="mi-analyzing__step-dot"></div> Génération des accroches adaptées à ta niche</div>
+          <div class="mi-analyzing__step" data-delay="2300"><div class="mi-analyzing__step-dot"></div> Scoring par taux de conversion estimé</div>
+        </div>
+      </div>
+
+      <div id="results-5" style="display:none;">
+        <div class="mi-card">
+          <div class="mi-card__title">🎯 Accroches classées par score de conversion</div>
+          <div id="hooksList"></div>
+        </div>
+
+        <div class="mi-insight">
+          <div class="mi-insight__label">🧠 Le pattern gagnant</div>
+          <div class="mi-insight__text" id="hooksPattern"></div>
+        </div>
+
+        <div style="text-align:right;margin-top:16px;">
+          <button onclick="goToStep(6)" style="background:linear-gradient(135deg,var(--sky),#8b5cf6);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Audiowide',sans-serif;">
+            Construire le pitch deck →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 6 : Pitch deck -->
+    <div class="mi-panel" id="panel-6">
+      <div class="mi-panel__header">
+        <div class="mi-panel__icon">🎯</div>
+        <div>
+          <div class="mi-panel__title">Structure de pitch deck</div>
+          <div class="mi-panel__sub">La structure de présentation optimale pour convaincre investisseurs, clients ou partenaires</div>
+          <div class="mi-niche-badge" id="nicheTitle6"></div>
+        </div>
+      </div>
+
+      <div class="mi-card">
+        <div class="mi-card__title">📊 Structure recommandée — 10 slides</div>
+        <div class="mi-pitch-grid">
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#1e3a5f,#0f2744);">
+            <div class="mi-slide-preview__num">Slide 01</div>
+            <div class="mi-slide-preview__icon">🎯</div>
+            <div class="mi-slide-preview__title">Le Problème</div>
+          </div>
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#4c1d95,#6d28d9);">
+            <div class="mi-slide-preview__num">Slide 02</div>
+            <div class="mi-slide-preview__icon">💡</div>
+            <div class="mi-slide-preview__title">La Solution</div>
+          </div>
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#0c4a6e,#0284c7);">
+            <div class="mi-slide-preview__num">Slide 03</div>
+            <div class="mi-slide-preview__icon">📊</div>
+            <div class="mi-slide-preview__title">Le Marché</div>
+          </div>
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#064e3b,#059669);">
+            <div class="mi-slide-preview__num">Slide 04</div>
+            <div class="mi-slide-preview__icon">🏆</div>
+            <div class="mi-slide-preview__title">Ton Avantage</div>
+          </div>
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#7c2d12,#ea580c);">
+            <div class="mi-slide-preview__num">Slide 05</div>
+            <div class="mi-slide-preview__icon">💰</div>
+            <div class="mi-slide-preview__title">Modèle de revenus</div>
+          </div>
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#1e3a5f,#5b21b6);">
+            <div class="mi-slide-preview__num">Slide 06</div>
+            <div class="mi-slide-preview__icon">📈</div>
+            <div class="mi-slide-preview__title">Traction & Preuves</div>
+          </div>
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#831843,#db2777);">
+            <div class="mi-slide-preview__num">Slide 07</div>
+            <div class="mi-slide-preview__icon">🕵️</div>
+            <div class="mi-slide-preview__title">Concurrents</div>
+          </div>
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#1c1917,#44403c);">
+            <div class="mi-slide-preview__num">Slide 08</div>
+            <div class="mi-slide-preview__icon">👥</div>
+            <div class="mi-slide-preview__title">L'Équipe</div>
+          </div>
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#0f4c75,#1b6ca8);">
+            <div class="mi-slide-preview__num">Slide 09</div>
+            <div class="mi-slide-preview__icon">🗺️</div>
+            <div class="mi-slide-preview__title">Roadmap</div>
+          </div>
+          <div class="mi-slide-preview" style="background:linear-gradient(135deg,#14532d,#16a34a);">
+            <div class="mi-slide-preview__num">Slide 10</div>
+            <div class="mi-slide-preview__icon">🚀</div>
+            <div class="mi-slide-preview__title">L'Appel à l'action</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mi-generate-cta">
+        <h3>🎯 Génère ton pitch deck complet avec BILDOP</h3>
+        <p>Toutes les données de ton analyse de marché sont prêtes. Le Module 1 de BILDOP peut générer un pitch deck complet de 52 pages en quelques minutes — avec tes chiffres, ton avatar et ton positionnement.</p>
+        <button class="mi-generate-cta__btn" onclick="window.location.href='questionnaire.html'">
+          Créer mon pitch deck complet →
+        </button>
+      </div>
+
+      <div style="text-align:center;margin-top:24px;">
+        <button onclick="exportReport()" style="background:transparent;border:1px solid var(--border);color:var(--text-muted);border-radius:10px;padding:12px 24px;font-size:0.88rem;cursor:pointer;font-family:'Inter',sans-serif;">
+          📥 Exporter tout le rapport
+        </button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="js/market-intelligence.js"></script>
+<script>
+  // Sync progress percentage display
+  const origUpdateProgress = updateProgress;
+  window.updateProgress = function() {
+    origUpdateProgress();
+    const pct = Math.round((MI_STATE.completedSteps.size / 6) * 100);
+    const el = document.getElementById('progressPct');
+    if (el) el.textContent = pct + '%';
+  };
+</script>
+</body>
+</html>
