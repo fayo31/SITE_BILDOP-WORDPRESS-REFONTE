@@ -1,7 +1,7 @@
 # Bildop — Site Web (Refonte)
 
-> **Dernière mise à jour :** 7 mars 2026 — Audit Claude Code
-> **Commit actuel :** `acf5b6f` — Module 6 Market Intelligence ✅
+> **Dernière mise à jour :** 7 mars 2026 — Architecture complète décidée
+> **Commit actuel :** `841cb03` — Audit + plan M7/M8
 
 ---
 
@@ -11,22 +11,60 @@ Bildop est une plateforme SaaS québécoise qui aide les entrepreneurs à passer
 
 ---
 
-## État d'avancement — Mars 2026
+## Architecture complète — Modules + Produits
 
-| # | Module | Fichier | Statut | Couleur | Notes |
-|---|--------|---------|--------|---------|-------|
-| IS | **IdeaScore Pro** | `ideascore.html` + `ideascore-pro.html` | ✅ Complet | Orange/Rouge | Lead magnet gratuit — 42 industries, scoring 8 facteurs |
-| 1 | **Plan d'affaires IA** | `questionnaire.html` | ✅ Complet | Navy/Blue | Questionnaire conversationnel → plan 52 pages |
-| 2 | **Diagnostic Santé** | `diagnostic.html` | ✅ Complet | Teal/Sky | 25 questions, score 0-100, 5 flux métiers |
-| 3 | **Remèdes** | `remedes.html` | ✅ Complet | Green | 45 remèdes, freemium, plan d'action 99$ |
-| 4 | **Architecture de Marque** | `marque.html` | ✅ Complet | Purple | Audit maturité, builder interactif, PI |
-| 5 | **Simulateur Financier** | `financier.html` | ✅ Complet | Orange | 17 modèles industrie, projections 5 ans, scénarios |
-| — | **Veille Compétitive** | `veille.html` | ✅ Complet | — | Outil standalone (pas numéroté dans le flow) — analyse URL/nom compétiteur |
-| 6 | **Market Intelligence** | `market-intelligence.html` | ✅ Complet* | Bleu/Violet | Inspiré Cook.ai — 6 étapes : marché, concurrents, avatar, contenu viral, accroches, export |
-| 7 | **Étude de marché temps réel** | `marche-reel.html` | 📋 Planifié | — | APIs live : tendances, volume de recherche, données sectorielles |
-| 8 | **Plan d'action / Sprint 90 jours** | `sprint.html` | 📋 Planifié | — | OKRs, KPIs, tableau de bord, timeline, templates d'exécution |
+### 🔧 MODULES (site Bildop — cap à 8)
 
-> *Module 6 : frontend complet et fonctionnel, mais données simulées (mock). Pas encore connecté à une API en temps réel.
+| # | Module | Fichier | Statut | Notes |
+|---|--------|---------|--------|-------|
+| IS | **IdeaScore Pro** | `ideascore.html` + `ideascore-pro.html` | ✅ Livré | Lead magnet gratuit — 42 industries, scoring 8 facteurs |
+| 1 | **Plan d'affaires IA** | `questionnaire.html` | ✅ Livré | Questionnaire conversationnel → plan 52 pages |
+| 2 | **Diagnostic Santé** | `diagnostic.html` | ✅ Livré | 25 questions, score 0-100, 5 flux métiers |
+| 3 | **Remèdes** | `remedes.html` | ✅ Livré | 45 remèdes, freemium, plan d'action 99$ |
+| 4 | **Architecture de Marque** | `marque.html` | ✅ Livré | Audit maturité, builder interactif, PI |
+| 5 | **Simulateur Financier** | `financier.html` | ✅ Livré | 17 modèles industrie, projections 5 ans, scénarios |
+| — | **Veille Compétitive** | `veille.html` | ✅ Livré | Standalone — analyse URL/nom compétiteur |
+| 6 | **Market Intelligence** | `market-intelligence.html` | ✅ Livré* | Inspiré Cook.ai — marché, concurrents, avatar, contenu, accroches |
+| 7 | **Étude de marché temps réel** | `marche-reel.html` | 📋 Planifié | Stats Canada, REQ, Google Trends, SerpAPI, Claude API |
+| 8 | **Sprint 90 jours** | `sprint.html` | 📋 Planifié | OKRs, KPIs, templates SOPs, export PDF — Academy intégrée |
+
+> *M6 : frontend complet, données simulées (mock). API live = prochaine étape.
+> Academy/Formation = intégrée dans M8 (SOPs + templates d'exécution), évoluera en produit séparé si la demande le justifie.
+
+---
+
+### 📦 PRODUITS SÉPARÉS (écosystème Bildop — hors site)
+
+**P1 — Catalogue 600+ Concepts**
+Portail dédié (pas un module). Bibliothèque de concepts business pré-analysés — chaque fiche : idée + marché + investissement requis + modèle de revenus. Base Notion existante à transformer en interface web.
+- Modèle : achat unitaire (9–29$ CAD) ou abonnement mensuel
+- Modèle 50/50 reprenariat ou vente complète du plan
+- Statut : Base Notion existante → à structurer pour accès client
+
+**P2 — Communauté Entrepreneurs QC** *(inspiré Nas.io)*
+Plateforme communautaire : forums, events live, challenges 30 jours, sessions de pitch, hackathons.
+- Démarrage : Nas.io Pro (29 USD/mois) dès 20 membres — aucun dev requis
+- Migration vers stack custom après 200 membres
+- Modèle signature : challenges 30 jours (3x plus de revenus que cours passifs — données Nas.io)
+- Revenus : abonnement mensuel communauté
+
+**P3 — Licence / White Label**
+Vendre la technologie Bildop en B2B aux CLD, SADC, Futurpreneur, Desjardins, incubateurs, universités.
+- Modèle QuickBooks ProAdvisor : licences en lot pour leur clientèle
+- Deux niveaux : licence organisme (accès limité) + white label complet (branding custom)
+- Revenus : licence annuelle par organisme — revenu B2B récurrent sans clients individuels
+- Statut : modèle conceptualisé depuis avril 2025 → à structurer en offre commerciale Q3 2026
+
+---
+
+### ⏸ EN ATTENTE — Q3 2026
+
+**AI Diagnostic & Acquisition** *(exclusif REMES)*
+L'outil que PERSONNE n'a. Connexion états financiers réels (bilan, P&L) → l'IA génère : valeur estimée, risques, plan de redressement, prix maximum d'achat. Lié au REMES Acquisition OS (7 blocs).
+- Fondation déjà posée : M2 (Diagnostic) + M3 (Remèdes) + M8 (Sprint) sont la base
+- Différence vs modules existants : traitement des états financiers réels + logique d'acquisition
+- Produit REMES interne — pas encore pour le grand public
+- Revenus : pay-per-diagnostic ou intégré Pro/Enterprise
 
 ---
 
