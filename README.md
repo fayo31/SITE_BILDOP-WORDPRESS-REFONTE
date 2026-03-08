@@ -1,86 +1,105 @@
 # Bildop — Site Web (Refonte)
 
+> **Dernière mise à jour :** 7 mars 2026 — Audit Claude Code
+> **Commit actuel :** `acf5b6f` — Module 6 Market Intelligence ✅
+
+---
+
 ## Qu'est-ce que Bildop?
 
 Bildop est une plateforme SaaS québécoise qui aide les entrepreneurs à passer de l'idée au plan d'affaires complet grâce à l'intelligence artificielle. L'utilisateur répond à des questions sous forme de conversation guidée, et l'IA génère un plan d'affaires de 52 pages avec projections financières et stratégie personnalisée.
 
-## Vision produit
+---
 
-Le **Module 1 (Plan d'affaires)** est gratuit et sert d'**ADN** — toutes les données entrées par l'utilisateur alimentent les modules suivants. L'objectif est de créer un écosystème où l'entrepreneur revient chaque mois pour approfondir sa stratégie.
+## État d'avancement — Mars 2026
 
-### Modèle de prix (style Adobe CC / Apple One)
-- **Module 1** : Gratuit (le hook — crée l'ADN)
+| # | Module | Fichier | Statut | Couleur | Notes |
+|---|--------|---------|--------|---------|-------|
+| IS | **IdeaScore Pro** | `ideascore.html` + `ideascore-pro.html` | ✅ Complet | Orange/Rouge | Lead magnet gratuit — 42 industries, scoring 8 facteurs |
+| 1 | **Plan d'affaires IA** | `questionnaire.html` | ✅ Complet | Navy/Blue | Questionnaire conversationnel → plan 52 pages |
+| 2 | **Diagnostic Santé** | `diagnostic.html` | ✅ Complet | Teal/Sky | 25 questions, score 0-100, 5 flux métiers |
+| 3 | **Remèdes** | `remedes.html` | ✅ Complet | Green | 45 remèdes, freemium, plan d'action 99$ |
+| 4 | **Architecture de Marque** | `marque.html` | ✅ Complet | Purple | Audit maturité, builder interactif, PI |
+| 5 | **Simulateur Financier** | `financier.html` | ✅ Complet | Orange | 17 modèles industrie, projections 5 ans, scénarios |
+| — | **Veille Compétitive** | `veille.html` | ✅ Complet | — | Outil standalone (pas numéroté dans le flow) — analyse URL/nom compétiteur |
+| 6 | **Market Intelligence** | `market-intelligence.html` | ✅ Complet* | Bleu/Violet | Inspiré Cook.ai — 6 étapes : marché, concurrents, avatar, contenu viral, accroches, export |
+| 7 | **Étude de marché temps réel** | `marche-reel.html` | 📋 Planifié | — | APIs live : tendances, volume de recherche, données sectorielles |
+| 8 | **Plan d'action / Sprint 90 jours** | `sprint.html` | 📋 Planifié | — | OKRs, KPIs, tableau de bord, timeline, templates d'exécution |
+
+> *Module 6 : frontend complet et fonctionnel, mais données simulées (mock). Pas encore connecté à une API en temps réel.
+
+---
+
+## Modèle de prix (style Adobe CC / Apple One)
+
+- **IdeaScore Pro** : Gratuit (lead magnet — entry point)
+- **Modules 1-2** : Gratuits (hooks — créent l'ADN)
 - **Modules individuels** : Achat à vie
 - **Abonnement mensuel** : Accès à tout + mises à jour
 - **Bundles** : 2 modules, 3 modules, pack complet
 
-## Modules
-
-| # | Module | Statut | Couleur | Description |
-|---|--------|--------|---------|-------------|
-| 1 | **Plan d'affaires** | ✅ Complet | Navy/Blue | Générateur IA — questionnaire conversationnel → plan 52 pages |
-| 2 | **Diagnostic** | ✅ Complet | Teal/Sky | 25 questions → score de santé d'entreprise + rapport PDF |
-| 3 | **Remèdes** | ✅ Complet | Green | Catalogue de 45 remèdes basés sur le diagnostic (freemium) |
-| 4 | **Architecture de Marque** | ✅ Complet | Purple | Audit de maturité branding + builder interactif (freemium) |
-| IS | **IdeaScore Pro** | ✅ Complet | Orange/Red | Score de viabilité d'idée — 42 industries, 8 facteurs, projections 12 mois |
-| 5 | **Simulateur financier** | ✅ Complet | — | Projections détaillées, scénarios, breakeven |
-| 6 | Plan d'exécution 90 jours | 📋 Planifié | — | Sprint planning pour entrepreneurs |
-| 7 | Tableau de bord fondateur | 📋 Planifié | — | KPIs, suivi, alertes |
-
-### IdeaScore Pro (outil gratuit — lead magnet)
-Score de viabilité d'idée d'affaires en 2 minutes. 42 industries avec benchmarks réels, classification par mots-clés avec détection live, scoring sur 8 facteurs, projections financières 12 mois, graphiques Chart.js.
-
-**Deux versions :**
-- `ideascore.html` — intégré au site avec navigation Bildop
-- `ideascore-pro.html` — standalone landing page pour acquisition (email gate avant le dashboard)
-
-**Flow :** Idée → Détection industrie (live) → Questions universelles + spécifiques → Sliders d'ajustement (budget, COGS, prix, loyer) → Animation calcul → Dashboard avec score, radar, projections, recommandations.
-
-### Intelligence compétitive (intégrée)
-Fonctionnalité intégrée (pas un module séparé) — l'utilisateur entre un URL ou nom de compagnie et reçoit une analyse compétitive automatique via API (n8n / Supabase Edge Functions).
+---
 
 ## Architecture technique
 
 ```
 bildop-redesign/
-├── index.html              # Landing page (modules + pricing + FAQ)
-├── questionnaire.html      # Module 1 — Plan d'affaires (gratuit)
-├── diagnostic.html         # Module 2 — Diagnostic (gratuit)
-├── remedes.html            # Module 3 — Remèdes (freemium)
-├── marque.html             # Module 4 — Architecture de marque (freemium)
-├── financier.html          # Module 5 — Simulateur financier
-├── ideascore.html          # IdeaScore Pro — intégré au site (avec nav)
-├── ideascore-pro.html      # IdeaScore Pro — standalone landing page (lead magnet)
+├── index.html                  # Landing page (modules + pricing + FAQ)
+├── questionnaire.html          # Module 1 — Plan d'affaires (gratuit)
+├── diagnostic.html             # Module 2 — Diagnostic (gratuit)
+├── remedes.html                # Module 3 — Remèdes (freemium)
+├── marque.html                 # Module 4 — Architecture de marque (freemium)
+├── financier.html              # Module 5 — Simulateur financier
+├── veille.html                 # Veille Compétitive (standalone)
+├── market-intelligence.html    # Module 6 — Market Intelligence (Cook.ai-inspired)
+├── ideascore.html              # IdeaScore Pro — intégré au site (avec nav)
+├── ideascore-pro.html          # IdeaScore Pro — standalone landing page (lead magnet)
+├── [À créer] marche-reel.html  # Module 7 — Étude de marché temps réel
+├── [À créer] sprint.html       # Module 8 — Plan d'action 90 jours
 ├── css/
-│   └── style.css           # Styles globaux (~4700 lignes)
+│   └── style.css               # Styles globaux (~4900 lignes)
 ├── js/
-│   ├── main.js             # Navigation, animations, scroll
-│   ├── questionnaire.js    # Module 1 — logique quiz + localStorage
-│   ├── diagnostic.js       # Module 2 — 25 questions, scoring, radar
-│   ├── remedes.js          # Module 3 — catalogue remèdes, paywall
-│   ├── marque.js           # Module 4 — audit branding, builder, paywall
-│   └── ideascore.js        # IdeaScore Pro — 42 catégories, classification, scoring 8 facteurs
-└── images/                 # Assets visuels
+│   ├── main.js                 # Navigation, animations, scroll
+│   ├── questionnaire.js        # Module 1 — logique quiz + localStorage
+│   ├── diagnostic.js           # Module 2 — 25 questions, scoring, radar
+│   ├── remedes.js              # Module 3 — catalogue remèdes, paywall
+│   ├── marque.js               # Module 4 — audit branding, builder, paywall
+│   ├── financier.js            # Module 5 — projections, scénarios, charts
+│   ├── veille.js               # Veille compétitive — analyse URL/nom
+│   ├── market-intelligence.js  # Module 6 — 6 étapes d'intelligence marché
+│   └── ideascore.js            # IdeaScore Pro — 42 catégories, scoring
+└── images/                     # Assets visuels
 ```
 
 ### Stack
 - **Frontend** : HTML/CSS/JS vanilla (aucun framework, aucun build tool)
-- **CSS** : BEM-like naming, responsive mobile-first
-- **Data** : localStorage pour persistance cross-module
-- **Charts** : Chart.js (IdeaScore) + SVG pur (radar charts diagnostic)
-- **Backend** : À venir (n8n workflows + Supabase Edge Functions)
+- **CSS** : BEM-like naming, responsive mobile-first (~4 900 lignes)
+- **Data** : localStorage pour persistance cross-module (ADN pattern)
+- **Charts** : Chart.js (IdeaScore, Financier) + SVG pur (radar diagnostic)
+- **Backend** : À venir — n8n workflows + Supabase Edge Functions + Claude API
 
-### Flow de données inter-modules
+---
+
+## Flow de données inter-modules (ADN pattern)
+
 ```
+IdeaScore Pro → valide l'idée avant d'investir
+       ↓
 Module 1 (ADN) → localStorage('bildop_questionnaire')
-                    ↓
+       ↓
 Module 2 (Diagnostic) → localStorage('bildop_diagnostic')
-                    ↓
+       ↓
 Module 3 (Remèdes) → lit diagnostic pour personnaliser
-                    ↓
-Module 4 (Marque) → localStorage('bildop_brand')
-                    ↓ lit ADN pour pré-remplir
-Modules 5-7 → liront ADN + diagnostic + brand
+       ↓
+Module 4 (Marque) → localStorage('bildop_brand') + lit ADN
+       ↓
+Module 5 (Financier) → lit ADN pour pré-remplir modèle industrie
+       ↓
+Module 6 (Market Intelligence) → lit ADN pour pré-remplir la niche
+       ↓
+Module 7 (Marché temps réel) → lit niche + ADN + données Module 6
+       ↓
+Module 8 (Sprint 90 jours) → consolide TOUT pour générer le plan d'action
 ```
 
 ### Paywall pattern
@@ -88,20 +107,139 @@ Modules 5-7 → liront ADN + diagnostic + brand
 - Vérification : `localStorage('bildop_paid_[module]')` OU `localStorage('bildop_subscription')`
 - UI : blur/overlay avec CTA d'achat
 
-## Audience cible
+---
 
-Entrepreneurs québécois qui :
-- Ne savent pas par où commencer
-- Ont peur des projections financières
-- Ont un plan dans un tiroir mais n'exécutent pas
-- Pensent que ça prend trop de temps / coûte trop cher
+## Audit Module 6 — Market Intelligence
+
+### Ce qui fonctionne bien
+- **UX solide** : 6 étapes progressives avec sidebar de navigation, barre de progression, dots d'état
+- **Intégration ADN** : lit `localStorage('bildop_questionnaire')` pour pré-remplir la niche
+- **Export rapport** : génère un .txt structuré téléchargeable
+- **Animations** : étapes d'analyse animées (perception de vitesse = confiance utilisateur)
+- **6 sections complètes** : marché, concurrents, avatar, contenu viral, accroches, rapport
+
+### Ce qui manque / points d'amélioration
+- **Données simulées** : toutes les analyses sont des templates statiques (3 profils : fitness, coaching, soins). Pas d'appel API réel.
+- **Discrimination limitée** : si la niche ne correspond pas à fitness/coaching/soins, elle tombe dans le profil "default" générique.
+- **Pas de Step 6 "Rapport"** côté UI — l'export existe mais n'est pas une étape dédiée dans la sidebar
+- **Veille Compétitive** (veille.html) coexiste avec Module 6 sans intégration claire — risque de confusion UX
+- **README était désynchronisé** : décrivait Module 6 comme "Plan d'exécution 90 jours" alors que c'est Market Intelligence
+
+### Prochaine étape naturelle pour Module 6
+Connecter les 6 étapes à de vraies APIs :
+- Étape 1 (marché) → SerpAPI / Google Trends / Semrush API
+- Étape 2 (concurrents) → n8n workflow + Supabase
+- Étape 3 (avatar) → Claude API (prompt enrichi avec l'ADN utilisateur)
+- Étape 4-5 (contenu + accroches) → Claude API
+
+---
+
+## Plan — Module 7 : Étude de marché temps réel
+
+### Concept
+Module 6 donne une intelligence *marketing* (avatar, accroches, contenu). Module 7 donne une intelligence *business* (données réelles de marché pour valider les projections financières).
+
+C'est le module qui répond à : **"Mon marché est-il assez grand pour que ça marche?"**
+
+### Ce que fait le module
+1. **Taille du marché QC/CA** — données Stats Canada, REQ, CNESST par secteur SCIAN
+2. **Volume de recherche** — mots-clés prioritaires, tendances 12 mois, saisonnalité
+3. **Benchmark sectoriel** — prix moyen marché, marges typiques, seuil de rentabilité moyen
+4. **Signaux de demande** — offres d'emploi, levées de fonds, ouvertures de businesses similaires
+5. **Carte de compétition locale** — nombre d'acteurs par région, saturation
+6. **Rapport exportable** — synthèse PDF/CSV prête pour présentation banque/investisseur
+
+### Pourquoi c'est différent de Module 6
+| Module 6 (Marketing Intelligence) | Module 7 (Marché temps réel) |
+|---|---|
+| Qui est ton client ? | Combien sont-ils ? |
+| Comment leur parler ? | Combien paient-ils ? |
+| Quels contenus créer ? | Le marché est-il en croissance ? |
+| Qui sont tes concurrents ? | À quelle vitesse le marché évolue-t-il ? |
+
+### Intégrations APIs envisagées
+- **Stats Canada** (API publique gratuite) — données sectorielles
+- **REQ** (Registre des entreprises) — densité concurrentielle locale
+- **Google Trends** (via n8n) — courbe de demande
+- **SerpAPI** ou **DataForSEO** — volume de recherche par mot-clé
+- **Claude API** — synthèse et recommandations
+
+### Fichiers à créer
+```
+marche-reel.html
+js/marche-reel.js
+```
+
+---
+
+## Plan — Module 8 : Plan d'action / Sprint 90 jours
+
+### Concept
+C'est le module de **fermeture du cycle**. L'utilisateur a validé son idée (IS), créé son plan (M1), diagnostiqué son entreprise (M2), trouvé les remèdes (M3), défini sa marque (M4), modélisé ses finances (M5), analysé son marché (M6-M7) — maintenant il passe à l'action.
+
+C'est le module qui répond à : **"Par où je commence lundi matin?"**
+
+### Ce que fait le module
+1. **Lecture ADN complet** — consolide toutes les données localStorage des modules précédents
+2. **Génération du Sprint 90 jours** — 3 phases de 30 jours avec objectifs SMART
+3. **OKRs personnalisés** — 3 objectifs clés + KPIs de suivi par objectif
+4. **Tableau de bord fondateur** — métriques hebdomadaires à surveiller (issus du Diagnostic)
+5. **Priorisation des remèdes** — les remèdes du Module 3 classés par impact/effort
+6. **Templates d'exécution** — SOPs simplifiées pour les 5 premières actions
+7. **Export PDF** — plan d'action complet + checklist semaine 1
+
+### Structure du Sprint 90 jours
+
+```
+SEMAINE 1-4 (Fondations)
+→ Actions critiques tirées du Diagnostic (flux le plus faible)
+→ Mise en place des KPIs de base
+→ Livrable : 1er revenu ou 1ère validation client
+
+SEMAINE 5-8 (Momentum)
+→ Exécution du plan marketing (tiré de Module 1 + 6)
+→ Optimisation financière (tiré de Module 5)
+→ Livrable : 10 clients ou pipeline défini
+
+SEMAINE 9-12 (Accélération)
+→ Scaling des actions qui ont fonctionné
+→ Revue et ajustement du plan d'affaires
+→ Livrable : Bilan 90 jours + plan trimestre suivant
+```
+
+### Connexion avec les autres modules
+
+```
+Module 2 (Diagnostic) → identifie le flux le plus faible = priorité #1 du Sprint
+Module 3 (Remèdes) → les remèdes prioritaires = actions semaines 1-4
+Module 5 (Financier) → seuil de rentabilité = objectif financier du Sprint
+Module 6 (Market Intelligence) → accroches + avatar = plan de contenu 90 jours
+Module 7 (Marché temps réel) → validation des hypothèses de croissance
+```
+
+### Modèle de revenus
+- Gratuit : Sprint 90 jours basique (texte, sans templates)
+- **99$ CAD** : Plan d'action complet PDF + 5 templates SOPs
+- **199$ CAD** : Plan complet + coaching 1h avec stratège Bildop
+- Inclus dans abonnement mensuel Bildop Pro
+
+### Fichiers à créer
+```
+sprint.html
+js/sprint.js
+```
+
+---
 
 ## Principes marketing
+
 - Jamais mentionner le nombre de questions (reframer comme "conversation")
 - Minimiser l'effort perçu, maximiser la valeur perçue
 - Langage de désir, pas de features
 - Transformation : confus/bloqué → clair/financé/lancé
 - Français québécois, tutoyement, direct mais chaleureux
+
+---
 
 ## Développement
 
@@ -116,6 +254,18 @@ cd SITE_BILDOP-WORDPRESS-REFONTE
 python3 -m http.server 8000
 # → http://localhost:8000
 ```
+
+---
+
+## Équipe projet
+
+| Personne | Rôle | Contact |
+|----------|------|---------|
+| Ralph St-Louis | Fondateur / Président | rstlouis@teamremes.ca |
+| Daniel Ringuet | Développeur principal (Ephrem L'agence) | daniel@ephreminteractive.ca |
+| Daniel Delisle | Partenaire / Contenu / DNS | nextstrom@gmail.com |
+
+---
 
 ## Propriétaire
 
