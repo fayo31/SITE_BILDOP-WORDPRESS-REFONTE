@@ -577,40 +577,80 @@ function generateTemplates() {
 }
 
 function buildTemplates() {
+  // Adapter le vocabulaire selon le secteur détecté dans l'ADN
+  const sec = (SP.secteur || '').toLowerCase();
+  const isSoin = /soin|domicile|aide|infirm|médic|santé|bcs|prepos/.test(sec);
+  const isCoach = /coach|format|consult|mentor|accomp/.test(sec);
+
+  const vocab = isSoin ? {
+    prospect: 'famille ou proche aidant',
+    client: 'bénéficiaire',
+    service: 'les soins à domicile',
+    decideur: 'la personne qui décide pour les soins',
+    urgence: 'quand souhaitez-vous que les services débutent?',
+    budget: 'Saviez-vous qu\'un crédit d\'impot de 35-40% s\'applique? Je vous explique avant d\'aller plus loin.',
+    proposition: 'tarif net après crédit d\'impot (jamais le prix brut)',
+    closing: 'On commence avec 3 visites par semaine ou 5?',
+    objPrix: 'Avez-vous calculé avec le crédit d\'impot? Votre coût réel est [montant net].',
+    objPenser: 'Votre [proche] est seul(e) pendant ce temps. Si on commence aujourd\'hui, j\'ai quelqu\'un d\'ici [délai].',
+  } : isCoach ? {
+    prospect: 'client potentiel ou organisation',
+    client: 'participant',
+    service: 'ton programme de coaching',
+    decideur: 'la personne qui approuve les budgets de formation',
+    urgence: 'pour quel trimestre planifiez-vous votre développement?',
+    budget: 'Le programme est éligible aux crédits de formation (Loi 90 au QC). Je vous explique comment ça fonctionne.',
+    proposition: 'investissement net après subvention de formation',
+    closing: 'Tu préfères qu\'on démarre en individuel ou en groupe?',
+    objPrix: 'Avez-vous vérifié votre admissibilité aux subventions de formation? Le coût net peut être réduit de 50%.',
+    objPenser: 'Chaque mois sans structure coûte en productivité perdue. Qu\'est-ce qui te fait hésiter exactement?',
+  } : {
+    prospect: 'client potentiel',
+    client: 'client',
+    service: 'ta solution',
+    decideur: 'la personne qui prend la décision finale',
+    urgence: 'pour quand souhaitez-vous résoudre ce problème?',
+    budget: 'Quel budget avez-vous alloué pour régler ce problème? (Pas de chiffre = pas de closing.)',
+    proposition: 'prix transparent avec valeur justifiée',
+    closing: 'Tu préfères qu\'on démarre cette semaine ou la semaine prochaine?',
+    objPrix: 'Comparé au coût du problème non réglé, cet investissement se rembourse en [délai]. Voici comment.',
+    objPenser: 'Qu\'est-ce qui te fait hésiter exactement? Le prix, la qualité, ou autre chose? Je préfère qu\'on en parle maintenant.',
+  };
+
   return [
     {
-      title: 'SOP #1 — Premier contact prospect',
-      icon: '📞',
+      title: 'SOP #1 — Processus de vente H2H — 6 étapes',
+      icon: '🤝',
       free: true,
-      preview: 'Le script de premier contact qui convertit. Structure : Accroche → Problème → Solution → CTA.',
+      preview: `La méthode Human-to-Human adaptée à ton secteur. Le client achète la personne avant ${vocab.service}. 6 étapes répétables pour fermer plus vite.`,
       steps: [
-        'Rechercher le prospect sur LinkedIn avant d\'appeler (5 min)',
-        'Personnaliser l\'accroche avec une observation précise',
-        'Énoncer le problème qu\'il a probablement (en 1 phrase)',
-        'Présenter ta solution en 30 secondes — pas plus',
-        'Demander la permission de continuer la conversation',
-        'Proposer un slot de 20 minutes cette semaine ou la prochaine',
+        `Étape 1 — Prospection : identifier 10 ${vocab.prospect}s qualifiés par semaine. Source = référence, réseautage, appel sortant. Rappel en moins de 30 minutes à tout lead entrant.`,
+        `Étape 2 — Préqualification (5 min max) : Zone géographique → ${vocab.decideur} → ${vocab.urgence} → ${vocab.budget} → besoins spécifiques. Si non qualifié → fermer proprement.`,
+        `Étape 3 — Connexion H2H : "Parlez-moi de votre situation." Écouter SANS interrompre. Reformuler avec ses mots : "Si je comprends bien, vous cherchez... c'est bien ça?" Utiliser le prénom du ${vocab.client}.`,
+        `Étape 4 — Proposition claire : Résumé des besoins en ses mots → services recommandés → ${vocab.proposition} → aucun engagement à long terme (éliminer la peur).`,
+        `Étape 5 — Closing on-the-spot : "${vocab.closing}" JAMAIS "je vais y penser" sans date de rappel dans les 48h. OUI ou NON clair avant de raccrocher.`,
+        `Étape 6 — Auto-évaluation post-appel (3 min) : Ai-je posé les 5 questions? Laissé parler en premier? Présenté le ${vocab.proposition}? Utilisé le closing alternatif? 1 phrase : qu'est-ce que j'aurais fait différemment?`,
       ]
     },
     {
-      title: 'SOP #2 — Onboarding client',
-      icon: '🤝',
+      title: 'SOP #2 — Onboarding client (Semaine 1)',
+      icon: '🚀',
       free: true,
-      preview: 'Le processus pour démarrer chaque nouveau client du bon pied. Réduit les malentendus et augmente la satisfaction.',
+      preview: `Le processus pour démarrer chaque nouveau ${vocab.client} du bon pied. Réduit les malentendus, augmente la satisfaction et la rétention.`,
       steps: [
-        'Envoyer un courriel de bienvenue dans les 2h suivant la signature',
-        'Programmer un appel kick-off dans les 48h',
-        'Partager les accès, documents et outils nécessaires',
-        'Définir les attentes et la fréquence de communication',
-        'Clarifier les livrables et les délais',
-        'Créer un dossier client organisé',
+        `Courriel de bienvenue dans les 2h : confirmer la décision, exprimer l'enthousiasme, envoyer les prochaines étapes`,
+        `Appel kick-off dans les 48h : réviser les attentes, clarifier les livrables, établir le rythme de communication`,
+        `Créer le dossier ${vocab.client} (numérique) : contrat, coordonnées, besoins documentés, historique`,
+        `Configurer les outils partagés : accès, plateformes, canaux de communication préférés`,
+        `Livrable Jour 7 : premier rapport ou point de progression — montrer que ça avance dès la première semaine`,
+        `Sondage de satisfaction à J+14 : 3 questions max. Identifier les ajustements avant que ça devienne un problème`,
       ]
     },
     {
       title: 'SOP #3 — Revue hebdomadaire (15 min)',
       icon: '📊',
       free: false,
-      preview: 'Ton rituel hebdomadaire de pilotage. Chaque lundi, 15 minutes qui changent tout.',
+      preview: 'Ton rituel hebdomadaire de pilotage. Chaque lundi matin, 15 minutes qui décident du reste de la semaine.',
       steps: [
         'Vérifier tes 5 KPIs clés (revenus, prospects, conversions, rétention, NPS)',
         'Comparer vs semaine précédente et vs objectif mensuel',
@@ -644,6 +684,21 @@ function buildTemplates() {
         'Analyser les 3 décisions à corriger',
         'Ajuster le plan pour le mois suivant',
         'Documenter dans ton journal de décisions',
+      ]
+    },
+    {
+      title: 'SOP #6 — Script H2H complet + 4 objections + grille auto-évaluation',
+      icon: '🎯',
+      free: false,
+      preview: `Les scripts mot-à-mot pour chaque étape H2H, adaptés à ton secteur. Les 4 objections les plus fréquentes avec les réponses exactes. La grille de 8 critères à remplir après chaque appel.`,
+      steps: [
+        `Script préqualification : "Dans quelle zone géographique êtes-vous?" / "Êtes-vous ${vocab.decideur}?" / "${vocab.urgence}" / "${vocab.budget}" / "Quel type d'aide recherchez-vous?"`,
+        `Script H2H connexion : "Parlez-moi de votre situation — qu'est-ce qui vous a amené à nous appeler?" → écouter → "Si je comprends bien, [reformulation avec ses mots]. C'est bien ça?"`,
+        `Script proposition : "Basé sur ce que vous m'avez dit, je recommande [services] à une fréquence de [X]. Le ${vocab.proposition} est de [montant]. Aucun contrat à long terme."`,
+        `Objection PRIX → "${vocab.objPrix}"`,
+        `Objection "JE VAIS Y PENSER" → "${vocab.objPenser}" | Objection "J'EN PARLE À MON/MA..." → "Peut-on les appeler ensemble maintenant ou demain?"`,
+        `Grille auto-éval post-appel (3 min) : 5 questions de préqualif posées? / Laissé parler en premier? / Prix net présenté? / Closing alternatif utilisé? / Résultat OUI/NON/Rappel (date)? / Objection principale / Ce que j'aurais fait différemment`,
+        `Règle absolue du pipeline : JAMAIS "en réflexion" sans date de rappel dans les 48h. Fermer proprement chaque dossier — OUI ou NON. Taux de closing < 40% = session coaching obligatoire.`,
       ]
     },
   ];
