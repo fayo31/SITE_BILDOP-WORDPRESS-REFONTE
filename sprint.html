@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprint 90 jours — BILDOP</title>
+  <meta name="description" content="Ton plan d'action sur 90 jours, généré à partir de ton ADN Bildop. OKRs, KPIs, templates d'exécution — par où commencer lundi matin.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --navy: #00045C;
+      --gold: #f59e0b;
+      --gold-dark: #d97706;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --sky: #00C1FF;
+      --violet: #32047E;
+      --text-dark: #1a1a2e;
+      --text-muted: #5a6270;
+      --bg-page: #f5f7f8;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0,4,92,.08);
+      --shadow-md: 0 4px 16px rgba(0,4,92,.10);
+      --shadow-lg: 0 8px 32px rgba(0,4,92,.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-page); color: var(--text-dark); min-height: 100vh; }
+
+    /* TOPBAR */
+    .sp-topbar {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a0070 100%);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    }
+    .sp-topbar__left { display: flex; align-items: center; gap: 16px; }
+    .sp-topbar__logo { font-family: 'Audiowide', sans-serif; font-size: 1.1rem; text-decoration: none; }
+    .sp-topbar__logo span:first-child { color: var(--sky); }
+    .sp-topbar__logo span:last-child { color: #fff; }
+    .sp-topbar__module {
+      font-size: 0.75rem; font-weight: 600; color: var(--gold);
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 4px 10px; background: rgba(245,158,11,.15); border-radius: 20px;
+      border: 1px solid rgba(245,158,11,.3);
+    }
+    .sp-topbar__right { display: flex; align-items: center; gap: 16px; }
+    .sp-progress-wrap { display: flex; align-items: center; gap: 10px; }
+    .sp-progress-label { font-size: 0.75rem; color: rgba(255,255,255,.6); white-space: nowrap; }
+    .sp-progress-bar { width: 120px; height: 6px; background: rgba(255,255,255,.15); border-radius: 3px; overflow: hidden; }
+    .sp-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--emerald)); border-radius: 3px; transition: width .4s ease; width: 0%; }
+    .sp-topbar__back { color: rgba(255,255,255,.6); text-decoration: none; font-size: 0.82rem; }
+    .sp-topbar__back:hover { color: #fff; }
+
+    /* LAYOUT */
+    .sp-layout { display: flex; min-height: calc(100vh - 56px); }
+
+    /* SIDEBAR */
+    .sp-sidebar {
+      width: 260px; flex-shrink: 0;
+      background: var(--bg-card); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto;
+    }
+    .sp-sidebar__header { padding: 20px; border-bottom: 1px solid var(--border); }
+    .sp-sidebar__title { font-family: 'Audiowide', sans-serif; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .sp-adn-badge {
+      margin-top: 10px; padding: 8px 12px; border-radius: 8px;
+      background: linear-gradient(135deg, rgba(245,158,11,.1), rgba(16,185,129,.1));
+      border: 1px solid rgba(245,158,11,.2);
+      font-size: 0.78rem; color: var(--text-muted);
+    }
+    .sp-adn-badge strong { display: block; font-size: 0.85rem; color: var(--text-dark); margin-bottom: 2px; }
+    .sp-steps { padding: 12px 0; }
+    .sp-step-btn {
+      width: 100%; padding: 12px 20px; text-align: left; border: none;
+      background: transparent; cursor: pointer; display: flex; align-items: center; gap: 12px;
+      transition: background .2s; font-family: 'Inter', sans-serif;
+      border-left: 3px solid transparent;
+    }
+    .sp-step-btn:hover { background: rgba(245,158,11,.05); }
+    .sp-step-btn.active { background: rgba(245,158,11,.08); border-left-color: var(--gold); }
+    .sp-step-btn.completed { border-left-color: var(--emerald); }
+    .sp-step-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+    .sp-step-info { flex: 1; }
+    .sp-step-name { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); }
+    .sp-step-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+    .sp-step-btn.completed .sp-step-name { color: var(--emerald); }
+
+    /* OUTPUT DOTS */
+    .sp-outputs { padding: 16px 20px; border-top: 1px solid var(--border); margin-top: auto; }
+    .sp-outputs__title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .sp-output-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .sp-output-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background .3s; }
+    .sp-output-dot.ready { background: var(--emerald); box-shadow: 0 0 6px rgba(16,185,129,.4); }
+    .sp-output-label { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* MAIN */
+    .sp-main { flex: 1; overflow-y: auto; }
+    .sp-panel { display: none; padding: 32px; max-width: 860px; }
+    .sp-panel.active { display: block; }
+
+    /* PANEL HEADER */
+    .sp-panel__header { margin-bottom: 28px; }
+    .sp-panel__badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.72rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #fff;
+    }
+    .sp-panel__title { font-family: 'Audiowide', sans-serif; font-size: 1.4rem; color: var(--navy); line-height: 1.3; }
+    .sp-panel__subtitle { margin-top: 8px; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+    /* CARDS */
+    .sp-card {
+      background: var(--bg-card); border-radius: 12px; padding: 24px;
+      border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 16px;
+    }
+    .sp-card__title {
+      font-family: 'Audiowide', sans-serif; font-size: 0.85rem; color: var(--navy);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .sp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .sp-metric {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px; text-align: center;
+    }
+    .sp-metric__value { font-family: 'Audiowide', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--navy); }
+    .sp-metric__label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .sp-metric__sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* ADN SUMMARY */
+    .sp-adn-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .sp-flux-pill {
+      border-radius: 8px; padding: 10px 8px; text-align: center;
+      font-size: 0.72rem; font-weight: 600; border: 1px solid transparent;
+    }
+    .sp-flux-pill__score { font-size: 1.1rem; font-weight: 800; font-family: 'Audiowide', sans-serif; display: block; }
+    .sp-flux-pill__name { display: block; margin-top: 3px; font-size: 0.65rem; }
+    .sp-flux-pill--green { background: rgba(39,174,96,.1); border-color: rgba(39,174,96,.3); color: #1a6b3a; }
+    .sp-flux-pill--orange { background: rgba(243,156,18,.1); border-color: rgba(243,156,18,.3); color: #92400e; }
+    .sp-flux-pill--red { background: rgba(231,76,60,.1); border-color: rgba(231,76,60,.3); color: #7f1d1d; }
+    .sp-flux-pill--gray { background: rgba(90,98,112,.08); border-color: var(--border); color: var(--text-muted); }
+
+    /* PHASE BLOCKS */
+    .sp-phase {
+      background: var(--bg-card); border-radius: 14px; border: 1px solid var(--border);
+      overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 20px;
+    }
+    .sp-phase__header { padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .sp-phase__header--1 { background: linear-gradient(135deg, #00045C, #1a0070); color: white; }
+    .sp-phase__header--2 { background: linear-gradient(135deg, #0369a1, #0ea5e9); color: white; }
+    .sp-phase__header--3 { background: linear-gradient(135deg, #065f46, #10b981); color: white; }
+    .sp-phase__title { font-family: 'Audiowide', sans-serif; font-size: 1rem; }
+    .sp-phase__days { font-size: 0.78rem; opacity: .75; }
+    .sp-phase__milestone { font-size: 0.82rem; opacity: .85; margin-top: 4px; }
+    .sp-phase__badge { background: rgba(255,255,255,.2); border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+    .sp-phase__body { padding: 20px 24px; }
+    .sp-action {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .sp-action:last-child { border-bottom: none; }
+    .sp-action__num {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; font-family: 'Audiowide', sans-serif;
+      color: white;
+    }
+    .sp-action__num--1 { background: linear-gradient(135deg, var(--navy), #1a0070); }
+    .sp-action__num--2 { background: linear-gradient(135deg, #0369a1, #0ea5e9); }
+    .sp-action__num--3 { background: linear-gradient(135deg, #065f46, #10b981); }
+    .sp-action__content { flex: 1; }
+    .sp-action__title { font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
+    .sp-action__meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .sp-tag {
+      padding: 3px 10px; border-radius: 20px; font-size: 0.72rem;
+      font-weight: 600; background: rgba(0,4,92,.06); color: var(--text-muted);
+    }
+    .sp-tag--gold { background: rgba(245,158,11,.12); color: #92400e; }
+    .sp-tag--green { background: rgba(16,185,129,.12); color: #065f46; }
+    .sp-tag--blue { background: rgba(3,105,161,.12); color: #1e40af; }
+
+    /* OKRs */
+    .sp-okr {
+      border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px;
+    }
+    .sp-okr__header { padding: 16px 20px; background: linear-gradient(135deg, var(--navy), #1a0070); color: white; }
+    .sp-okr__obj { font-size: 0.85rem; font-weight: 600; }
+    .sp-okr__num { font-size: 0.7rem; opacity: .7; margin-bottom: 4px; }
+    .sp-okr__krs { padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; }
+    .sp-kr {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; background: var(--bg-page); border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .sp-kr__icon { font-size: 1.1rem; flex-shrink: 0; }
+    .sp-kr__label { font-size: 0.85rem; color: var(--text-dark); flex: 1; }
+    .sp-kr__target { font-size: 0.78rem; font-weight: 700; color: var(--navy); white-space: nowrap; font-family: 'Audiowide', sans-serif; }
+
+    /* TEMPLATES */
+    .sp-template {
+      border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px;
+    }
+    .sp-template__header {
+      padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg-page); border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .sp-template__title { font-size: 0.88rem; font-weight: 600; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+    .sp-template__badge { font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .sp-template__badge--free { background: rgba(16,185,129,.12); color: #065f46; }
+    .sp-template__badge--paid { background: rgba(245,158,11,.12); color: #92400e; }
+    .sp-template__body { padding: 16px 18px; }
+    .sp-template__preview { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+    .sp-template__steps { list-style: none; counter-reset: steps; margin-top: 12px; }
+    .sp-template__steps li { counter-increment: steps; padding: 8px 0 8px 32px; position: relative; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+    .sp-template__steps li:last-child { border-bottom: none; }
+    .sp-template__steps li::before { content: counter(steps); position: absolute; left: 0; top: 8px; width: 22px; height: 22px; background: var(--navy); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; }
+    .sp-blur-wrap { position: relative; }
+    .sp-blur-content { filter: blur(5px); user-select: none; pointer-events: none; }
+    .sp-paywall {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.7); border-radius: 8px; z-index: 2;
+    }
+    .sp-paywall__inner { text-align: center; padding: 20px; }
+    .sp-paywall__icon { font-size: 2rem; margin-bottom: 8px; }
+    .sp-paywall__title { font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .sp-paywall__price { font-family: 'Audiowide', sans-serif; font-size: 1.4rem; color: var(--gold); margin-bottom: 12px; }
+    .sp-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; text-decoration: none; font-family: 'Inter', sans-serif; }
+    .sp-btn--gold { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: white; }
+    .sp-btn--outline { background: transparent; border: 1px solid var(--border); color: var(--text-dark); }
+    .sp-btn:hover { opacity: .9; transform: translateY(-1px); }
+
+    /* LOADING */
+    .sp-loading { padding: 48px; text-align: center; }
+    .sp-loading__spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .sp-loading__text { color: var(--text-muted); font-size: 0.9rem; }
+    .sp-loading__step { font-size: 0.82rem; color: var(--gold); margin-top: 8px; animation: pulse 1.5s ease infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+    /* EXPORT */
+    .sp-export-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .sp-export-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+      text-align: center; cursor: pointer; transition: all .2s;
+    }
+    .sp-export-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .sp-export-card__icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .sp-export-card__title { font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .sp-export-card__desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+    .sp-export-card__price { margin-top: 10px; font-family: 'Audiowide', sans-serif; font-size: 1.1rem; color: var(--gold); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .sp-sidebar { display: none; }
+      .sp-panel { padding: 20px 16px; }
+      .sp-adn-grid { grid-template-columns: repeat(3, 1fr); }
+      .sp-topbar__right .sp-progress-wrap { display: none; }
+    }
+
+    /* WELCOME screen */
+    .sp-welcome { max-width: 640px; }
+    .sp-welcome__hero {
+      background: linear-gradient(135deg, var(--navy), #1a0070);
+      border-radius: 16px; padding: 32px; color: white; margin-bottom: 24px; text-align: center;
+    }
+    .sp-welcome__emoji { font-size: 3rem; margin-bottom: 12px; }
+    .sp-welcome__title { font-family: 'Audiowide', sans-serif; font-size: 1.3rem; margin-bottom: 10px; }
+    .sp-welcome__sub { font-size: 0.9rem; opacity: .8; line-height: 1.6; }
+    .sp-module-status { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .sp-module-chip {
+      padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .sp-module-chip--done { background: rgba(16,185,129,.12); color: #065f46; border: 1px solid rgba(16,185,129,.3); }
+    .sp-module-chip--missing { background: rgba(90,98,112,.08); color: var(--text-muted); border: 1px solid var(--border); }
+    .sp-welcome__cta {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: white; border: none; border-radius: 12px; padding: 16px 32px;
+      font-size: 1rem; font-weight: 700; cursor: pointer; width: 100%;
+      font-family: 'Inter', sans-serif; transition: all .2s;
+    }
+    .sp-welcome__cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.4); }
+    .sp-welcome__note { text-align: center; margin-top: 12px; font-size: 0.8rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <div class="sp-topbar">
+    <div class="sp-topbar__left">
+      <a href="index.html" class="sp-topbar__logo"><span>bild</span><span>op</span></a>
+      <div class="sp-topbar__module">⚡ Module 8 — Sprint 90 jours</div>
+    </div>
+    <div class="sp-topbar__right">
+      <div class="sp-progress-wrap">
+        <span class="sp-progress-label" id="progressLabel">Étape 0 / 6</span>
+        <div class="sp-progress-bar"><div class="sp-progress-fill" id="progressBar"></div></div>
+      </div>
+      <a href="index.html" class="sp-topbar__back">← Retour</a>
+    </div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="sp-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sp-sidebar">
+      <div class="sp-sidebar__header">
+        <div class="sp-sidebar__title">Plan d'action 90 jours</div>
+        <div class="sp-adn-badge" id="adnBadge">
+          <strong id="adnEntreprise">Chargement ADN...</strong>
+          <span id="adnSecteur">–</span>
+        </div>
+      </div>
+      <div class="sp-steps">
+        <button class="sp-step-btn active" data-step="0" onclick="goToStep(0)">
+          <span class="sp-step-icon">🔍</span>
+          <div class="sp-step-info"><div class="sp-step-name">Bilan de situation</div><div class="sp-step-sub">Ton ADN Bildop</div></div>
+        </button>
+        <button class="sp-step-btn" data-step="1" onclick="goToStep(1)">
+          <span class="sp-step-icon" id="icon-1">🏗️</span>
+          <div class="sp-step-info"><div class="sp-step-name">Phase 1 — Fondations</div><div class="sp-step-sub">Jours 1–30</div></div>
+        </button>
+        <button class="sp-step-btn" data-step="2" onclick="goToStep(2)">
+          <span class="sp-step-icon" id="icon-2">🚀</span>
+          <div class="sp-step-info"><div class="sp-step-name">Phase 2 — Momentum</div><div class="sp-step-sub">Jours 31–60</div></div>
+        </button>
+        <button class="sp-step-btn" data-step="3" onclick="goToStep(3)">
+          <span class="sp-step-icon" id="icon-3">⚡</span>
+          <div class="sp-step-info"><div class="sp-step-name">Phase 3 — Accélération</div><div class="sp-step-sub">Jours 61–90</div></div>
+        </button>
+        <button class="sp-step-btn" data-step="4" onclick="goToStep(4)">
+          <span class="sp-step-icon" id="icon-4">🎯</span>
+          <div class="sp-step-info"><div class="sp-step-name">OKRs & KPIs</div><div class="sp-step-sub">Tes métriques clés</div></div>
+        </button>
+        <button class="sp-step-btn" data-step="5" onclick="goToStep(5)">
+          <span class="sp-step-icon" id="icon-5">📋</span>
+          <div class="sp-step-info"><div class="sp-step-name">Templates Semaine 1</div><div class="sp-step-sub">SOPs pour démarrer</div></div>
+        </button>
+        <button class="sp-step-btn" data-step="6" onclick="goToStep(6)">
+          <span class="sp-step-icon" id="icon-6">📤</span>
+          <div class="sp-step-info"><div class="sp-step-name">Export complet</div><div class="sp-step-sub">PDF + résumé</div></div>
+        </button>
+      </div>
+      <div class="sp-outputs">
+        <div class="sp-outputs__title">Ton Sprint</div>
+        <div class="sp-output-row"><div class="sp-output-dot" id="dot-phase1"></div><span class="sp-output-label">Phase 1 générée</span></div>
+        <div class="sp-output-row"><div class="sp-output-dot" id="dot-phase2"></div><span class="sp-output-label">Phase 2 générée</span></div>
+        <div class="sp-output-row"><div class="sp-output-dot" id="dot-phase3"></div><span class="sp-output-label">Phase 3 générée</span></div>
+        <div class="sp-output-row"><div class="sp-output-dot" id="dot-okr"></div><span class="sp-output-label">OKRs définis</span></div>
+        <div class="sp-output-row"><div class="sp-output-dot" id="dot-templates"></div><span class="sp-output-label">Templates prêts</span></div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="sp-main">
+
+      <!-- STEP 0 — BILAN -->
+      <div class="sp-panel active" id="panel-0">
+        <div class="sp-welcome">
+          <div class="sp-welcome__hero">
+            <div class="sp-welcome__emoji">⚡</div>
+            <div class="sp-welcome__title">Par où commencer lundi matin?</div>
+            <div class="sp-welcome__sub">On a lu ton ADN Bildop. On sait ce qui va, ce qui saigne, et ce qui peut scaler. En 2 minutes, ton plan d'action 90 jours est prêt.</div>
+          </div>
+
+          <div class="sp-card">
+            <div class="sp-card__title">🧬 Modules complétés — ADN disponible</div>
+            <div class="sp-module-status" id="moduleStatus">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <div class="sp-card" id="diagSummaryCard" style="display:none;">
+            <div class="sp-card__title">🩺 Santé de ton entreprise — Diagnostic</div>
+            <div class="sp-adn-grid" id="fluxGrid"></div>
+            <div id="criticalFlux" style="margin-top: 14px; padding: 12px 14px; background: rgba(231,76,60,.08); border: 1px solid rgba(231,76,60,.2); border-radius: 8px; font-size: 0.85rem; display: none;"></div>
+          </div>
+
+          <button class="sp-welcome__cta" onclick="generateSprint()">⚡ Générer mon Sprint 90 jours →</button>
+          <div class="sp-welcome__note">Basé sur ton ADN Bildop · Mis à jour en temps réel</div>
+        </div>
+      </div>
+
+      <!-- STEP 1 — PHASE 1 -->
+      <div class="sp-panel" id="panel-1">
+        <div class="sp-panel__header">
+          <div class="sp-panel__badge">🏗️ Phase 1 · Jours 1–30</div>
+          <div class="sp-panel__title" id="p1-title">Fondations — Colmate ce qui saigne</div>
+          <div class="sp-panel__subtitle" id="p1-sub">Avant de scaler, il faut stabiliser. Cette phase cible ton flux le plus faible.</div>
+        </div>
+        <div id="loading-1" class="sp-loading" style="display:none;">
+          <div class="sp-loading__spinner"></div>
+          <div class="sp-loading__text">Génération de ta Phase 1...</div>
+          <div class="sp-loading__step" id="loadStep1">📊 Analyse de ton diagnostic...</div>
+        </div>
+        <div id="results-1" style="display:none;">
+          <div class="sp-card">
+            <div class="sp-card__title">🎯 Priorité absolue — <span id="p1-focus"></span></div>
+            <div id="p1-why" style="font-size:0.88rem; color:var(--text-muted); margin-bottom: 16px; line-height: 1.6;"></div>
+            <div class="sp-grid" id="p1-metrics"></div>
+          </div>
+          <div class="sp-phase">
+            <div class="sp-phase__header sp-phase__header--1">
+              <div>
+                <div class="sp-phase__title">Phase 1 — Fondations</div>
+                <div class="sp-phase__days">Jours 1 à 30</div>
+                <div class="sp-phase__milestone" id="p1-milestone"></div>
+              </div>
+              <div class="sp-phase__badge">7 actions</div>
+            </div>
+            <div class="sp-phase__body" id="p1-actions"></div>
+          </div>
+          <div style="text-align:center; margin-top: 16px;">
+            <button class="sp-btn sp-btn--gold" onclick="goToStep(2)">Phase 2 : Momentum →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 — PHASE 2 -->
+      <div class="sp-panel" id="panel-2">
+        <div class="sp-panel__header">
+          <div class="sp-panel__badge">🚀 Phase 2 · Jours 31–60</div>
+          <div class="sp-panel__title">Momentum — Attaque le marché</div>
+          <div class="sp-panel__subtitle">Les fondations sont posées. C'est le temps de générer des revenus et d'acquérir tes premiers clients.</div>
+        </div>
+        <div id="loading-2" class="sp-loading" style="display:none;">
+          <div class="sp-loading__spinner"></div>
+          <div class="sp-loading__text">Génération de ta Phase 2...</div>
+          <div class="sp-loading__step">🎯 Définition des actions marketing...</div>
+        </div>
+        <div id="results-2" style="display:none;">
+          <div class="sp-grid" id="p2-metrics"></div>
+          <div class="sp-phase">
+            <div class="sp-phase__header sp-phase__header--2">
+              <div>
+                <div class="sp-phase__title">Phase 2 — Momentum</div>
+                <div class="sp-phase__days">Jours 31 à 60</div>
+                <div class="sp-phase__milestone" id="p2-milestone"></div>
+              </div>
+              <div class="sp-phase__badge">6 actions</div>
+            </div>
+            <div class="sp-phase__body" id="p2-actions"></div>
+          </div>
+          <div style="text-align:center; margin-top: 16px;">
+            <button class="sp-btn sp-btn--gold" onclick="goToStep(3)">Phase 3 : Accélération →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 — PHASE 3 -->
+      <div class="sp-panel" id="panel-3">
+        <div class="sp-panel__header">
+          <div class="sp-panel__badge">⚡ Phase 3 · Jours 61–90</div>
+          <div class="sp-panel__title">Accélération — Scale ce qui marche</div>
+          <div class="sp-panel__subtitle">Tu as tes premiers clients et tes chiffres. Maintenant tu doubles sur ce qui fonctionne et tu coupes le reste.</div>
+        </div>
+        <div id="loading-3" class="sp-loading" style="display:none;">
+          <div class="sp-loading__spinner"></div>
+          <div class="sp-loading__text">Génération de ta Phase 3...</div>
+          <div class="sp-loading__step">📈 Stratégie de scaling...</div>
+        </div>
+        <div id="results-3" style="display:none;">
+          <div class="sp-grid" id="p3-metrics"></div>
+          <div class="sp-phase">
+            <div class="sp-phase__header sp-phase__header--3">
+              <div>
+                <div class="sp-phase__title">Phase 3 — Accélération</div>
+                <div class="sp-phase__days">Jours 61 à 90</div>
+                <div class="sp-phase__milestone" id="p3-milestone"></div>
+              </div>
+              <div class="sp-phase__badge">5 actions</div>
+            </div>
+            <div class="sp-phase__body" id="p3-actions"></div>
+          </div>
+          <div style="text-align:center; margin-top: 16px;">
+            <button class="sp-btn sp-btn--gold" onclick="goToStep(4)">Définir mes OKRs →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 — OKRs -->
+      <div class="sp-panel" id="panel-4">
+        <div class="sp-panel__header">
+          <div class="sp-panel__badge">🎯 OKRs & KPIs</div>
+          <div class="sp-panel__title">Tes 3 objectifs des 90 prochains jours</div>
+          <div class="sp-panel__subtitle">Des objectifs ambitieux mais atteignables. Chaque KPI te dira chaque semaine si tu es sur la bonne voie.</div>
+        </div>
+        <div id="loading-4" class="sp-loading" style="display:none;">
+          <div class="sp-loading__spinner"></div>
+          <div class="sp-loading__text">Définition de tes OKRs...</div>
+          <div class="sp-loading__step">🎯 Calibrage des cibles...</div>
+        </div>
+        <div id="results-4" style="display:none;">
+          <div id="okr-list"></div>
+          <div class="sp-card" style="margin-top: 8px;">
+            <div class="sp-card__title">📊 Tableau de bord fondateur — Métriques hebdomadaires</div>
+            <div id="weekly-dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px;"></div>
+          </div>
+          <div style="text-align:center; margin-top: 16px;">
+            <button class="sp-btn sp-btn--gold" onclick="goToStep(5)">Voir mes templates →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 — TEMPLATES -->
+      <div class="sp-panel" id="panel-5">
+        <div class="sp-panel__header">
+          <div class="sp-panel__badge">📋 Templates Semaine 1</div>
+          <div class="sp-panel__title">Tes SOPs pour démarrer lundi matin</div>
+          <div class="sp-panel__subtitle">Les 5 processus les plus critiques pour ta Semaine 1. Conçus à partir de 170+ SOPs REMES — adaptés à ta réalité.</div>
+        </div>
+        <div id="loading-5" class="sp-loading" style="display:none;">
+          <div class="sp-loading__spinner"></div>
+          <div class="sp-loading__text">Génération de tes templates...</div>
+          <div class="sp-loading__step">📋 Adaptation des SOPs REMES...</div>
+        </div>
+        <div id="results-5" style="display:none;">
+          <div id="templates-list"></div>
+          <div style="text-align:center; margin-top: 16px;">
+            <button class="sp-btn sp-btn--gold" onclick="goToStep(6)">Exporter mon plan complet →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 6 — EXPORT -->
+      <div class="sp-panel" id="panel-6">
+        <div class="sp-panel__header">
+          <div class="sp-panel__badge">📤 Export</div>
+          <div class="sp-panel__title">Ton plan d'action est prêt</div>
+          <div class="sp-panel__subtitle">Télécharge ton Sprint 90 jours complet et partage-le avec ton équipe.</div>
+        </div>
+        <div class="sp-card">
+          <div class="sp-card__title">✅ Ce que contient ton plan</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 8px;">
+            <div style="padding: 10px 14px; background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); border-radius: 8px; font-size: 0.83rem; color: #065f46;">✅ Phase 1 — 7 actions Fondations</div>
+            <div style="padding: 10px 14px; background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); border-radius: 8px; font-size: 0.83rem; color: #065f46;">✅ Phase 2 — 6 actions Momentum</div>
+            <div style="padding: 10px 14px; background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); border-radius: 8px; font-size: 0.83rem; color: #065f46;">✅ Phase 3 — 5 actions Accélération</div>
+            <div style="padding: 10px 14px; background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); border-radius: 8px; font-size: 0.83rem; color: #065f46;">✅ 3 OKRs + KPIs hebdomadaires</div>
+            <div style="padding: 10px 14px; background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); border-radius: 8px; font-size: 0.83rem; color: #065f46;">✅ Tableau de bord fondateur</div>
+          </div>
+        </div>
+        <div class="sp-export-grid">
+          <div class="sp-export-card" onclick="exportTxt()">
+            <div class="sp-export-card__icon">📄</div>
+            <div class="sp-export-card__title">Plan .TXT</div>
+            <div class="sp-export-card__desc">Ton Sprint 90 jours complet en texte structuré — prêt à copier dans Notion ou partager.</div>
+            <div class="sp-export-card__price">Gratuit</div>
+          </div>
+          <div class="sp-export-card" style="border-color: var(--gold);" onclick="alertPDF()">
+            <div class="sp-export-card__icon">📊</div>
+            <div class="sp-export-card__title">Plan PDF Premium</div>
+            <div class="sp-export-card__desc">PDF professionnel mis en page — avec templates SOPs complets, timeline visuelle et checklist Semaine 1.</div>
+            <div class="sp-export-card__price">99 $ CAD</div>
+          </div>
+          <div class="sp-export-card" style="border-color: var(--violet);" onclick="alertCoaching()">
+            <div class="sp-export-card__icon">🧠</div>
+            <div class="sp-export-card__title">Plan + Coaching 1h</div>
+            <div class="sp-export-card__desc">PDF Premium + session 1h avec un stratège Bildop pour valider ton plan et prioriser tes actions.</div>
+            <div class="sp-export-card__price">199 $ CAD</div>
+          </div>
+        </div>
+        <div style="margin-top: 24px; padding: 16px; background: rgba(0,4,92,.04); border-radius: 10px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+          💡 <strong>Prochaine étape :</strong> Partage ce plan avec ton équipe. Fais un point hebdo de 15 minutes chaque lundi pour cocher les actions complétées. En 90 jours, ton entreprise sera dans un état radicalement différent.
+        </div>
+      </div>
+
+    </div><!-- /sp-main -->
+  </div><!-- /sp-layout -->
+
+  <script src="js/sprint.js"></script>
+</body>
+</html>
