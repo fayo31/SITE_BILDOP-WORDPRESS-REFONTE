@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Étude de marché temps réel — BILDOP</title>
+  <meta name="description" content="Ton marché est-il assez grand? Taille, croissance, benchmark sectoriel, densité concurrentielle QC/CA — données réelles en 2 minutes.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --navy: #00045C;
+      --teal: #0d9488;
+      --teal-light: #14b8a6;
+      --sky: #00C1FF;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --emerald: #10b981;
+      --text-dark: #1a1a2e;
+      --text-muted: #5a6270;
+      --bg-page: #f5f7f8;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0,4,92,.08);
+      --shadow-md: 0 4px 16px rgba(0,4,92,.10);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-page); color: var(--text-dark); min-height: 100vh; }
+
+    /* TOPBAR */
+    .mr-topbar {
+      background: linear-gradient(135deg, var(--navy) 0%, #003d3a 100%);
+      padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    }
+    .mr-topbar__left { display: flex; align-items: center; gap: 16px; }
+    .mr-topbar__logo { font-family: 'Audiowide', sans-serif; font-size: 1.1rem; text-decoration: none; }
+    .mr-topbar__logo span:first-child { color: var(--sky); }
+    .mr-topbar__logo span:last-child { color: #fff; }
+    .mr-topbar__module { font-size: 0.75rem; font-weight: 600; color: var(--teal-light); letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; background: rgba(20,184,166,.15); border-radius: 20px; border: 1px solid rgba(20,184,166,.3); }
+    .mr-topbar__right { display: flex; align-items: center; gap: 16px; }
+    .mr-progress-wrap { display: flex; align-items: center; gap: 10px; }
+    .mr-progress-label { font-size: 0.75rem; color: rgba(255,255,255,.6); white-space: nowrap; }
+    .mr-progress-bar { width: 120px; height: 6px; background: rgba(255,255,255,.15); border-radius: 3px; overflow: hidden; }
+    .mr-progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal-light), var(--emerald)); border-radius: 3px; transition: width .4s ease; width: 0%; }
+    .mr-topbar__back { color: rgba(255,255,255,.6); text-decoration: none; font-size: 0.82rem; }
+    .mr-topbar__back:hover { color: #fff; }
+
+    /* LAYOUT */
+    .mr-layout { display: flex; min-height: calc(100vh - 56px); }
+
+    /* SIDEBAR */
+    .mr-sidebar {
+      width: 260px; flex-shrink: 0; background: var(--bg-card);
+      border-right: 1px solid var(--border); display: flex; flex-direction: column;
+      position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto;
+    }
+    .mr-sidebar__header { padding: 20px; border-bottom: 1px solid var(--border); }
+    .mr-sidebar__title { font-family: 'Audiowide', sans-serif; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .mr-niche-badge { margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: rgba(13,148,136,.08); border: 1px solid rgba(13,148,136,.2); font-size: 0.85rem; font-weight: 600; color: var(--teal); }
+    .mr-steps { padding: 12px 0; }
+    .mr-step-btn {
+      width: 100%; padding: 12px 20px; text-align: left; border: none; background: transparent;
+      cursor: pointer; display: flex; align-items: center; gap: 12px; transition: background .2s;
+      font-family: 'Inter', sans-serif; border-left: 3px solid transparent;
+    }
+    .mr-step-btn:hover { background: rgba(13,148,136,.05); }
+    .mr-step-btn.active { background: rgba(13,148,136,.08); border-left-color: var(--teal); }
+    .mr-step-btn.completed { border-left-color: var(--emerald); }
+    .mr-step-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+    .mr-step-name { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); }
+    .mr-step-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+    .mr-step-btn.completed .mr-step-name { color: var(--emerald); }
+
+    /* DOTS */
+    .mr-outputs { padding: 16px 20px; border-top: 1px solid var(--border); margin-top: auto; }
+    .mr-outputs__title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .mr-dot-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .mr-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background .3s; }
+    .mr-dot.ready { background: var(--emerald); box-shadow: 0 0 6px rgba(16,185,129,.4); }
+    .mr-dot-label { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* MAIN */
+    .mr-main { flex: 1; overflow-y: auto; }
+    .mr-panel { display: none; padding: 32px; max-width: 860px; }
+    .mr-panel.active { display: block; }
+
+    /* PANEL HEADER */
+    .mr-panel__badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: #fff; }
+    .mr-panel__title { font-family: 'Audiowide', sans-serif; font-size: 1.35rem; color: var(--navy); line-height: 1.3; margin-bottom: 8px; }
+    .mr-panel__subtitle { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 24px; }
+
+    /* CARDS */
+    .mr-card { background: var(--bg-card); border-radius: 12px; padding: 22px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+    .mr-card__title { font-family: 'Audiowide', sans-serif; font-size: 0.83rem; color: var(--navy); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+    /* STAT GRID */
+    .mr-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .mr-stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 14px; position: relative; overflow: hidden; }
+    .mr-stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--teal), var(--teal-light)); }
+    .mr-stat__value { font-family: 'Audiowide', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+    .mr-stat__label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .mr-stat__source { font-size: 0.65rem; color: var(--teal); margin-top: 4px; font-weight: 600; }
+    .mr-stat__trend { font-size: 0.75rem; font-weight: 700; margin-top: 6px; }
+    .mr-stat__trend--up { color: var(--emerald); }
+    .mr-stat__trend--down { color: var(--rose); }
+    .mr-stat__trend--neutral { color: var(--amber); }
+
+    /* BAR CHART */
+    .mr-bar-chart { display: flex; flex-direction: column; gap: 10px; }
+    .mr-bar-row { display: flex; align-items: center; gap: 12px; }
+    .mr-bar-label { font-size: 0.8rem; color: var(--text-dark); width: 130px; flex-shrink: 0; }
+    .mr-bar-track { flex: 1; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+    .mr-bar-fill { height: 100%; border-radius: 5px; transition: width 1s ease; }
+    .mr-bar-fill--teal { background: linear-gradient(90deg, var(--teal), var(--teal-light)); }
+    .mr-bar-fill--navy { background: linear-gradient(90deg, var(--navy), #1a0070); }
+    .mr-bar-fill--amber { background: linear-gradient(90deg, #d97706, var(--amber)); }
+    .mr-bar-fill--emerald { background: linear-gradient(90deg, #059669, var(--emerald)); }
+    .mr-bar-fill--rose { background: linear-gradient(90deg, #e11d48, var(--rose)); }
+    .mr-bar-val { font-size: 0.78rem; font-weight: 700; color: var(--text-dark); width: 48px; text-align: right; }
+
+    /* TABLE */
+    .mr-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .mr-table th { text-align: left; padding: 10px 12px; background: var(--bg-page); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+    .mr-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text-dark); }
+    .mr-table tr:last-child td { border-bottom: none; }
+    .mr-table tr:hover td { background: rgba(13,148,136,.03); }
+    .mr-pill { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+    .mr-pill--green { background: rgba(16,185,129,.12); color: #065f46; }
+    .mr-pill--amber { background: rgba(245,158,11,.12); color: #92400e; }
+    .mr-pill--rose { background: rgba(244,63,94,.12); color: #881337; }
+    .mr-pill--teal { background: rgba(13,148,136,.12); color: #134e4a; }
+    .mr-pill--navy { background: rgba(0,4,92,.08); color: var(--navy); }
+
+    /* INSIGHT BOX */
+    .mr-insight { padding: 16px 18px; border-radius: 10px; border-left: 4px solid var(--teal); background: rgba(13,148,136,.06); margin-bottom: 14px; }
+    .mr-insight__title { font-size: 0.78rem; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .mr-insight__text { font-size: 0.88rem; color: var(--text-dark); line-height: 1.6; }
+
+    /* TREND CHART (sparkline style) */
+    .mr-trend-wrap { display: flex; align-items: flex-end; gap: 4px; height: 50px; padding: 4px 0; }
+    .mr-trend-bar { flex: 1; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, var(--teal-light), var(--teal)); min-width: 8px; transition: height .6s ease; }
+
+    /* LOADING */
+    .mr-loading { padding: 48px; text-align: center; }
+    .mr-loading__spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--teal); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .mr-loading__steps { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .mr-loading__step { font-size: 0.82rem; color: var(--text-muted); padding: 8px 16px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); transition: all .3s; opacity: .4; }
+    .mr-loading__step.active { opacity: 1; color: var(--teal); border-color: var(--teal); background: rgba(13,148,136,.06); }
+    .mr-loading__step.done { opacity: .6; }
+    .mr-loading__step.done::before { content: '✅ '; }
+
+    /* WELCOME */
+    .mr-welcome { max-width: 640px; }
+    .mr-welcome__hero { background: linear-gradient(135deg, var(--navy), #003d3a); border-radius: 16px; padding: 32px; color: white; margin-bottom: 24px; text-align: center; }
+    .mr-welcome__emoji { font-size: 3rem; margin-bottom: 12px; }
+    .mr-welcome__title { font-family: 'Audiowide', sans-serif; font-size: 1.3rem; margin-bottom: 10px; }
+    .mr-welcome__sub { font-size: 0.9rem; opacity: .8; line-height: 1.6; }
+    .mr-input-wrap { margin-bottom: 20px; }
+    .mr-input-label { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; display: block; }
+    .mr-input { width: 100%; padding: 14px 16px; border: 2px solid var(--border); border-radius: 10px; font-size: 0.95rem; font-family: 'Inter', sans-serif; outline: none; transition: border-color .2s; }
+    .mr-input:focus { border-color: var(--teal); }
+    .mr-adn-suggest { padding: 10px 14px; background: rgba(13,148,136,.08); border: 1px solid rgba(13,148,136,.25); border-radius: 8px; margin-bottom: 12px; font-size: 0.83rem; display: none; }
+    .mr-adn-suggest strong { color: var(--teal); }
+    .mr-adn-btn { background: none; border: none; color: var(--teal); font-weight: 600; cursor: pointer; font-size: 0.83rem; text-decoration: underline; margin-left: 6px; }
+    .mr-cta { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: all .2s; }
+    .mr-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(13,148,136,.35); }
+    .mr-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; font-family: 'Inter', sans-serif; transition: all .2s; text-decoration: none; }
+    .mr-btn--teal { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+    .mr-btn--outline { background: transparent; border: 1px solid var(--border); color: var(--text-dark); }
+    .mr-btn:hover { opacity: .9; transform: translateY(-1px); }
+
+    /* SOURCE TAG */
+    .mr-source-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; background: rgba(13,148,136,.1); color: var(--teal); margin-left: 6px; }
+
+    /* EXPORT */
+    .mr-export-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .mr-export-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: all .2s; }
+    .mr-export-card:hover { border-color: var(--teal); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .mr-export-card__icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .mr-export-card__title { font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .mr-export-card__desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+    @media (max-width: 768px) {
+      .mr-sidebar { display: none; }
+      .mr-panel { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <div class="mr-topbar">
+    <div class="mr-topbar__left">
+      <a href="index.html" class="mr-topbar__logo"><span>bild</span><span>op</span></a>
+      <div class="mr-topbar__module">📡 Module 7 — Marché temps réel</div>
+    </div>
+    <div class="mr-topbar__right">
+      <div class="mr-progress-wrap">
+        <span class="mr-progress-label" id="progressLabel">Étape 0 / 5</span>
+        <div class="mr-progress-bar"><div class="mr-progress-fill" id="progressBar"></div></div>
+      </div>
+      <a href="index.html" class="mr-topbar__back">← Retour</a>
+    </div>
+  </div>
+
+  <div class="mr-layout">
+
+    <!-- SIDEBAR -->
+    <div class="mr-sidebar">
+      <div class="mr-sidebar__header">
+        <div class="mr-sidebar__title">Étude de marché</div>
+        <div class="mr-niche-badge" id="nicheDisplay">Entrer ta niche →</div>
+      </div>
+      <div class="mr-steps">
+        <button class="mr-step-btn active" data-step="0" onclick="goToStep(0)">
+          <span class="mr-step-icon">🎯</span>
+          <div><div class="mr-step-name">Ta niche</div><div class="mr-step-sub">Point de départ</div></div>
+        </button>
+        <button class="mr-step-btn" data-step="1" onclick="goToStep(1)">
+          <span class="mr-step-icon" id="icon-1">📊</span>
+          <div><div class="mr-step-name">Taille du marché</div><div class="mr-step-sub">QC / Canada</div></div>
+        </button>
+        <button class="mr-step-btn" data-step="2" onclick="goToStep(2)">
+          <span class="mr-step-icon" id="icon-2">📈</span>
+          <div><div class="mr-step-name">Tendances & demande</div><div class="mr-step-sub">12 mois</div></div>
+        </button>
+        <button class="mr-step-btn" data-step="3" onclick="goToStep(3)">
+          <span class="mr-step-icon" id="icon-3">💰</span>
+          <div><div class="mr-step-name">Benchmark sectoriel</div><div class="mr-step-sub">Prix, marges, ratios</div></div>
+        </button>
+        <button class="mr-step-btn" data-step="4" onclick="goToStep(4)">
+          <span class="mr-step-icon" id="icon-4">🗺️</span>
+          <div><div class="mr-step-name">Densité locale QC</div><div class="mr-step-sub">Concurrence région</div></div>
+        </button>
+        <button class="mr-step-btn" data-step="5" onclick="goToStep(5)">
+          <span class="mr-step-icon" id="icon-5">📤</span>
+          <div><div class="mr-step-name">Rapport complet</div><div class="mr-step-sub">Export</div></div>
+        </button>
+      </div>
+      <div class="mr-outputs">
+        <div class="mr-outputs__title">Données collectées</div>
+        <div class="mr-dot-row"><div class="mr-dot" id="dot-1"></div><span class="mr-dot-label">Taille marché</span></div>
+        <div class="mr-dot-row"><div class="mr-dot" id="dot-2"></div><span class="mr-dot-label">Tendances</span></div>
+        <div class="mr-dot-row"><div class="mr-dot" id="dot-3"></div><span class="mr-dot-label">Benchmark</span></div>
+        <div class="mr-dot-row"><div class="mr-dot" id="dot-4"></div><span class="mr-dot-label">Densité locale</span></div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="mr-main">
+
+      <!-- STEP 0 — ENTRÉE NICHE -->
+      <div class="mr-panel active" id="panel-0">
+        <div class="mr-welcome">
+          <div class="mr-welcome__hero">
+            <div class="mr-welcome__emoji">📡</div>
+            <div class="mr-welcome__title">Ton marché est-il assez grand?</div>
+            <div class="mr-welcome__sub">Taille du marché QC/CA, tendances 12 mois, benchmark sectoriel, densité concurrentielle locale — tout ce qu'il faut pour valider que ça vaut le coup avant de dépenser un dollar.</div>
+          </div>
+          <div class="mr-card">
+            <div id="adnSuggest" class="mr-adn-suggest">
+              <strong>ADN Bildop détecté :</strong> <span id="adnText"></span>
+              <button class="mr-adn-btn" onclick="useAdn()">Utiliser →</button>
+            </div>
+            <div class="mr-input-wrap">
+              <label class="mr-input-label">Décris ton secteur ou ta niche :</label>
+              <input class="mr-input" id="nicheInput" type="text" placeholder="Ex: soins à domicile, coaching fitness, restauration rapide, SaaS RH..." />
+            </div>
+            <button class="mr-cta" onclick="startAnalysis()">📡 Analyser mon marché →</button>
+            <div style="margin-top: 12px; font-size: 0.78rem; color: var(--text-muted); text-align: center;">Sources : Stats Canada · REQ · Google Trends · BDC · OCDE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 1 — TAILLE DU MARCHÉ -->
+      <div class="mr-panel" id="panel-1">
+        <div class="mr-panel__badge">📊 Taille du marché</div>
+        <div class="mr-panel__title">Combien vaut ton marché?</div>
+        <div class="mr-panel__subtitle" id="s1-sub">Marché total adressable, part capturable réalistement, et projection de croissance pour les 5 prochaines années.</div>
+        <div id="loading-1" class="mr-loading" style="display:none;">
+          <div class="mr-loading__spinner"></div>
+          <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom: 16px;">Collecte des données de marché...</div>
+          <div class="mr-loading__steps">
+            <div class="mr-loading__step" id="ls1-1">📦 Recherche dans la base Stats Canada...</div>
+            <div class="mr-loading__step" id="ls1-2">🏢 Données sectorielles SCIAN / REQ...</div>
+            <div class="mr-loading__step" id="ls1-3">📊 Calcul TAM / SAM / SOM...</div>
+            <div class="mr-loading__step" id="ls1-4">✅ Données prêtes</div>
+          </div>
+        </div>
+        <div id="results-1" style="display:none;">
+          <div class="mr-stat-grid" id="s1-stats"></div>
+          <div class="mr-card">
+            <div class="mr-card__title">📊 Marché par région <span class="mr-source-tag">REQ · Stats Canada</span></div>
+            <div class="mr-bar-chart" id="s1-regions"></div>
+          </div>
+          <div class="mr-insight" id="s1-insight"></div>
+          <div style="text-align:right; margin-top: 8px;">
+            <button class="mr-btn mr-btn--teal" onclick="goToStep(2)">Tendances & demande →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 — TENDANCES -->
+      <div class="mr-panel" id="panel-2">
+        <div class="mr-panel__badge">📈 Tendances & demande</div>
+        <div class="mr-panel__title">Est-ce que la demande monte ou descend?</div>
+        <div class="mr-panel__subtitle">Volume de recherche, saisonnalité, signaux de croissance — les 12 derniers mois dans ton secteur.</div>
+        <div id="loading-2" class="mr-loading" style="display:none;">
+          <div class="mr-loading__spinner"></div>
+          <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom: 16px;">Analyse des tendances...</div>
+          <div class="mr-loading__steps">
+            <div class="mr-loading__step" id="ls2-1">🔍 Requêtes Google Trends QC/CA...</div>
+            <div class="mr-loading__step" id="ls2-2">📱 Volume de recherche mensuel...</div>
+            <div class="mr-loading__step" id="ls2-3">📅 Analyse saisonnalité...</div>
+            <div class="mr-loading__step" id="ls2-4">✅ Tendances prêtes</div>
+          </div>
+        </div>
+        <div id="results-2" style="display:none;">
+          <div class="mr-stat-grid" id="s2-stats"></div>
+          <div class="mr-card">
+            <div class="mr-card__title">📈 Volume de recherche — 12 mois <span class="mr-source-tag">Google Trends</span></div>
+            <div class="mr-trend-wrap" id="s2-trend"></div>
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-muted); margin-top:6px; padding: 0 2px;">
+              <span>Mars 2025</span><span>Juin</span><span>Sept</span><span>Déc</span><span>Mars 2026</span>
+            </div>
+          </div>
+          <div class="mr-card">
+            <div class="mr-card__title">🔍 Mots-clés prioritaires <span class="mr-source-tag">Google Trends · QC</span></div>
+            <div id="s2-keywords"></div>
+          </div>
+          <div class="mr-insight" id="s2-insight"></div>
+          <div style="text-align:right; margin-top: 8px;">
+            <button class="mr-btn mr-btn--teal" onclick="goToStep(3)">Benchmark sectoriel →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 — BENCHMARK -->
+      <div class="mr-panel" id="panel-3">
+        <div class="mr-panel__badge">💰 Benchmark sectoriel</div>
+        <div class="mr-panel__title">Qu'est-ce que les autres chargent — et combien ils gardent?</div>
+        <div class="mr-panel__subtitle">Prix moyen marché, marges typiques, ratios financiers de référence pour ton secteur au Québec.</div>
+        <div id="loading-3" class="mr-loading" style="display:none;">
+          <div class="mr-loading__spinner"></div>
+          <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom: 16px;">Recherche des benchmarks...</div>
+          <div class="mr-loading__steps">
+            <div class="mr-loading__step" id="ls3-1">💼 Données BDC sectorielles...</div>
+            <div class="mr-loading__step" id="ls3-2">💰 Prix marché + marges typiques...</div>
+            <div class="mr-loading__step" id="ls3-3">📊 Ratios financiers QC...</div>
+            <div class="mr-loading__step" id="ls3-4">✅ Benchmark prêt</div>
+          </div>
+        </div>
+        <div id="results-3" style="display:none;">
+          <div class="mr-stat-grid" id="s3-stats"></div>
+          <div class="mr-card">
+            <div class="mr-card__title">💰 Fourchette de prix — ton secteur <span class="mr-source-tag">BDC · Desjardins</span></div>
+            <table class="mr-table" id="s3-table"></table>
+          </div>
+          <div class="mr-card">
+            <div class="mr-card__title">📊 Ratios financiers de référence <span class="mr-source-tag">BDC · FCEI</span></div>
+            <div class="mr-bar-chart" id="s3-ratios"></div>
+          </div>
+          <div class="mr-insight" id="s3-insight"></div>
+          <div style="text-align:right; margin-top: 8px;">
+            <button class="mr-btn mr-btn--teal" onclick="goToStep(4)">Densité locale →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 — DENSITÉ LOCALE -->
+      <div class="mr-panel" id="panel-4">
+        <div class="mr-panel__badge">🗺️ Densité locale QC</div>
+        <div class="mr-panel__title">Combien de compétiteurs dans ta région?</div>
+        <div class="mr-panel__subtitle">Nombre d'entreprises actives par région, saturation du marché local, opportunités géographiques.</div>
+        <div id="loading-4" class="mr-loading" style="display:none;">
+          <div class="mr-loading__spinner"></div>
+          <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom: 16px;">Analyse de la concurrence locale...</div>
+          <div class="mr-loading__steps">
+            <div class="mr-loading__step" id="ls4-1">🏢 Registre des entreprises QC (REQ)...</div>
+            <div class="mr-loading__step" id="ls4-2">📍 Distribution géographique...</div>
+            <div class="mr-loading__step" id="ls4-3">🎯 Identification des zones sous-servies...</div>
+            <div class="mr-loading__step" id="ls4-4">✅ Carte de densité prête</div>
+          </div>
+        </div>
+        <div id="results-4" style="display:none;">
+          <div class="mr-stat-grid" id="s4-stats"></div>
+          <div class="mr-card">
+            <div class="mr-card__title">🗺️ Entreprises actives par région <span class="mr-source-tag">REQ 2026</span></div>
+            <div class="mr-bar-chart" id="s4-regions"></div>
+          </div>
+          <div class="mr-card">
+            <div class="mr-card__title">🎯 Zones d'opportunité identifiées</div>
+            <div id="s4-opportunities"></div>
+          </div>
+          <div class="mr-insight" id="s4-insight"></div>
+          <div style="text-align:right; margin-top: 8px;">
+            <button class="mr-btn mr-btn--teal" onclick="goToStep(5)">Voir le rapport complet →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 — RAPPORT / EXPORT -->
+      <div class="mr-panel" id="panel-5">
+        <div class="mr-panel__badge">📤 Rapport complet</div>
+        <div class="mr-panel__title">Ton étude de marché est prête</div>
+        <div class="mr-panel__subtitle">Toutes les données compilées — prêtes pour ta banque, ton investisseur ou ta prise de décision.</div>
+        <div class="mr-card" id="report-summary"></div>
+        <div class="mr-export-grid" style="margin-top: 20px;">
+          <div class="mr-export-card" onclick="exportReport()">
+            <div class="mr-export-card__icon">📄</div>
+            <div class="mr-export-card__title">Rapport .TXT</div>
+            <div class="mr-export-card__desc">Données structurées prêtes à coller dans Notion, Google Docs ou ton plan d'affaires.</div>
+            <div style="margin-top:10px; font-family:'Audiowide',sans-serif; color:var(--teal); font-size:1rem;">Gratuit</div>
+          </div>
+          <div class="mr-export-card" style="border-color:var(--teal);" onclick="alertPDF()">
+            <div class="mr-export-card__icon">📊</div>
+            <div class="mr-export-card__title">Rapport PDF</div>
+            <div class="mr-export-card__desc">PDF professionnel avec graphiques, sources citées et recommandations stratégiques.</div>
+            <div style="margin-top:10px; font-family:'Audiowide',sans-serif; color:var(--teal); font-size:1rem;">99 $ CAD</div>
+          </div>
+          <div class="mr-export-card" onclick="goToSprint()">
+            <div class="mr-export-card__icon">⚡</div>
+            <div class="mr-export-card__title">Générer mon Sprint 90j</div>
+            <div class="mr-export-card__desc">Utiliser ces données pour créer ton plan d'action 90 jours personnalisé.</div>
+            <div style="margin-top:10px; font-family:'Audiowide',sans-serif; color:var(--navy); font-size:1rem;">Module 8 →</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /mr-main -->
+  </div><!-- /mr-layout -->
+
+  <script src="js/marche-reel.js"></script>
+</body>
+</html>
