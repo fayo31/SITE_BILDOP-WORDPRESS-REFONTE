@@ -432,18 +432,48 @@ function showCompletion() {
   `;
 }
 
-// --- Submit (placeholder — connect to backend) ---
+// --- Submit — send answers to backend N8N ---
+const BILDOP_WEBHOOK_URL = window.BILDOP_WEBHOOK_URL || '';
+
 function submitQuestionnaire() {
-  console.log('Réponses soumises:', answers);
+  localStorage.setItem('bildop_questionnaire_answers', JSON.stringify(answers));
 
-  // TODO: Envoyer les réponses au backend N8N
-  // fetch('/api/generate-plan', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ answers })
-  // });
+  if (!BILDOP_WEBHOOK_URL) {
+    alert('Tes réponses ont été sauvegardées localement.\n\nLe système de génération sera connecté prochainement.');
+    return;
+  }
 
-  alert('🚧 Le système de paiement et de génération sera connecté prochainement.\n\nTes réponses ont été enregistrées dans la console (F12).');
+  const submitBtn = document.querySelector('.btn--primary.btn--large');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi en cours…';
+  }
+
+  fetch(BILDOP_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ answers, submittedAt: new Date().toISOString() })
+  })
+    .then(function (response) {
+      if (!response.ok) throw new Error('Erreur serveur (' + response.status + ')');
+      return response.json();
+    })
+    .then(function (data) {
+      localStorage.setItem('bildop_questionnaire_submitted', 'true');
+      if (data && data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      } else {
+        alert('Tes réponses ont été envoyées avec succès! Tu recevras ton plan d\'affaires sous peu.');
+      }
+    })
+    .catch(function (err) {
+      console.error('Erreur lors de l\'envoi:', err);
+      alert('Une erreur est survenue lors de l\'envoi. Tes réponses ont été sauvegardées localement. Réessaie plus tard.');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Générer mon plan d\'affaires →';
+      }
+    });
 }
 
 // --- Shake Animation ---
