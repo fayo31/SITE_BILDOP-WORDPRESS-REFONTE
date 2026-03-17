@@ -18,6 +18,46 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- VP Tabs Styles -->
+  <style>
+    .vp-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+    .vp-tab {
+      padding: 10px 20px;
+      border-radius: 25px;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      color: #64748b;
+    }
+    .vp-tab:hover {
+      border-color: #0ea5e9;
+      color: #0ea5e9;
+    }
+    .vp-tab.active {
+      background: #1e3a5f;
+      border-color: #1e3a5f;
+      color: #fff;
+    }
+    .module-card.hidden {
+      display: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .vp-tab,
+      .module-card[data-vp-module] {
+        transition: none;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -159,17 +199,39 @@
     </div>
   </section>
 
-  <!-- ========== MODULES — NOS 3 OUTILS ========== -->
+  <!-- ========== MODULES — 4 VP ========== -->
   <section class="section" id="modules">
     <div class="container">
       <div class="section-header fade-up">
-        <h2>Huit outils. Un seul objectif : que ton entreprise réussisse.</h2>
-        <p>Que tu sois en démarrage ou déjà en affaires, Bildop a l'outil qu'il te faut.</p>
+        <h2>Tes outils par fonction</h2>
+        <p>Organise ta gestion comme un CEO. Chaque fonction a ses outils dedies.</p>
       </div>
 
-      <div class="modules-grid">
-        <!-- IdeaScore Pro — ENTRY POINT -->
-        <div class="module-card fade-up" style="border: 2px solid #f59e0b;">
+      <!-- VP Tabs -->
+      <div class="vp-tabs fade-up">
+        <button class="vp-tab active" data-vp="all" onclick="filterVP('all')">
+          Tous les outils
+        </button>
+        <button class="vp-tab" data-vp="ceo" onclick="filterVP('ceo')">
+          CEO Dashboard
+        </button>
+        <button class="vp-tab" data-vp="marketing" onclick="filterVP('marketing')">
+          Marketing
+        </button>
+        <button class="vp-tab" data-vp="finances" onclick="filterVP('finances')">
+          Finances
+        </button>
+        <button class="vp-tab" data-vp="operations" onclick="filterVP('operations')">
+          Operations
+        </button>
+        <button class="vp-tab" data-vp="rh" onclick="filterVP('rh')">
+          RH
+        </button>
+      </div>
+
+      <div class="modules-grid" id="modulesGrid">
+        <!-- IdeaScore Pro — CEO DASHBOARD -->
+        <div class="module-card fade-up" data-vp-module="ceo" style="border: 2px solid #f59e0b;">
           <div class="module-card__badge module-card__badge--new" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">IdeaScore Pro · Gratuit</div>
           <div class="module-card__icon">🎯</div>
           <h3>Score de Viabilité</h3>
@@ -184,8 +246,8 @@
           <a href="ideascore.html" class="btn btn--primary" style="background: linear-gradient(135deg, #f59e0b, #ef4444); border: none;">Tester mon idée →</a>
         </div>
 
-        <!-- Module 1 : Plan d'affaires -->
-        <div class="module-card fade-up">
+        <!-- Module 1 : Plan d'affaires — OPERATIONS -->
+        <div class="module-card fade-up" data-vp-module="operations">
           <div class="module-card__badge">Module 1</div>
           <div class="module-card__icon">📄</div>
           <h3>Plan d'affaires IA</h3>
@@ -200,8 +262,8 @@
           <a href="questionnaire.html" class="btn btn--primary">Créer mon plan →</a>
         </div>
 
-        <!-- Module 2 : Diagnostic -->
-        <div class="module-card module-card--diagnostic fade-up">
+        <!-- Module 2 : Diagnostic — OPERATIONS -->
+        <div class="module-card module-card--diagnostic fade-up" data-vp-module="operations">
           <div class="module-card__badge module-card__badge--new">Module 2 · Nouveau</div>
           <div class="module-card__icon">🩺</div>
           <h3>Diagnostic Santé Bildop</h3>
@@ -216,8 +278,8 @@
           <a href="diagnostic.html" class="btn btn--primary">Diagnostic gratuit →</a>
         </div>
 
-        <!-- Module 3 : Remèdes -->
-        <div class="module-card fade-up">
+        <!-- Module 3 : Remèdes — OPERATIONS -->
+        <div class="module-card fade-up" data-vp-module="operations">
           <div class="module-card__badge module-card__badge--new">Module 3 · Nouveau</div>
           <div class="module-card__icon">💊</div>
           <h3>Remèdes Bildop</h3>
@@ -232,8 +294,8 @@
           <a href="remedes.html" class="btn btn--primary">Voir les remèdes →</a>
         </div>
 
-        <!-- Module 4 : Architecture de Marque -->
-        <div class="module-card fade-up">
+        <!-- Module 4 : Architecture de Marque — MARKETING -->
+        <div class="module-card fade-up" data-vp-module="marketing">
           <div class="module-card__badge module-card__badge--new">Module 4 · Nouveau</div>
           <div class="module-card__icon">🏗️</div>
           <h3>Architecture de Marque</h3>
@@ -248,8 +310,8 @@
           <a href="marque.html" class="btn btn--primary">Audit gratuit →</a>
         </div>
 
-        <!-- Module 5 : Simulateur Financier -->
-        <div class="module-card fade-up">
+        <!-- Module 5 : Simulateur Financier — FINANCES -->
+        <div class="module-card fade-up" data-vp-module="finances">
           <div class="module-card__badge module-card__badge--new" style="background: linear-gradient(135deg, #c2410c, #f59e0b);">Module 5 · Nouveau</div>
           <div class="module-card__icon">💰</div>
           <h3>Simulateur Financier</h3>
@@ -264,8 +326,8 @@
           <a href="financier.html" class="btn btn--primary">Simuler mes finances →</a>
         </div>
 
-        <!-- Module 6 : Market Intelligence -->
-        <div class="module-card fade-up" style="border: 2px solid #0ea5e9; position:relative; overflow:hidden;">
+        <!-- Module 6 : Market Intelligence — MARKETING -->
+        <div class="module-card fade-up" data-vp-module="marketing" style="border: 2px solid #0ea5e9; position:relative; overflow:hidden;">
           <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0ea5e9,#8b5cf6,#ec4899);"></div>
           <div class="module-card__badge module-card__badge--new" style="background: linear-gradient(135deg, #0ea5e9, #8b5cf6);">Module 6 · Nouveau</div>
           <div class="module-card__icon">🔬</div>
@@ -281,8 +343,8 @@
           <a href="market-intelligence.html" class="btn btn--primary" style="background: linear-gradient(135deg, #0ea5e9, #8b5cf6); border: none;">Analyser mon marché →</a>
         </div>
 
-        <!-- Module 7 : Étude de marché temps réel -->
-        <div class="module-card fade-up" style="border: 2px solid #0d9488; position:relative; overflow:hidden;">
+        <!-- Module 7 : Étude de marché temps réel — FINANCES -->
+        <div class="module-card fade-up" data-vp-module="finances" style="border: 2px solid #0d9488; position:relative; overflow:hidden;">
           <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0d9488,#14b8a6,#00C1FF);"></div>
           <div class="module-card__badge module-card__badge--new" style="background: linear-gradient(135deg, #0d9488, #0891b2);">Module 7 · Nouveau</div>
           <div class="module-card__icon">📊</div>
@@ -298,8 +360,8 @@
           <a href="marche-reel.html" class="btn btn--primary" style="background: linear-gradient(135deg, #0d9488, #0891b2); border: none;">Analyser mon marché →</a>
         </div>
 
-        <!-- Module 8 : Sprint 90 jours -->
-        <div class="module-card fade-up" style="border: 2px solid #f59e0b; position:relative; overflow:hidden;">
+        <!-- Module 8 : Sprint 90 jours — OPERATIONS -->
+        <div class="module-card fade-up" data-vp-module="operations" style="border: 2px solid #f59e0b; position:relative; overflow:hidden;">
           <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f59e0b,#10b981,#00045C);"></div>
           <div class="module-card__badge module-card__badge--new" style="background: linear-gradient(135deg, #f59e0b, #d97706);">Module 8 · Nouveau</div>
           <div class="module-card__icon">⚡</div>
@@ -313,6 +375,33 @@
             <li>🎯 OKRs + KPIs + Templates SOPs Semaine 1</li>
           </ul>
           <a href="sprint.html" class="btn btn--primary" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none;">Générer mon Sprint →</a>
+        </div>
+
+        <!-- Veille Compétitive — MARKETING -->
+        <div class="module-card fade-up" data-vp-module="marketing" style="border: 2px solid #8b5cf6; position:relative; overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#8b5cf6,#ec4899,#0ea5e9);"></div>
+          <div class="module-card__badge module-card__badge--new" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">Veille</div>
+          <div class="module-card__icon">🔍</div>
+          <h3>Veille Compétitive</h3>
+          <p class="module-card__for">Pour ceux qui veulent garder une longueur d'avance</p>
+          <p class="module-card__desc">Surveille tes concurrents, suis les tendances de ton industrie et recois des alertes quand quelque chose bouge dans ton marche.</p>
+          <ul class="module-card__features">
+            <li>🕵️ Surveillance concurrentielle automatisee</li>
+            <li>📈 Tendances et signaux de marche</li>
+            <li>🔔 Alertes en temps reel</li>
+            <li>📊 Rapports hebdomadaires</li>
+          </ul>
+          <a href="veille.html" class="btn btn--primary" style="background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none;">Activer la veille →</a>
+        </div>
+
+        <!-- RH — BIENTOT DISPONIBLE -->
+        <div class="module-card module-card--coming fade-up" data-vp-module="rh">
+          <div style="text-align:center; padding: 40px 20px; opacity: .6;">
+            <div style="font-size: 2.5rem; margin-bottom: 12px;">👥</div>
+            <h3 style="font-family: 'Audiowide', sans-serif; margin-bottom: 8px;">Ressources Humaines</h3>
+            <p style="font-size: 0.85rem; color: #64748b;">Recrutement, gestion d'equipe, organigramme — Bientot disponible</p>
+            <span style="display: inline-block; margin-top: 12px; padding: 4px 12px; border-radius: 20px; background: #f1f5f9; font-size: 0.75rem; font-weight: 600; color: #94a3b8;">EN DEVELOPPEMENT</span>
+          </div>
         </div>
       </div>
 
@@ -832,5 +921,21 @@
   </div>
 
   <script src="js/main.js"></script>
+  <script>
+    function filterVP(vp) {
+      document.querySelectorAll('.vp-tab').forEach(function(t) {
+        t.classList.remove('active');
+      });
+      document.querySelector('[data-vp="' + vp + '"]').classList.add('active');
+
+      document.querySelectorAll('[data-vp-module]').forEach(function(card) {
+        if (vp === 'all' || card.dataset.vpModule === vp) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+  </script>
 </body>
 </html>

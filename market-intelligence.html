@@ -793,6 +793,60 @@
     .mi-welcome-step__icon { font-size: 1.5rem; margin-bottom: 8px; }
     .mi-welcome-step__label { font-size: 0.8rem; font-weight: 600; color: var(--text-dark); }
 
+    /* Disclaimer */
+    .bildop-disclaimer-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 9999;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+    .bildop-disclaimer-modal {
+      background: #fff; border-radius: 16px; padding: 32px; max-width: 520px; width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3); text-align: center;
+    }
+    .bildop-disclaimer-icon { font-size: 3rem; margin-bottom: 16px; }
+    .bildop-disclaimer-modal h3 {
+      font-family: 'Audiowide', sans-serif; font-size: 1.2rem; color: #1e3a5f;
+      margin-bottom: 16px;
+    }
+    .bildop-disclaimer-modal p {
+      font-size: 0.9rem; color: #475569; line-height: 1.6; margin-bottom: 12px; text-align: left;
+    }
+    .bildop-disclaimer-check {
+      display: flex; align-items: flex-start; gap: 10px; text-align: left;
+      margin: 20px 0; padding: 14px; background: #fef3c7; border: 1px solid #f59e0b;
+      border-radius: 10px; cursor: pointer; font-size: 0.85rem; color: #1e293b; line-height: 1.5;
+    }
+    .bildop-disclaimer-check input { margin-top: 3px; flex-shrink: 0; }
+    .bildop-disclaimer-btn {
+      width: 100%; padding: 14px; border: none; border-radius: 10px;
+      font-size: 1rem; font-weight: 700; font-family: 'Inter', sans-serif;
+      cursor: pointer; transition: all .2s;
+      background: linear-gradient(135deg, #1e3a5f, #0f2744); color: #fff;
+    }
+    .bildop-disclaimer-btn:disabled {
+      opacity: .4; cursor: not-allowed;
+    }
+    .bildop-disclaimer-btn:not(:disabled):hover {
+      transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30,58,95,.4);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bildop-disclaimer-btn:not(:disabled):hover { transform: none; }
+    }
+
+    /* BANQUE MODE BANNER */
+    .bildop-banque-banner {
+      display: flex; align-items: center; gap: 14px;
+      background: linear-gradient(135deg, #fef3c7, #fff7ed);
+      border: 1px solid #f59e0b; border-left: 4px solid #d97706;
+      border-radius: 10px; padding: 14px 20px; margin: 16px 24px;
+      font-size: 0.85rem; color: #92400e; line-height: 1.5;
+    }
+    .bildop-banque-banner__icon { font-size: 1.5rem; flex-shrink: 0; }
+    .bildop-banque-banner__text strong { display: block; margin-bottom: 2px; color: #78350f; }
+    @media (max-width: 480px) {
+      .bildop-banque-banner { flex-direction: column; text-align: center; gap: 8px; margin: 12px 12px; }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .mi-layout { grid-template-columns: 1fr; }
@@ -845,6 +899,15 @@
       </div>
       <button class="mi-adn-suggestion__btn" onclick="useAdnSuggestion()">Utiliser →</button>
     </div>
+  </div>
+</div>
+
+<!-- BANQUE MODE BANNER -->
+<div class="bildop-banque-banner">
+  <span class="bildop-banque-banner__icon">&#127974;</span>
+  <div class="bildop-banque-banner__text">
+    <strong>Mode Banque activ&eacute;</strong> &mdash; Cet outil &eacute;value ton projet avec la rigueur d'un analyste financier.
+    Les r&eacute;sultats peuvent &ecirc;tre directs et sans complaisance. C'est voulu.
   </div>
 </div>
 
@@ -1310,6 +1373,20 @@
     </div>
 
   </main>
+</div>
+
+<div class="bildop-disclaimer-overlay" id="disclaimerOverlay" style="display:none;">
+  <div class="bildop-disclaimer-modal">
+    <div class="bildop-disclaimer-icon">⚠️</div>
+    <h3>Avertissement important</h3>
+    <p>Les informations generees par cet outil sont fournies <strong>a titre indicatif seulement</strong>. Elles ne constituent pas un conseil professionnel, financier ou juridique.</p>
+    <p>Les donnees presentees sont basees sur des modeles statistiques et de l'intelligence artificielle. Elles peuvent contenir des inexactitudes. <strong>Toute decision d'affaires doit etre validee avec des professionnels qualifies</strong> (comptable, avocat, conseiller financier).</p>
+    <label class="bildop-disclaimer-check">
+      <input type="checkbox" id="disclaimerCheck" onchange="document.getElementById('disclaimerProceed').disabled = !this.checked">
+      <span>Je comprends que cet outil fournit des recommandations a titre indicatif et que la responsabilite de mes decisions d'affaires m'appartient entierement.</span>
+    </label>
+    <button class="bildop-disclaimer-btn" id="disclaimerProceed" disabled onclick="acceptDisclaimer()">Proceder →</button>
+  </div>
 </div>
 
 <script src="js/market-intelligence.js"></script>

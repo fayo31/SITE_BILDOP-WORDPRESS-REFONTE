@@ -151,6 +151,22 @@ function startAnalysis() {
     document.getElementById('nicheInput').focus();
     return;
   }
+  // Show disclaimer first if not yet accepted this session
+  if (!sessionStorage.getItem('bildop_disclaimer_mi')) {
+    window._pendingNiche = input;
+    document.getElementById('disclaimerOverlay').style.display = 'flex';
+    return;
+  }
+  _doStartAnalysis(input);
+}
+
+function acceptDisclaimer() {
+  sessionStorage.setItem('bildop_disclaimer_mi', 'accepted');
+  document.getElementById('disclaimerOverlay').style.display = 'none';
+  _doStartAnalysis(window._pendingNiche);
+}
+
+function _doStartAnalysis(input) {
   MI_STATE.niche = input;
   MI_STATE.data = { market: null, competitors: null, avatar: null, content: null, hooks: null };
   MI_STATE.completedSteps = new Set();
@@ -206,7 +222,7 @@ function generateMarketData(niche) {
       size: '96 Mrd $', sizeDesc: 'Marché mondial fitness en ligne 2025',
       comp: 'Élevée', compDesc: 'Marché saturé mais fragmenté — la niche spécifique est clé',
       opp: '🔥 Forte', oppDesc: 'Les niches hyper-spécifiques (âge/problème) dominent',
-      insight: 'Le marché fitness en ligne est saturé en généraliste, mais les niches ultra-spécifiques (femmes 40+ post-ménopause, hommes 50+ mobilité) ont 10x moins de compétition et 3x plus de conversion. La spécificité est ton avantage concurrentiel.',
+      insight: '⚠️ Mise en garde : Le marché fitness en ligne est saturé en généraliste. Les niches ultra-spécifiques semblent avoir moins de compétition, mais ces données ne garantissent pas le succès. Les chiffres de conversion (10x, 3x) sont des estimations sectorielles — validez avec votre comptable et testez avec un budget limité avant d\'investir. Source : modèle statistique Bildop — données indicatives seulement.',
       moves: ['Choisir une sous-niche ultra-précise (ex: femmes 45-55 ans, perte de poids post-ménopause)', 'Créer un contenu éducatif autour des erreurs communes dans ta sous-niche', 'Lancer une offre d\'entrée à faible friction (défi 7 jours gratuit)'],
       gaps: ['Coaching pour seniors actifs', 'Fitness post-grossesse', 'Mobilité & douleurs chroniques', 'Athlètes masters 50+', 'Fitness adapté handicap']
     },
@@ -215,7 +231,7 @@ function generateMarketData(niche) {
       size: '20 Mrd $', sizeDesc: 'Marché coaching en ligne Amérique du Nord',
       comp: 'Moyenne', compDesc: 'Compétition forte en généraliste, faible en niche',
       opp: '⚡ Très forte', oppDesc: 'Coaching spécialisé = prix premium + meilleure rétention',
-      insight: 'Le coaching généraliste est mort. Les coachs qui gagnent en 2025 sont ultra-spécialisés sur un résultat précis pour un avatar précis. "Je coache les entrepreneurs qui veulent passer de 0 à 10k$/mois en 90 jours" bat "Je coache les entrepreneurs" à tous les niveaux.',
+      insight: '⚠️ Attention : Le coaching généraliste fait face à une concurrence féroce. La spécialisation est une stratégie, pas une garantie. Ces projections sont basées sur des tendances observées — le marché est compétitif et les résultats varient considérablement. Vérifiez ces chiffres avec votre comptable avant toute décision d\'investissement. Source : modèle statistique Bildop — données indicatives seulement.',
       moves: ['Définir ton résultat promis en chiffres et en délai précis', 'Créer 3 études de cas clients avec résultats mesurables', 'Lancer un webinaire de positionnement pour qualifier tes prospects'],
       gaps: ['Coaching transition de carrière 40+', 'Coaching pour femmes entrepreneurs', 'Coaching performance sportive mentale', 'Coaching pour introvertis en leadership']
     },
@@ -224,7 +240,7 @@ function generateMarketData(niche) {
       size: '450 Mrd $', sizeDesc: 'Marché mondial soins à domicile 2025',
       comp: 'Faible-Moyenne', compDesc: 'Marché local peu digitalisé — avantage premier arrivant',
       opp: '🚀 Exceptionnelle', oppDesc: 'Vieillissement population + sous-digitalisation = opportunité majeure',
-      insight: 'Le secteur des soins à domicile est massivement sous-digitalisé. 90% des familles cherchent des prestataires en ligne mais 70% des agences n\'ont pas de présence numérique optimisée. Celui qui maîtrise le digital dans ce secteur prend tout.',
+      insight: '⚠️ Mise en garde : Le secteur des soins à domicile montre des signaux de croissance, mais la concurrence est féroce et les marges sont sous pression (charges salariales élevées, réglementation lourde). Les pourcentages cités (90%, 70%) sont des estimations — validez avec des données locales réelles avant d\'investir. Le marché est compétitif — vérifiez ces chiffres avec votre comptable. Source : modèle statistique Bildop — données indicatives seulement.',
       moves: ['Optimiser ta présence Google Maps et avis clients', 'Créer du contenu éducatif pour les proches aidants (SEO fort)', 'Mettre en place un système de référencement depuis les CLSC et médecins'],
       gaps: ['Soins spécialisés Alzheimer', 'Accompagnement post-chirurgie', 'Répit pour proches aidants', 'Soins pédiatriques à domicile']
     },
@@ -233,7 +249,7 @@ function generateMarketData(niche) {
       size: '12 Mrd $', sizeDesc: 'Estimation marché adressable',
       comp: 'Moyenne', compDesc: 'Opportunités dans les sous-niches spécialisées',
       opp: '⚡ Forte', oppDesc: 'Marché en croissance avec des gaps identifiés',
-      insight: `Le marché "${niche}" est en pleine expansion. Les acteurs qui dominent ne sont pas nécessairement les meilleurs — ils sont les mieux positionnés. Une niche ultra-spécifique avec un message clair surpasse systématiquement les généralistes, même avec moins de ressources.`,
+      insight: `⚠️ Attention : Ces données sur "${niche}" sont des estimations basées sur des tendances générales. Elles ne garantissent pas le succès de votre projet spécifique. Le marché est compétitif — vérifiez ces chiffres avec votre comptable et faites votre propre étude terrain avant toute décision d'investissement. Source : modèle statistique Bildop — données indicatives seulement.`,
       moves: [`Identifier les 3 sous-segments les plus rentables dans "${niche}"`, 'Analyser les avis négatifs des concurrents pour trouver les gaps', 'Tester une offre d\'entrée à faible risque pour valider la demande'],
       gaps: ['Segment premium sous-servi', 'Niche géographique spécifique', 'Problème spécifique non résolu', 'Nouveau segment démographique']
     }
@@ -304,7 +320,7 @@ function generateCompetitorData(niche) {
         { name: 'ActiveNation', position: 'Communauté fitness + contenu gratuit', price: 'Freemium', threat: 'mid', gap: 'Monétisation faible, pas de coaching 1-1' },
         { name: 'EliteCoach', position: 'Coaching premium 1-1', price: '500$/mois', threat: 'low', gap: 'Prix inaccessible, liste d\'attente longue' },
       ],
-      diff: `Aucun concurrent ne cible spécifiquement "${niche}". L'opportunité est de créer la référence absolue pour ce segment précis avec un message ultra-ciblé et des résultats mesurables.`
+      diff: `⚠️ Attention : Ces concurrents sont des profils simulés à titre indicatif. Aucun concurrent ne cible peut-être spécifiquement "${niche}", mais vous devez valider cette hypothèse avec une vraie recherche de marché. Ces données ne garantissent pas le succès. Source : données simulées — à valider avec des données réelles.`
     },
     default: {
       competitors: [
@@ -313,7 +329,7 @@ function generateCompetitorData(niche) {
         { name: 'Acteur Local', position: 'Présence locale forte', price: 'Prix premium local', threat: 'mid', gap: 'Pas de présence digitale, pas de scalabilité' },
         { name: 'Nouveau Entrant', position: 'Approche digitale first', price: 'Modèle SaaS/abonnement', threat: 'low', gap: 'Manque de crédibilité et de preuves sociales' },
       ],
-      diff: `La faille principale dans ce marché : les acteurs existants ne parlent pas le langage émotionnel de leur client. Ils vendent des features, pas des transformations. Ton avantage : positionner ton offre autour du résultat final et de la transformation, pas du service.`
+      diff: `⚠️ Attention : Cette analyse est basée sur des profils concurrentiels simulés. La faille identifiée (langage émotionnel) est une hypothèse à valider sur le terrain. Faites votre propre veille concurrentielle avant de prendre des décisions stratégiques. Source : données simulées — à valider avec des données réelles.`
     }
   };
 
@@ -513,7 +529,7 @@ function generateHooksData(niche) {
     { text: `"J'ai analysé les 10 meilleurs en ${niche}. Voici le pattern qu'ils ont tous en commun."`, score: '77%' },
   ];
 
-  const pattern = `Dans ce marché, les accroches qui convertissent le mieux utilisent 3 éléments : (1) un chiffre précis qui crée de la crédibilité, (2) une promesse de résultat mesurable dans un délai défini, et (3) un élément de surprise ou de contre-intuition qui brise la croyance populaire. Combine ces 3 éléments et ton taux d'engagement va exploser.`;
+  const pattern = `⚠️ Mise en garde : Ces accroches sont des suggestions générées par IA, pas des garanties de résultats. Les scores de performance sont des estimations théoriques — les résultats réels dépendent de ton marché, ton exécution et ton audience. Teste chaque accroche avec un petit budget avant de scaler. Ne prends aucune décision d'investissement basée uniquement sur ces données. Source : modèle statistique Bildop — données indicatives seulement.`;
 
   return { hooks, pattern };
 }
@@ -601,6 +617,11 @@ function exportReport() {
     lines.push('PATTERN GAGNANT :');
     lines.push(MI_STATE.data.hooks.pattern);
   }
+
+  lines.push('');
+  lines.push('⚠️ AVERTISSEMENT : Ce rapport est généré à partir de données simulées et d\'estimations.');
+  lines.push('Il ne remplace pas une étude de marché professionnelle ni l\'avis d\'un comptable.');
+  lines.push('Validez chaque donnée avec des sources réelles avant toute décision d\'investissement.');
 
   const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);

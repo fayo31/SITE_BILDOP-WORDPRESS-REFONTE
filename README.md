@@ -1,7 +1,7 @@
 # Bildop — Site Web (Refonte)
 
-> **Dernière mise à jour :** 7 mars 2026 — Architecture complète décidée
-> **Commit actuel :** `841cb03` — Audit + plan M7/M8
+> **Dernière mise à jour :** 10 mars 2026 — 8 modules livrés + processus vente H2H
+> **Commit actuel :** `ff8048a` — M8 intégration processus de vente H2H
 
 ---
 
@@ -25,10 +25,11 @@ Bildop est une plateforme SaaS québécoise qui aide les entrepreneurs à passer
 | 5 | **Simulateur Financier** | `financier.html` | ✅ Livré | 17 modèles industrie, projections 5 ans, scénarios |
 | — | **Veille Compétitive** | `veille.html` | ✅ Livré | Standalone — analyse URL/nom compétiteur |
 | 6 | **Market Intelligence** | `market-intelligence.html` | ✅ Livré* | Inspiré Cook.ai — marché, concurrents, avatar, contenu, accroches |
-| 7 | **Étude de marché temps réel** | `marche-reel.html` | 📋 Planifié | Stats Canada, REQ, Google Trends, SerpAPI, Claude API |
-| 8 | **Sprint 90 jours** | `sprint.html` | 📋 Planifié | OKRs, KPIs, templates SOPs, export PDF — Academy intégrée |
+| 7 | **Étude de marché temps réel** | `marche-reel.html` | ✅ Livré* | Stats Canada, REQ, Google Trends, SerpAPI, Claude API |
+| 8 | **Sprint 90 jours + H2H** | `sprint.html` | ✅ Livré* | OKRs, KPIs, templates SOPs, export PDF + processus vente H2H (méthode BCS) |
 
-> *M6 : frontend complet, données simulées (mock). API live = prochaine étape.
+> *M6, M7, M8 : frontend complet, données simulées (mock). API live = prochaine étape.
+> M8 inclut le processus de vente H2H (méthode BCS adaptée pour entrepreneurs).
 > Academy/Formation = intégrée dans M8 (SOPs + templates d'exécution), évoluera en produit séparé si la demande le justifie.
 
 ---
@@ -92,8 +93,8 @@ bildop-redesign/
 ├── market-intelligence.html    # Module 6 — Market Intelligence (Cook.ai-inspired)
 ├── ideascore.html              # IdeaScore Pro — intégré au site (avec nav)
 ├── ideascore-pro.html          # IdeaScore Pro — standalone landing page (lead magnet)
-├── [À créer] marche-reel.html  # Module 7 — Étude de marché temps réel
-├── [À créer] sprint.html       # Module 8 — Plan d'action 90 jours
+├── marche-reel.html            # Module 7 — Étude de marché temps réel
+├── sprint.html                 # Module 8 — Sprint 90 jours + H2H
 ├── css/
 │   └── style.css               # Styles globaux (~4900 lignes)
 ├── js/
@@ -105,6 +106,8 @@ bildop-redesign/
 │   ├── financier.js            # Module 5 — projections, scénarios, charts
 │   ├── veille.js               # Veille compétitive — analyse URL/nom
 │   ├── market-intelligence.js  # Module 6 — 6 étapes d'intelligence marché
+│   ├── marche-reel.js          # Module 7 — données marché temps réel
+│   ├── sprint.js               # Module 8 — Sprint 90 jours + H2H
 │   └── ideascore.js            # IdeaScore Pro — 42 catégories, scoring
 └── images/                     # Assets visuels
 ```

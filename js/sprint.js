@@ -170,6 +170,21 @@ function updateProgress() {
 
 // --- Générer tout le sprint depuis la page d'accueil ---
 function generateSprint() {
+  // Show disclaimer first if not yet accepted this session
+  if (!sessionStorage.getItem('bildop_disclaimer_sp')) {
+    document.getElementById('disclaimerOverlay').style.display = 'flex';
+    return;
+  }
+  _doGenerateSprint();
+}
+
+function acceptDisclaimer() {
+  sessionStorage.setItem('bildop_disclaimer_sp', 'accepted');
+  document.getElementById('disclaimerOverlay').style.display = 'none';
+  _doGenerateSprint();
+}
+
+function _doGenerateSprint() {
   goToStep(1);
 }
 
@@ -272,11 +287,11 @@ function buildPhase1() {
   };
 
   const whys = {
-    0: `Ton flux Acquisition est ton talon d'Achille. Sans nouveaux clients, rien d'autre n'a d'importance. Les 30 premiers jours, tout l'effort va là.`,
-    1: `Ton flux Production limite ta capacité à livrer. Des clients frustrés ne reviennent pas. On commence par solidifier ta livraison.`,
-    2: `Sans visibilité financière, tu pilotes à l'aveugle. Les 30 premiers jours : transparence totale sur chaque dollar entrant et sortant.`,
-    3: `Acquérir un client coûte 5-7x plus cher que d'en garder un. On commence par colmater le seau avant de le remplir.`,
-    4: `Tu ne peux pas gérer ce que tu ne mesures pas. Les 30 premiers jours : mettre en place les bonnes mesures pour tout ce qui suit.`,
+    0: `⚠️ Mise en garde : Ton flux Acquisition semble faible selon le diagnostic. Sans nouveaux clients, rien d'autre n'a d'importance. Mais attention : ces recommandations sont basées sur des données simulées. Valide chaque action avec ta réalité terrain avant d'investir du temps ou de l'argent. Les 30 premiers jours, tout l'effort va là — si et seulement si ton diagnostic est exact.`,
+    1: `⚠️ Attention : Ton flux Production semble limiter ta capacité à livrer. Des clients frustrés ne reviennent pas. Mais ces priorités sont basées sur un diagnostic simulé — valide les goulots réels avec ton équipe avant de tout réorganiser.`,
+    2: `⚠️ Mise en garde : Sans visibilité financière, tu pilotes à l'aveugle. Ces recommandations sont un point de départ, pas un plan financier validé. Consulte ton comptable pour confirmer tes chiffres réels avant de prendre des décisions structurantes.`,
+    3: `⚠️ Attention : Le ratio 5-7x (acquisition vs rétention) est une moyenne sectorielle, pas une certitude pour ton entreprise. Valide tes propres données de churn avant de réorienter ta stratégie. Commence par colmater le seau — mais vérifie d'abord qu'il fuit vraiment.`,
+    4: `⚠️ Mise en garde : "Tu ne peux pas gérer ce que tu ne mesures pas" — c'est vrai, mais attention à ne pas mesurer les mauvaises choses. Ces KPIs suggérés sont génériques. Adapte-les à ta réalité avant de les suivre religieusement.`,
   };
 
   return {
@@ -358,7 +373,7 @@ function buildPhase2() {
 
   return {
     actions,
-    milestone: '🚀 Jalon : 3 premiers clients payants ou 10 prospects en pipeline actif',
+    milestone: '🚀 Jalon : 3 premiers clients payants ou 10 prospects en pipeline actif — ⚠️ Cible ambitieuse. Si non atteinte, réévaluer la stratégie avec honnêteté.',
     metrics: [
       { value: '30', label: 'Jours', sub: 'Phase 2' },
       { value: '6', label: 'Actions', sub: 'Marketing + Ventes' },
@@ -424,7 +439,7 @@ function buildPhase3() {
 
   return {
     actions,
-    milestone: '⚡ Jalon : Chiffre d\'affaires 30j en hausse vs Phase 1 + Plan Q2 écrit',
+    milestone: '⚡ Jalon : Chiffre d\'affaires 30j en hausse vs Phase 1 + Plan Q2 écrit — ⚠️ Doubler le CA en 60 jours n\'est pas garanti. Soyez réaliste.',
     metrics: [
       { value: '30', label: 'Jours', sub: 'Phase 3' },
       { value: '5', label: 'Actions', sub: 'Scaling' },
@@ -505,7 +520,7 @@ function buildOKRs() {
     },
     {
       num: 'OKR 3',
-      obj: 'Doubler le chiffre d\'affaires mensuel de la Phase 1 à la Phase 3',
+      obj: 'Doubler le chiffre d\'affaires mensuel de la Phase 1 à la Phase 3 (cible ambitieuse — à valider avec votre comptable)',
       krs: [
         { icon: '📈', label: 'Revenus mensuels Jour 90 vs Jour 30', target: '2x minimum' },
         { icon: '❤️', label: 'Taux de satisfaction client (NPS)', target: '> 8 / 10' },
@@ -815,6 +830,11 @@ function exportTxt() {
   lines.push('□ Identifier l\'action #1 et la compléter avant midi');
   lines.push('□ Faire le point sur les KPIs le vendredi');
   lines.push('□ Préparer les 3 priorités de la semaine suivante');
+  lines.push('');
+  lines.push('');
+  lines.push('⚠️ AVERTISSEMENT : Ce plan est généré à partir de données simulées et d\'un diagnostic automatisé.');
+  lines.push('Il ne remplace pas l\'avis d\'un comptable, d\'un conseiller financier ou d\'un mentor d\'affaires.');
+  lines.push('Validez chaque recommandation avec votre réalité terrain avant d\'investir.');
   lines.push('');
   lines.push('— Généré par BILDOP.COM | Fait au Québec 🇨🇦 —');
 

@@ -22,7 +22,7 @@ const SECTEURS = {
       sam: '890 M $', sam_desc: 'Marché adressable Québec',
       som: '12-35 M $', som_desc: 'Part capturable réalistement (1-4%)',
       cagr: '+7.8%', cagr_desc: 'Croissance annuelle composée 2024-2029',
-      source: 'Stats Canada · MSSS · RAMQ',
+      source: 'Stats Canada · MSSS · RAMQ (données simulées — à valider)',
       regions: [
         { name: 'Grand Montréal', val: 42, pct: 42 },
         { name: 'Québec (ville)', val: 18, pct: 18 },
@@ -30,7 +30,7 @@ const SECTEURS = {
         { name: 'Laval', val: 9, pct: 9 },
         { name: 'Régions', val: 17, pct: 17 },
       ],
-      insight: 'Le vieillissement de la population québécoise crée une demande structurelle : 1 Québécois sur 5 aura 65 ans ou plus en 2031 (ISQ). La pénurie de main-d\'œuvre en établissement pousse vers les soins à domicile. Le marché est en croissance de ~8% par an, soutenu par les politiques gouvernementales de maintien à domicile.'
+      insight: '⚠️ Mise en garde : Ces projections sont basées sur des tendances macro. Le vieillissement crée une demande, mais la concurrence est féroce et les marges sont sous pression. La pénurie de main-d\'œuvre est aussi un risque majeur pour votre propre recrutement. Validez avec votre comptable avant d\'investir. Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     },
     tendances: {
       volume: '+185%', volume_desc: 'Croissance recherches 12 mois',
@@ -44,14 +44,14 @@ const SECTEURS = {
         { kw: 'agence soin à domicile Québec', vol: '3 200/mois', trend: '+91%', level: 'Très élevé' },
         { kw: 'aide personnes âgées maison', vol: '5 400/mois', trend: '+120%', level: 'Très élevé' },
       ],
-      insight: 'La recherche "aide à domicile" a augmenté de 185% au QC en 12 mois. Le pic hivernal (jan-mars) correspond aux sorties d\'hôpital. Les recherches mobiles dominent à 74% — ton site DOIT être optimisé mobile en priorité absolue.'
+      insight: '⚠️ Attention : Ces volumes de recherche sont des estimations simulées, pas des données Google Trends en temps réel. Le pic hivernal et la dominance mobile sont des tendances plausibles mais non confirmées pour votre niche spécifique. Ces données ne garantissent pas le succès — vérifiez avec des outils de recherche réels (Google Trends, SEMrush). Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     },
     benchmark: {
       margeB: '18-28%', margeB_desc: 'Marge brute typique',
       margeN: '8-14%', margeN_desc: 'Marge nette moyenne secteur',
       revEmp: '52 000 $', revEmp_desc: 'Revenu/employé/an moyen QC',
       seuil: '15-25 clients', seuil_desc: 'Seuil de rentabilité typique',
-      source: 'BDC · Desjardins · FCEI',
+      source: 'BDC · Desjardins · FCEI (données simulées — à valider)',
       prices: [
         { segment: 'Aide à domicile (AVQ)', min: '22$', max: '32$', unit: '/heure', note: 'Taux marché QC 2026' },
         { segment: 'Soins infirmiers', min: '45$', max: '85$', unit: '/visite', note: 'Selon actes' },
@@ -64,7 +64,7 @@ const SECTEURS = {
         { name: 'Frais admin', val: 12, color: 'amber' },
         { name: 'Marge nette', val: 11, color: 'emerald' },
       ],
-      insight: 'Le ratio charges salariales est le nerf de la guerre dans ce secteur (65-72% des revenus). Les entreprises les plus profitables ont un taux d\'utilisation des employés > 80% et facturent des services à valeur ajoutée (soins infirmiers, accompagnement spécialisé) en plus des AVQ de base.'
+      insight: '⚠️ Mise en garde : Les marges et ratios présentés sont des moyennes sectorielles — votre réalité peut être très différente. Le ratio charges salariales (65-72%) est une estimation; les coûts réels dépendent de votre région, vos contrats et votre mix de services. Ne basez aucune décision d\'investissement sur ces seules données. Consultez votre comptable. Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     },
     densite: {
       total: '4 200+', total_desc: 'Entreprises actives QC (REQ)',
@@ -84,7 +84,7 @@ const SECTEURS = {
         { zone: '🟢 Montérégie Est (Granby, St-Hyacinthe)', desc: 'Population vieillissante, manque d\'offre structurée, coûts immobiliers bas' },
         { zone: '🟡 Rive-Sud (Longueuil, Brossard)', desc: 'Saturation modérée — différenciation possible par spécialisation (Alzheimer, post-chirurgie)' },
       ],
-      insight: 'La Rive-Sud (Brossard/Saint-Hubert) affiche 45% de saturation — c\'est une fenêtre. La différenciation par spécialisation (Alzheimer, soins post-opératoires, répit proche aidant) permet de dominer une niche sans affronter les généralistes sur le prix.'
+      insight: '⚠️ Attention : Les taux de saturation sont des estimations basées sur le nombre d\'entreprises au REQ — ils ne reflètent pas la qualité ni la taille des concurrents. Une saturation de 45% ne signifie pas une opportunité garantie. Faites votre propre analyse terrain avant d\'investir dans un territoire. Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     }
   },
 
@@ -97,13 +97,13 @@ const SECTEURS = {
       sam: '1.2 Mrd $', sam_desc: 'Marché adressable Québec',
       som: '500 K$ - 5 M$', som_desc: 'Part capturable réalistement',
       cagr: '+12.4%', cagr_desc: 'Croissance annuelle composée',
-      source: 'Stats Canada · OCDE · eLearning Industry',
+      source: 'Stats Canada · OCDE · eLearning Industry (données simulées — à valider)',
       regions: [
         { name: 'Grand Montréal', val: 52, pct: 52 },
         { name: 'Québec (ville)', val: 20, pct: 20 },
         { name: 'Régions', val: 28, pct: 28 },
       ],
-      insight: 'Le coaching B2B (entreprises) représente 65% des revenus du secteur mais seulement 20% des acteurs s\'y positionnent. La spécialisation sectorielle (leadership, vente, gestion RH) multiplie les tarifs par 2-3x vs coaching généraliste.'
+      insight: '⚠️ Mise en garde : Les ratios B2B/B2C (65%/20%) sont des estimations sectorielles, pas des données confirmées pour votre niche. Le marché du coaching est saturé et les barrières à l\'entrée sont basses — beaucoup d\'entrants, peu de survivants. Validez la demande réelle auprès de prospects avant d\'investir. Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     },
     tendances: {
       volume: '+280%', volume_desc: 'Croissance recherches 12 mois',
@@ -117,14 +117,14 @@ const SECTEURS = {
         { kw: 'coach en ligne francophone', vol: '4 500/mois', trend: '+145%', level: 'Très élevé' },
         { kw: 'formation entrepreneur Québec', vol: '1 600/mois', trend: '+55%', level: 'Élevé' },
       ],
-      insight: 'Le coaching en ligne francophone est en explosion (+145%). La demande est là mais l\'offre francophone de qualité reste insuffisante. Premier entrant avec une niche précise = avantage durable.'
+      insight: '⚠️ Attention : Le chiffre de +145% est une estimation simulée. Le marché francophone montre des signes de croissance, mais "premier entrant" ne garantit pas le succès — l\'exécution et la qualité comptent davantage. Vérifiez ces tendances avec des outils réels (Google Trends, SEMrush). Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     },
     benchmark: {
       margeB: '70-85%', margeB_desc: 'Marge brute (service intellectuel)',
       margeN: '35-55%', margeN_desc: 'Marge nette si bien géré',
       revEmp: '90 000 $', revEmp_desc: 'Revenu/coach/an (médian QC)',
       seuil: '5-12 clients', seuil_desc: 'Seuil rentabilité coacheur solo',
-      source: 'ICF · BDC · Enquête FCEI 2025',
+      source: 'ICF · BDC · Enquête FCEI 2025 (données simulées — à valider)',
       prices: [
         { segment: 'Coaching individuel (1-1)', min: '150$', max: '500$', unit: '/heure', note: 'Selon spécialisation' },
         { segment: 'Programme coaching 3 mois', min: '2 500$', max: '8 000$', unit: '/programme', note: 'Forfait complet' },
@@ -137,7 +137,7 @@ const SECTEURS = {
         { name: 'Outils & tech', val: 8, color: 'navy' },
         { name: 'Marge nette', val: 44, color: 'emerald' },
       ],
-      insight: 'Le coaching est l\'un des secteurs les plus profitables — marges nettes de 35-55% si bien positionné. Le seul vrai coût est l\'acquisition client. Les coachs qui automatisent leur marketing (funnel, contenu, email) scalent 3x plus vite que ceux qui font du réseautage pur.'
+      insight: '⚠️ Mise en garde : Des marges de 35-55% sont théoriquement possibles mais loin d\'être garanties. La majorité des coachs solo ne dépassent pas 50 000$/an. Le coût d\'acquisition client peut être élevé dans un marché saturé. Ne prenez pas ces chiffres pour acquis — consultez votre comptable. Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     },
     densite: {
       total: '12 000+', total_desc: 'Coaches / formateurs actifs QC',
@@ -156,7 +156,7 @@ const SECTEURS = {
         { zone: '🟢 Francophone en ligne', desc: 'Marché sous-développé vs anglophone — 1 seul créateur FR pour 10 EN' },
         { zone: '🟡 Régions QC (hors MTL)', desc: 'Saturation < 25% — forte demande non comblée, déplacements ou virtuel' },
       ],
-      insight: 'Le marché généraliste est saturé à Montréal. La stratégie gagnante : hyper-spécialisation sur un résultat précis pour un avatar précis. "Coach en leadership pour fondateurs de PME manufacturières" bat "coach d\'affaires" à tous les niveaux — prix, conversion, rétention.'
+      insight: '⚠️ Attention : Montréal est effectivement compétitif, mais l\'hyper-spécialisation comporte aussi des risques (marché trop petit, dépendance à un segment). Validez la taille de votre niche avec des données réelles avant de vous spécialiser. Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     }
   },
 
@@ -169,7 +169,7 @@ const SECTEURS = {
       sam: '~2.1 Mrd $', sam_desc: 'Marché adressable Québec',
       som: '1-10 M$', som_desc: 'Part capturable réalistement',
       cagr: '+6-12%', cagr_desc: 'Croissance estimée secteur',
-      source: 'Stats Canada · BDC · OCDE',
+      source: 'Stats Canada · BDC · OCDE (données simulées — à valider)',
       regions: [
         { name: 'Grand Montréal', val: 45, pct: 45 },
         { name: 'Québec (ville)', val: 18, pct: 18 },
@@ -177,7 +177,7 @@ const SECTEURS = {
         { name: 'Laval', val: 8, pct: 8 },
         { name: 'Régions QC', val: 17, pct: 17 },
       ],
-      insight: 'Le Québec représente ~23% du PIB canadien et ses PME constituent 99% du tissu économique. Le marché local offre un avantage de proximité culturelle et linguistique qu\'aucun acteur américain ne peut répliquer. La demande "Acheter local" a augmenté de 87% depuis 2025.'
+      insight: '⚠️ Mise en garde : Ces données sont des estimations générales sur le marché québécois. Le chiffre de 87% de croissance est simulé. Chaque secteur a sa propre dynamique — ne basez aucune décision d\'investissement sur ces seules données. Faites votre propre validation terrain. Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     },
     tendances: {
       volume: '+220%', volume_desc: 'Croissance recherches 12 mois',
@@ -191,14 +191,14 @@ const SECTEURS = {
         { kw: '[Ton service] prix abordable', vol: '600-1 800/mois', trend: '+65%', level: 'Élevé' },
         { kw: 'entreprise locale [secteur] QC', vol: '900-3 000/mois', trend: '+88%', level: 'Très élevé' },
       ],
-      insight: 'La tendance "local first" transforme le comportement d\'achat québécois. Les entreprises qui misent sur leur appartenance locale + qualité de service surperforment les concurrents nationaux de 30-50% sur les taux de conversion.'
+      insight: '⚠️ Attention : Le chiffre de 30-50% de surperformance est une estimation simulée, pas une donnée confirmée. Les tendances locales varient selon le secteur et la région. Vérifiez avec des outils réels (Google Trends, études Léger). Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     },
     benchmark: {
       margeB: '25-55%', margeB_desc: 'Marge brute typique PME QC',
       margeN: '8-22%', margeN_desc: 'Marge nette médiane QC',
       revEmp: '68 000 $', revEmp_desc: 'Revenu/employé/an médian QC',
       seuil: '10-30 clients', seuil_desc: 'Seuil de rentabilité typique',
-      source: 'BDC · Desjardins · FCEI 2025',
+      source: 'BDC · Desjardins · FCEI 2025 (données simulées — à valider)',
       prices: [
         { segment: 'Entrée de gamme', min: 'Variable', max: '–', unit: '–', note: 'Dépend de ton secteur' },
         { segment: 'Milieu de gamme', min: 'Variable', max: '–', unit: '–', note: 'Segmentation à définir' },
@@ -211,7 +211,7 @@ const SECTEURS = {
         { name: 'Marketing/Ventes', val: 12, color: 'amber' },
         { name: 'Marge nette moy.', val: 14, color: 'emerald' },
       ],
-      insight: 'La marge nette médiane des PME québécoises est de 14%. Les entreprises qui dominent leur niche atteignent 22-35% grâce à une meilleure rétention client (LTV élevée) et un marketing efficace (CAC faible). L\'objectif : LTV/CAC > 3.'
+      insight: '⚠️ Mise en garde : La marge nette médiane de 14% est une estimation sectorielle. Votre marge réelle dépend de nombreux facteurs (prix, volume, charges fixes). Les PME qui atteignent 22-35% sont l\'exception, pas la norme. Consultez votre comptable pour valider vos projections. Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     },
     densite: {
       total: '250 000+', total_desc: 'PME actives au Québec (REQ)',
@@ -230,7 +230,7 @@ const SECTEURS = {
         { zone: '🟢 Niche spécialisée dans ton secteur', desc: 'La spécialisation permet de charger 2-3x le prix généraliste avec moins de compétition directe' },
         { zone: '🟡 Grand Montréal', desc: 'Saturé en généraliste — mais les niches ultra-spécifiques restent peu exploitées' },
       ],
-      insight: 'Quelle que soit ta niche, la règle est la même : les généralistes se font écraser sur le prix, les spécialistes commandent une prime. Choisis un problème très précis pour un avatar très précis — et deviens LA référence.'
+      insight: '⚠️ Attention : Les données de densité sont basées sur le REQ et des estimations. Le nombre d\'entreprises actives ne reflète pas leur taille ni leur compétitivité. La spécialisation comporte aussi des risques. Faites votre propre analyse terrain. Source : modèle statistique Bildop — données indicatives seulement (données simulées — à valider).'
     }
   }
 };
@@ -271,6 +271,22 @@ function detectSecteur(niche) {
 function startAnalysis() {
   const input = document.getElementById('nicheInput').value.trim();
   if (!input) { document.getElementById('nicheInput').focus(); return; }
+  // Show disclaimer first if not yet accepted this session
+  if (!sessionStorage.getItem('bildop_disclaimer_mr')) {
+    window._pendingNiche = input;
+    document.getElementById('disclaimerOverlay').style.display = 'flex';
+    return;
+  }
+  _doStartAnalysis(input);
+}
+
+function acceptDisclaimer() {
+  sessionStorage.setItem('bildop_disclaimer_mr', 'accepted');
+  document.getElementById('disclaimerOverlay').style.display = 'none';
+  _doStartAnalysis(window._pendingNiche);
+}
+
+function _doStartAnalysis(input) {
   MR.niche = input;
   MR.secteurKey = detectSecteur(input);
   document.getElementById('nicheDisplay').textContent = input.length > 22 ? input.slice(0, 22) + '...' : input;
@@ -547,6 +563,9 @@ function exportReport() {
     lines.push(`\nInsight : ${profil.densite.insight}`);
   }
 
+  lines.push('\n⚠️ AVERTISSEMENT : Cette étude est générée à partir de données simulées et d\'estimations sectorielles.');
+  lines.push('Elle ne remplace pas une étude de marché professionnelle ni l\'avis d\'un comptable.');
+  lines.push('Validez chaque donnée avec des sources réelles avant toute décision d\'investissement.');
   lines.push('\n— Généré par BILDOP.COM | Fait au Québec 🇨🇦 —');
 
   const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
