@@ -1,7 +1,12 @@
 /* ============================================
-   BILDOP — Questionnaire Engine
+   BILDOP — Questionnaire Engine v2.0
    Conversation guidée, 9 catégories, wizard UI
+   + AI Assist (Aide Bildop + Rafraîchir)
    ============================================ */
+
+// --- AI Assist Configuration ---
+const AI_API_URL = '/api/ai-suggest';
+let aiLoading = false;
 
 // --- Question Data ---
 // Each question: { id, category, categoryIndex, question, hint, type, options?, required }
@@ -277,13 +282,36 @@ function renderQuestion() {
   const catQuestions = questions.filter(qq => qq.catIdx === q.catIdx);
   const posInCat = catQuestions.indexOf(q) + 1;
 
+  // AI assist buttons — only for text/textarea (not select/radio)
+  const showAiButtons = (q.type === 'text' || q.type === 'textarea');
+  const aiButtonsHTML = showAiButtons ? `
+    <div class="ai-assist" style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+      <button type="button" class="btn-ai btn-ai--suggest" id="btnAiSuggest" title="L'IA genere une suggestion basee sur tes reponses precedentes">
+        <span class="btn-ai__icon">&#9733;</span> Aide Bildop
+      </button>
+      <button type="button" class="btn-ai btn-ai--refresh" id="btnAiRefresh" title="Ameliore ta reponse avec l'IA" style="display: none;">
+        <span class="btn-ai__icon">&#8635;</span> Rafraichir
+      </button>
+      <span id="aiStatus" style="font-size: 0.8rem; color: var(--text-muted); align-self: center;"></span>
+    </div>
+  ` : '';
+
   questionCard.innerHTML = `
     <div class="question-card__category">${cat.icon} ${cat.name} — ${posInCat} de ${catQuestions.length}</div>
     <h2>${q.question}</h2>
     ${q.hint ? `<p class="question-card__hint">${q.hint}</p>` : ''}
     ${!q.required ? '<p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Optionnelle — tu peux passer à la suite</p>' : ''}
     ${inputHTML}
+    ${aiButtonsHTML}
   `;
+
+  // Bind AI assist buttons
+  if (showAiButtons) {
+    const btnSuggest = document.getElementById('btnAiSuggest');
+    const btnRefresh = document.getElementById('btnAiRefresh');
+    if (btnSuggest) btnSuggest.addEventListener('click', () => requestAiSuggestion(q, 'suggest'));
+    if (btnRefresh) btnRefresh.addEventListener('click', () => requestAiSuggestion(q, 'refresh'));
+  }
 
   // Bind radio selection styling
   if (q.type === 'radio') {
@@ -446,7 +474,84 @@ function submitQuestionnaire() {
   alert('🚧 Le système de paiement et de génération sera connecté prochainement.\n\nTes réponses ont été enregistrées dans la console (F12).');
 }
 
-// --- Shake Animation ---
+// --- AI Suggestion ---
+async function requestAiSuggestion(q, mode) {
+  if (aiLoading) return;
+  aiLoading = true;
+
+  const statusEl = document.getElementById('aiStatus');
+  const btnSuggest = document.getElementById('btnAiSuggest');
+  const btnRefresh = document.getElementById('btnAiRefresh');
+  const answerEl = questionCard.querySelector('#answer');
+
+  if (!answerEl) { aiLoading = false; return; }
+
+  // UI loading state
+  if (statusEl) statusEl.textContent = 'Bildop reflechit...';
+  if (btnSuggest) { btnSuggest.disabled = true; btnSuggest.style.opacity = '0.5'; }
+  if (btnRefresh) { btnRefresh.disabled = true; btnRefresh.style.opacity = '0.5'; }
+
+  // Build previous answers with question text for context
+  const previousAnswers = {};
+  for (const [id, answer] of Object.entries(answers)) {
+    const matchQ = questions.find(qq => String(qq.id) === String(id));
+    if (matchQ && answer) {
+      previousAnswers[id] = {
+        questionText: matchQ.question,
+        answer: answer,
+      };
+    }
+  }
+
+  try {
+    const response = await fetch(AI_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: q.question,
+        hint: q.hint || '',
+        questionId: q.id,
+        previousAnswers,
+        currentDraft: answerEl.value || answerEl.textContent || '',
+        mode,
+      }),
+    });
+
+    if (!response.ok) throw new Error('API error');
+
+    const data = await response.json();
+    if (data.suggestion) {
+      // Insert suggestion into the field
+      if (answerEl.tagName === 'TEXTAREA') {
+        answerEl.value = data.suggestion;
+        // Auto-resize textarea
+        answerEl.style.height = 'auto';
+        answerEl.style.height = answerEl.scrollHeight + 'px';
+      } else {
+        answerEl.value = data.suggestion;
+      }
+
+      // Save immediately
+      answers[q.id] = data.suggestion;
+      try { localStorage.setItem('bildop_questionnaire', JSON.stringify(answers)); } catch(e) {}
+
+      // Show refresh button (user can now modify and refresh)
+      if (btnRefresh) btnRefresh.style.display = 'inline-flex';
+      if (statusEl) statusEl.textContent = 'Suggestion generee! Modifie-la a ta facon.';
+      setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 4000);
+    }
+  } catch (err) {
+    console.error('AI suggest error:', err);
+    if (statusEl) statusEl.textContent = 'Erreur — reessaie dans un moment.';
+    setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
+  } finally {
+    aiLoading = false;
+    if (btnSuggest) { btnSuggest.disabled = false; btnSuggest.style.opacity = '1'; }
+    if (btnRefresh) { btnRefresh.disabled = false; btnRefresh.style.opacity = '1'; }
+  }
+}
+
+// --- Shake Animation + AI Button Styles ---
 const style = document.createElement('style');
 style.textContent = `
   @keyframes shake {
@@ -454,6 +559,30 @@ style.textContent = `
     25% { transform: translateX(-8px); }
     75% { transform: translateX(8px); }
   }
+  .btn-ai {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-ai:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-ai:active { transform: translateY(0); }
+  .btn-ai:disabled { cursor: not-allowed; transform: none; }
+  .btn-ai--suggest {
+    background: linear-gradient(135deg, #00c1ff 0%, #0066ff 100%);
+    color: white;
+  }
+  .btn-ai--refresh {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+  .btn-ai__icon { font-size: 1rem; }
 `;
 document.head.appendChild(style);
 
