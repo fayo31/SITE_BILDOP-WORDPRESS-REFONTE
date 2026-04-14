@@ -1107,9 +1107,10 @@ function renderIdea() {
         <div class="is-idea-counter"><span id="charCount">${state.ideaText.length}</span>/500</div>
       </div>
 
-      <div class="is-detected-live" id="detectedLive" style="display:none">
-        <div class="is-detected-live__label">Industrie détectée</div>
-        <div class="is-detected-live__value" id="detectedValue"></div>
+      <div class="is-suggestions-live" id="suggestionsLive" style="display:none">
+        <div style="font-size:0.8rem; color:#666; margin-bottom:8px; font-weight:600;">Industries detectees — clique pour selectionner :</div>
+        <div id="suggestionsList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+        <button type="button" id="skipSuggestions" style="margin-top:8px; background:none; border:none; color:#999; font-size:0.8rem; cursor:pointer; text-decoration:underline;">Aucune de ces options — je choisirai moi-meme</button>
       </div>
 
       <p class="is-idea-examples">Essaie : boulangerie, SaaS, cours de natation, salon de coiffure, food truck, consultant marketing, boutique en ligne...</p>
@@ -1123,25 +1124,60 @@ function renderIdea() {
   const input = document.getElementById('ideaInput');
   const btn = document.getElementById('analyzeBtn');
   const counter = document.getElementById('charCount');
-  const detectedEl = document.getElementById('detectedLive');
-  const detectedVal = document.getElementById('detectedValue');
+  const suggestionsEl = document.getElementById('suggestionsLive');
+  const suggestionsList = document.getElementById('suggestionsList');
+  const skipBtn = document.getElementById('skipSuggestions');
 
   input.addEventListener('input', () => {
     state.ideaText = input.value;
     counter.textContent = input.value.length;
     btn.disabled = input.value.length < 20;
 
-    // Live industry detection
+    // Live industry suggestions — clickable pills
     if (input.value.length >= 10) {
       const result = classifyIdea(input.value);
-      if (result.detected) {
-        detectedVal.textContent = result.detected.icon + ' ' + result.detected.name + ' — ' + result.detected.group;
-        detectedEl.style.display = 'block';
+      if (result.suggestions && result.suggestions.length > 0) {
+        const top3 = result.suggestions.slice(0, 3);
+        suggestionsList.innerHTML = top3.map(s => `
+          <button type="button" class="is-suggest-pill" data-id="${s.category.id}" style="
+            display:inline-flex; align-items:center; gap:6px; padding:10px 16px;
+            border:2px solid ${s === top3[0] ? '#00c1ff' : '#e0e0e0'}; border-radius:10px;
+            background:${s === top3[0] ? 'rgba(0,193,255,0.08)' : 'white'}; cursor:pointer;
+            font-size:0.9rem; font-weight:${s === top3[0] ? '700' : '500'};
+            transition:all 0.2s; color:#1a1a2e;">
+            <span style="font-size:1.2rem;">${s.category.icon}</span>
+            <span>${s.category.name}</span>
+            ${s === top3[0] ? '<span style="font-size:0.7rem; background:#00c1ff; color:white; padding:2px 8px; border-radius:4px;">Meilleur match</span>' : ''}
+          </button>
+        `).join('');
+        suggestionsEl.style.display = 'block';
+
+        // Bind click on each suggestion pill
+        document.querySelectorAll('.is-suggest-pill').forEach(pill => {
+          pill.addEventListener('mouseover', () => { pill.style.borderColor = '#00c1ff'; pill.style.boxShadow = '0 2px 8px rgba(0,193,255,0.2)'; });
+          pill.addEventListener('mouseout', () => { if (!pill.dataset.id === top3[0]?.category.id) { pill.style.borderColor = '#e0e0e0'; pill.style.boxShadow = 'none'; } });
+          pill.addEventListener('click', () => {
+            const cat = CATEGORIES.find(c => c.id === pill.dataset.id);
+            if (cat) {
+              selectCategory(cat);
+            }
+          });
+        });
       } else {
-        detectedEl.style.display = 'none';
+        suggestionsEl.style.display = 'none';
       }
     } else {
-      detectedEl.style.display = 'none';
+      suggestionsEl.style.display = 'none';
+    }
+  });
+
+  // Skip suggestions — go straight to analyze
+  skipBtn.addEventListener('click', () => {
+    if (state.ideaText.length >= 20) {
+      state.phase = 'classification';
+      render();
+    } else {
+      alert('Ecris au moins 20 caracteres pour continuer.');
     }
   });
 
@@ -1177,8 +1213,8 @@ function renderClassification() {
 
   setTimeout(() => {
     if (result.detected && result.confidence === 'high') {
-      // Confiance élevée → on skip la confirmation, direct aux questions
-      selectCategory(result.detected);
+      // Confiance élevée → montrer la confirmation quand meme (l'utilisateur decide)
+      renderCategoryConfirm(result);
     } else if (result.detected) {
       // Confiance faible → on montre les suggestions
       renderCategoryConfirm(result);
