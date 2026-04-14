@@ -22,8 +22,20 @@
       <a href="index.html" class="nav__logo"><span style="color:var(--sky)">bild</span><span style="color:var(--navy)">op</span></a>
       <ul class="nav__links" id="navLinks">
         <li><a href="index.html">← Retour au site</a></li>
+        <li><a href="#" id="btnSave" style="color: #00c1ff; font-weight: 600;">Sauvegarder</a></li>
+        <li><a href="#" id="btnMyPlans" style="color: #764ba2; font-weight: 600;">Mes plans</a></li>
         <li><a href="#" id="btnReset" style="color: #ff4757; font-weight: 600;">Nouveau plan</a></li>
       </ul>
+
+      <!-- Plans Modal -->
+      <div id="plansModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:white; border-radius:16px; padding:32px; max-width:500px; width:90%; max-height:80vh; overflow-y:auto; position:relative;">
+          <button id="closeModal" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+          <h2 style="margin-bottom:8px; font-size:1.3rem;">Mes plans d'affaires</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:20px;">Phase test — sauvegarde illimitee</p>
+          <div id="plansList"></div>
+        </div>
+      </div>
       <button class="nav__toggle" id="navToggle" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>

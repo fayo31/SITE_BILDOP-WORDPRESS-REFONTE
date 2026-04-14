@@ -194,6 +194,167 @@ function init() {
   renderQuestion();
   bindNavigation();
   bindReset();
+  bindSave();
+  bindMyPlans();
+  updateSaveLabel();
+}
+
+// --- Save / Load Plans ---
+function getSavedPlans() {
+  try {
+    const data = localStorage.getItem('bildop_plans');
+    return data ? JSON.parse(data) : [];
+  } catch(e) { return []; }
+}
+
+function savePlans(plans) {
+  localStorage.setItem('bildop_plans', JSON.stringify(plans));
+}
+
+function getBusinessName() {
+  return answers[1] ? answers[1].trim() : '';
+}
+
+function updateSaveLabel() {
+  const name = getBusinessName();
+  const btnSave = document.getElementById('btnSave');
+  if (btnSave) {
+    btnSave.textContent = name ? `Sauvegarder "${name}"` : 'Sauvegarder';
+  }
+}
+
+function showToast(message, type) {
+  const toast = document.createElement('div');
+  const bg = type === 'error' ? '#ff4757' : type === 'warning' ? '#ffa502' : '#00c1ff';
+  toast.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);background:${bg};color:white;padding:12px 24px;border-radius:10px;font-size:0.9rem;font-weight:600;z-index:99999;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:opacity 0.3s;`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+function bindSave() {
+  const btnSave = document.getElementById('btnSave');
+  if (!btnSave) return;
+
+  btnSave.addEventListener('click', (e) => {
+    e.preventDefault();
+    saveCurrentAnswer();
+
+    const name = getBusinessName();
+    if (!name) {
+      showToast('Donne un nom a ton entreprise d\'abord! (Question 1)', 'error');
+      // Jump to question 1
+      currentQuestion = 0;
+      maxReachedCatIdx = Math.max(maxReachedCatIdx, 0);
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const plans = getSavedPlans();
+    const existing = plans.findIndex(p => p.name === name);
+    const planData = {
+      name: name,
+      answers: { ...answers },
+      lastQuestion: currentQuestion,
+      maxCat: maxReachedCatIdx,
+      updatedAt: new Date().toISOString(),
+      questionsAnswered: Object.values(answers).filter(v => v && String(v).trim()).length,
+      totalQuestions: questions.length,
+    };
+
+    if (existing !== -1) {
+      plans[existing] = planData;
+      showToast(`Plan "${name}" mis a jour!`, 'success');
+    } else {
+      plans.push(planData);
+      showToast(`Plan "${name}" sauvegarde!`, 'success');
+    }
+
+    savePlans(plans);
+  });
+}
+
+function bindMyPlans() {
+  const btnMyPlans = document.getElementById('btnMyPlans');
+  const modal = document.getElementById('plansModal');
+  const closeBtn = document.getElementById('closeModal');
+  if (!btnMyPlans || !modal) return;
+
+  btnMyPlans.addEventListener('click', (e) => {
+    e.preventDefault();
+    renderPlansList();
+    modal.style.display = 'flex';
+  });
+
+  closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+}
+
+function renderPlansList() {
+  const list = document.getElementById('plansList');
+  const plans = getSavedPlans();
+
+  if (plans.length === 0) {
+    list.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">Aucun plan sauvegarde.<br>Remplis le questionnaire et clique "Sauvegarder".</p>';
+    return;
+  }
+
+  list.innerHTML = plans.map((plan, i) => {
+    const date = new Date(plan.updatedAt);
+    const dateStr = date.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const progress = Math.round((plan.questionsAnswered / plan.totalQuestions) * 100);
+    return `
+      <div style="border:1px solid #e0e0e0; border-radius:12px; padding:16px; margin-bottom:12px; cursor:pointer; transition:all 0.2s;"
+           onmouseover="this.style.borderColor='#00c1ff'; this.style.boxShadow='0 2px 12px rgba(0,193,255,0.15)'"
+           onmouseout="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none'">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <strong style="font-size:1.05rem;">${plan.name}</strong>
+          <button onclick="event.stopPropagation(); deletePlan(${i})" style="background:none; border:none; color:#ff4757; cursor:pointer; font-size:0.8rem;">Supprimer</button>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.8rem; color:#666;">${dateStr}</span>
+          <span style="font-size:0.8rem; color:#00c1ff; font-weight:600;">${progress}% complete</span>
+        </div>
+        <div style="background:#f0f0f0; border-radius:4px; height:6px; overflow:hidden;">
+          <div style="background:linear-gradient(90deg,#00c1ff,#0066ff); height:100%; width:${progress}%; border-radius:4px;"></div>
+        </div>
+        <button onclick="loadPlan(${i})" style="margin-top:12px; width:100%; padding:10px; background:linear-gradient(135deg,#00c1ff,#0066ff); color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer;">Ouvrir ce plan</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function loadPlan(index) {
+  const plans = getSavedPlans();
+  const plan = plans[index];
+  if (!plan) return;
+
+  // Clear current answers and load saved ones
+  Object.keys(answers).forEach(k => delete answers[k]);
+  Object.assign(answers, plan.answers);
+  localStorage.setItem('bildop_questionnaire', JSON.stringify(answers));
+
+  currentQuestion = plan.lastQuestion || 0;
+  maxReachedCatIdx = plan.maxCat || 0;
+
+  renderCategoryStepper();
+  renderQuestion();
+  updateSaveLabel();
+  document.getElementById('plansModal').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast(`Plan "${plan.name}" charge!`, 'success');
+}
+
+function deletePlan(index) {
+  const plans = getSavedPlans();
+  const name = plans[index]?.name;
+  if (confirm(`Supprimer le plan "${name}"?`)) {
+    plans.splice(index, 1);
+    savePlans(plans);
+    renderPlansList();
+    showToast(`Plan "${name}" supprime.`, 'warning');
+  }
 }
 
 // --- Reset (Nouveau plan) ---
@@ -202,13 +363,14 @@ function bindReset() {
   if (btnReset) {
     btnReset.addEventListener('click', (e) => {
       e.preventDefault();
-      if (confirm('Recommencer un nouveau plan d\'affaires?\n\nToutes tes reponses actuelles seront effacees.')) {
+      if (confirm('Recommencer un nouveau plan d\'affaires?\n\nToutes tes reponses actuelles seront effacees.\n(Tes plans sauvegardes restent intacts)')) {
         localStorage.removeItem('bildop_questionnaire');
         Object.keys(answers).forEach(k => delete answers[k]);
         currentQuestion = 0;
         maxReachedCatIdx = 0;
         renderCategoryStepper();
         renderQuestion();
+        updateSaveLabel();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
@@ -370,8 +532,9 @@ function renderQuestion() {
   btnPrev.disabled = currentQuestion === 0;
   btnNext.textContent = currentQuestion === questions.length - 1 ? 'Générer mon plan →' : 'Continuer →';
 
-  // Update stepper
+  // Update stepper + save label
   updateCategoryStepper();
+  updateSaveLabel();
 
   // Focus input
   setTimeout(() => {
