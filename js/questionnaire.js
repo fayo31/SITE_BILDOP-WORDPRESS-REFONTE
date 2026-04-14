@@ -141,6 +141,22 @@ try {
   if (saved) Object.assign(answers, JSON.parse(saved));
 } catch(e) {}
 
+// Restore progress: find the highest category with answers + resume at last answered question
+if (Object.keys(answers).length > 0) {
+  let lastAnsweredIdx = 0;
+  for (const [id, val] of Object.entries(answers)) {
+    if (val) {
+      const qIdx = questions.findIndex(q => String(q.id) === String(id));
+      if (qIdx > lastAnsweredIdx) lastAnsweredIdx = qIdx;
+    }
+  }
+  // Unlock all categories up to and including the last answered question's category
+  maxReachedCatIdx = questions[lastAnsweredIdx].catIdx;
+  // Resume at the next unanswered question (or last if all answered)
+  const nextUnanswered = questions.findIndex((q, i) => i > lastAnsweredIdx && !answers[q.id]);
+  currentQuestion = nextUnanswered !== -1 ? nextUnanswered : lastAnsweredIdx;
+}
+
 // Pre-fill from IdeaScore Pro if available
 try {
   const isData = localStorage.getItem('bildop_ideascore');
