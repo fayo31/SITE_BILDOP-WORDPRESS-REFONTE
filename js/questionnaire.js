@@ -659,18 +659,12 @@ function showCompletion() {
   `;
 }
 
-// --- Submit (placeholder — connect to backend) ---
+// --- Submit → Generate Business Plan ---
 function submitQuestionnaire() {
-  console.log('Réponses soumises:', answers);
-
-  // TODO: Envoyer les réponses au backend N8N
-  // fetch('/api/generate-plan', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ answers })
-  // });
-
-  alert('🚧 Le système de paiement et de génération sera connecté prochainement.\n\nTes réponses ont été enregistrées dans la console (F12).');
+  // Save all answers to localStorage before redirecting
+  try { localStorage.setItem('bildop_questionnaire', JSON.stringify(answers)); } catch(e) {}
+  // Redirect to plan generation page
+  window.location.href = 'plan-result.html';
 }
 
 // --- AI Suggestion ---

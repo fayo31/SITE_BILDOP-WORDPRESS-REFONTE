@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bildop — Mon plan d'affaires</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .plan-container { max-width: 900px; margin: 100px auto 60px; padding: 0 24px; }
+    .plan-header { text-align: center; margin-bottom: 40px; }
+    .plan-header h1 { font-size: 2rem; margin-bottom: 8px; }
+    .plan-header p { color: #666; font-size: 0.9rem; }
+    .plan-content { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .plan-content h2 { color: #1a1a2e; font-size: 1.4rem; margin-top: 36px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #00c1ff; }
+    .plan-content h2:first-child { margin-top: 0; }
+    .plan-content h3 { color: #333; font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px; }
+    .plan-content p { line-height: 1.7; margin-bottom: 12px; color: #333; }
+    .plan-content ul { margin: 12px 0; padding-left: 24px; }
+    .plan-content li { line-height: 1.7; margin-bottom: 6px; color: #333; }
+    .plan-content table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    .plan-content th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+    .plan-content td { padding: 8px 12px; border-bottom: 1px solid #eee; }
+    .plan-content tr:hover td { background: #f8f9fa; }
+    .plan-actions { display: flex; gap: 12px; justify-content: center; margin: 32px 0; flex-wrap: wrap; }
+    .plan-actions .btn { padding: 14px 28px; font-size: 1rem; }
+    .plan-loading { text-align: center; padding: 80px 20px; }
+    .plan-loading h2 { margin-bottom: 20px; }
+    .plan-loading .spinner { width: 48px; height: 48px; border: 4px solid #e0e0e0; border-top-color: #00c1ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 24px; }
+    .plan-step { color: #999; margin: 8px 0; transition: color 0.3s; }
+    .plan-step.done { color: #00c1ff; }
+    .plan-step.done::before { content: "✓ "; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media print {
+      .nav, .plan-actions, .plan-header p { display: none !important; }
+      .plan-container { margin: 0; padding: 0; }
+      .plan-content { box-shadow: none; padding: 20px; }
+      .plan-content h2 { page-break-after: avoid; }
+      .plan-content table { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo"><span style="color:var(--sky)">bild</span><span style="color:var(--navy)">op</span></a>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="questionnaire.html">← Retour au questionnaire</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="plan-container" id="planContainer">
+    <div class="plan-loading" id="planLoading">
+      <div class="spinner"></div>
+      <h2>Generation de ton plan d'affaires...</h2>
+      <div class="plan-step" id="pStep1">Analyse de tes 85 reponses</div>
+      <div class="plan-step" id="pStep2">Redaction du sommaire executif</div>
+      <div class="plan-step" id="pStep3">Etude de marche et concurrence</div>
+      <div class="plan-step" id="pStep4">Projections financieres</div>
+      <div class="plan-step" id="pStep5">Analyse des risques</div>
+      <div class="plan-step" id="pStep6">Mise en page finale</div>
+      <p style="color:#999; margin-top:24px; font-size:0.85rem;">Ca prend environ 30 secondes...</p>
+    </div>
+  </div>
+
+  <script>
+    async function generatePlan() {
+      // Get answers from localStorage
+      let answers = {};
+      try {
+        const saved = localStorage.getItem('bildop_questionnaire');
+        if (saved) answers = JSON.parse(saved);
+      } catch(e) {}
+
+      if (Object.keys(answers).length < 5) {
+        document.getElementById('planContainer').innerHTML = `
+          <div style="text-align:center; padding:80px 20px;">
+            <h2>Pas assez de reponses</h2>
+            <p>Retourne au questionnaire et reponds a au moins quelques questions avant de generer ton plan.</p>
+            <a href="questionnaire.html" class="btn btn--primary" style="margin-top:20px; display:inline-block; padding:14px 28px;">Aller au questionnaire →</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Animate steps
+      const steps = ['pStep1','pStep2','pStep3','pStep4','pStep5','pStep6'];
+      let stepIdx = 0;
+      const stepInterval = setInterval(() => {
+        if (stepIdx < steps.length) {
+          document.getElementById(steps[stepIdx])?.classList.add('done');
+          stepIdx++;
+        }
+      }, 4000);
+
+      // Build questions array for context
+      const questionsList = [
+        {id:1,question:"Nom de l'entreprise"},{id:2,question:"Description du projet"},{id:3,question:"Secteur d'activite"},
+        {id:4,question:"Localisation"},{id:5,question:"Structure juridique"},{id:6,question:"Statut de l'entreprise"},
+        {id:7,question:"Date de lancement"},{id:8,question:"Motivation"},{id:9,question:"Mission"},{id:10,question:"Vision 5 ans"},
+        {id:11,question:"Client ideal"},{id:12,question:"Probleme resolu"},{id:13,question:"Concurrents"},{id:14,question:"Differenciation"},
+        {id:15,question:"Taille du marche"},{id:16,question:"Croissance du marche"},{id:17,question:"Tendances secteur"},
+        {id:18,question:"Canaux de decouverte"},{id:19,question:"Budget moyen clients"},{id:20,question:"Feedback clients"},
+        {id:21,question:"Produit/service principal"},{id:22,question:"Produits secondaires"},{id:23,question:"Stade du produit"},
+        {id:24,question:"Prix de vente"},{id:25,question:"Mode de livraison"},{id:26,question:"Propriete intellectuelle"},
+        {id:27,question:"Limites de l'offre"},{id:28,question:"Outils/technologies"},{id:29,question:"Controle qualite"},
+        {id:30,question:"Plan evolution 12 mois"},{id:31,question:"Modele de revenus"},{id:32,question:"Sources de revenus"},
+        {id:33,question:"Revenu moyen par client"},{id:34,question:"Marge brute"},{id:35,question:"Clients pour rentabilite"},
+        {id:36,question:"Fidelisation"},{id:37,question:"Partenaires cles"},{id:38,question:"Activites cles quotidiennes"},
+        {id:39,question:"Ressources cles"},{id:40,question:"Avantage cout/efficacite"},{id:41,question:"Canaux marketing"},
+        {id:42,question:"Budget marketing"},{id:43,question:"Presence en ligne"},{id:44,question:"Strategie de contenu"},
+        {id:45,question:"Conversion prospects"},{id:46,question:"Message cle/slogan"},{id:47,question:"Promotions lancement"},
+        {id:48,question:"KPIs marketing"},{id:49,question:"Partenariats distribution"},{id:50,question:"Positionnement prix"},
+        {id:51,question:"Local/bureau"},{id:52,question:"Fournisseurs"},{id:53,question:"Equipement specialise"},
+        {id:54,question:"Processus livraison"},{id:55,question:"Permis/licences"},{id:56,question:"Gestion inventaire"},
+        {id:57,question:"Logiciels quotidiens"},{id:58,question:"Gestion pics demande"},{id:59,question:"Heures operation"},
+        {id:60,question:"Obligations reglementaires"},{id:61,question:"Investissement initial"},{id:62,question:"Financement demarrage"},
+        {id:63,question:"Objectif revenus an 1"},{id:64,question:"Couts fixes mensuels"},{id:65,question:"Couts variables"},
+        {id:66,question:"Comptable/conseiller"},{id:67,question:"Financement externe"},{id:68,question:"Montant financement"},
+        {id:69,question:"Seuil de rentabilite"},{id:70,question:"Fonds urgence"},{id:71,question:"Nombre fondateurs"},
+        {id:72,question:"Experience domaine"},{id:73,question:"Competences apportees"},{id:74,question:"Competences manquantes"},
+        {id:75,question:"Embauches an 1"},{id:76,question:"Premiers roles"},{id:77,question:"Mentor/conseiller"},
+        {id:78,question:"Reseau professionnel"},{id:79,question:"3 plus gros risques"},{id:80,question:"Plan si ventes lentes"},
+        {id:81,question:"Menaces mortelles"},{id:82,question:"Assurances"},{id:83,question:"Adaptation marche"},
+        {id:84,question:"Objectif 90 jours"},{id:85,question:"Informations supplementaires"}
+      ];
+
+      try {
+        const response = await fetch('/api/generate-plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers, questions: questionsList }),
+        });
+
+        clearInterval(stepInterval);
+        steps.forEach(s => document.getElementById(s)?.classList.add('done'));
+
+        if (!response.ok) throw new Error('Generation failed');
+
+        const data = await response.json();
+        const businessName = data.businessName || 'Mon entreprise';
+        const date = new Date().toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' });
+
+        document.getElementById('planContainer').innerHTML = `
+          <div class="plan-header">
+            <h1>Plan d'affaires — ${businessName}</h1>
+            <p>Genere par Bildop le ${date}</p>
+          </div>
+          <div class="plan-actions">
+            <button class="btn btn--primary" onclick="window.print()">Imprimer / Sauvegarder PDF</button>
+            <button class="btn btn--secondary" onclick="window.location='questionnaire.html'">Modifier mes reponses</button>
+          </div>
+          <div class="plan-content" id="planContent">
+            ${data.html}
+          </div>
+          <div class="plan-actions" style="margin-top:32px;">
+            <button class="btn btn--primary" onclick="window.print()">Imprimer / Sauvegarder PDF</button>
+            <button class="btn btn--secondary" onclick="window.location='questionnaire.html'">Modifier mes reponses</button>
+          </div>
+        `;
+
+        // Save generated plan to localStorage
+        try {
+          localStorage.setItem('bildop_last_plan', JSON.stringify({
+            html: data.html,
+            businessName,
+            generatedAt: data.generatedAt
+          }));
+        } catch(e) {}
+
+      } catch (err) {
+        clearInterval(stepInterval);
+        document.getElementById('planContainer').innerHTML = `
+          <div style="text-align:center; padding:80px 20px;">
+            <h2 style="color:#ff4757;">Erreur de generation</h2>
+            <p>Une erreur est survenue. Reessaie dans un moment.</p>
+            <button class="btn btn--primary" onclick="generatePlan()" style="margin-top:20px;">Reessayer</button>
+          </div>
+        `;
+      }
+    }
+
+    // Start generation on page load
+    generatePlan();
+  </script>
+</body>
+</html>
