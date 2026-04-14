@@ -1145,38 +1145,18 @@ function renderIdea() {
     if (input.value.length >= 5) {
       const result = classifyIdea(input.value);
       if (result.detected) {
-        // Main detection — big and visible
-        detectedName.textContent = result.detected.icon + '  ' + result.detected.name;
-        detectedGroup.textContent = result.detected.group;
+        showDetection(result);
+      } else if (input.value.length >= 8) {
+        // No local match — show "searching..." then call AI
+        detectedName.textContent = 'Recherche en cours...';
+        detectedGroup.textContent = 'Notre IA analyse ton idee';
+        altSuggestions.innerHTML = '';
         detectedEl.style.display = 'block';
-
-        // Click main card → select
-        mainDetected.onclick = () => selectCategory(result.detected);
-        mainDetected.onmouseover = () => { mainDetected.style.transform = 'scale(1.02)'; mainDetected.style.boxShadow = '0 4px 16px rgba(0,193,255,0.25)'; };
-        mainDetected.onmouseout = () => { mainDetected.style.transform = 'scale(1)'; mainDetected.style.boxShadow = 'none'; };
-
-        // Alternative suggestions (2-3 more options)
-        if (result.suggestions && result.suggestions.length > 1) {
-          const alts = result.suggestions.slice(1, 4);
-          altSuggestions.innerHTML = alts.map(s => `
-            <button type="button" class="is-alt-live" data-id="${s.category.id}" style="
-              display:inline-flex; align-items:center; gap:6px; padding:8px 14px;
-              border:1px solid #ddd; border-radius:8px; background:white; cursor:pointer;
-              font-size:0.85rem; transition:all 0.2s; color:#555;">
-              ${s.category.icon} ${s.category.name}
-            </button>
-          `).join('');
-          document.querySelectorAll('.is-alt-live').forEach(pill => {
-            pill.onmouseover = () => { pill.style.borderColor = '#00c1ff'; pill.style.color = '#1a1a2e'; };
-            pill.onmouseout = () => { pill.style.borderColor = '#ddd'; pill.style.color = '#555'; };
-            pill.onclick = () => {
-              const cat = CATEGORIES.find(c => c.id === pill.dataset.id);
-              if (cat) selectCategory(cat);
-            };
-          });
-        } else {
-          altSuggestions.innerHTML = '';
-        }
+        mainDetected.onclick = null;
+        mainDetected.style.cursor = 'default';
+        // Debounce AI call
+        clearTimeout(window._aiClassifyTimer);
+        window._aiClassifyTimer = setTimeout(() => aiClassifyIdea(input.value), 800);
       } else {
         detectedEl.style.display = 'none';
       }
@@ -1184,6 +1164,78 @@ function renderIdea() {
       detectedEl.style.display = 'none';
     }
   });
+
+  // --- Show detection result (reusable) ---
+  function showDetection(result) {
+    detectedName.textContent = result.detected.icon + '  ' + result.detected.name;
+    detectedGroup.textContent = result.detected.group;
+    detectedEl.style.display = 'block';
+    mainDetected.style.cursor = 'pointer';
+    mainDetected.onclick = () => selectCategory(result.detected);
+    mainDetected.onmouseover = () => { mainDetected.style.transform = 'scale(1.02)'; mainDetected.style.boxShadow = '0 4px 16px rgba(0,193,255,0.25)'; };
+    mainDetected.onmouseout = () => { mainDetected.style.transform = 'scale(1)'; mainDetected.style.boxShadow = 'none'; };
+    if (result.suggestions && result.suggestions.length > 1) {
+      const alts = result.suggestions.slice(1, 4);
+      altSuggestions.innerHTML = alts.map(s => `
+        <button type="button" class="is-alt-live" data-id="${s.category.id}" style="
+          display:inline-flex; align-items:center; gap:6px; padding:8px 14px;
+          border:1px solid #ddd; border-radius:8px; background:white; cursor:pointer;
+          font-size:0.85rem; transition:all 0.2s; color:#555;">
+          ${s.category.icon} ${s.category.name}
+        </button>
+      `).join('');
+      document.querySelectorAll('.is-alt-live').forEach(pill => {
+        pill.onmouseover = () => { pill.style.borderColor = '#00c1ff'; pill.style.color = '#1a1a2e'; };
+        pill.onmouseout = () => { pill.style.borderColor = '#ddd'; pill.style.color = '#555'; };
+        pill.onclick = () => {
+          const cat = CATEGORIES.find(c => c.id === pill.dataset.id);
+          if (cat) selectCategory(cat);
+        };
+      });
+    } else {
+      altSuggestions.innerHTML = '';
+    }
+  }
+
+  // --- AI Classify (fallback when keywords don't match) ---
+  async function aiClassifyIdea(text) {
+    try {
+      const categoryNames = CATEGORIES.map(c => c.id + '|' + c.name).join('\n');
+      const response = await fetch('/api/ai-suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: `Parmi ces industries, laquelle correspond le mieux a cette idee d'affaires? Reponds UNIQUEMENT avec l'ID de la categorie (ex: food_bakery). Si aucune ne correspond, reponds "none".\n\nIdee: "${text}"\n\nCategories:\n${categoryNames}`,
+          hint: '',
+          previousAnswers: {},
+          questionId: 'classify',
+          mode: 'suggest',
+        }),
+      });
+      if (!response.ok) throw new Error('API error');
+      const data = await response.json();
+      const suggestion = (data.suggestion || '').trim().toLowerCase();
+
+      // Try to find the category from AI response
+      const matched = CATEGORIES.find(c => suggestion.includes(c.id));
+      if (matched) {
+        const fakeResult = { detected: matched, confidence: 'low', suggestions: [{ category: matched, score: 1 }] };
+        // Also find 2 related categories from same group
+        const related = CATEGORIES.filter(c => c.group === matched.group && c.id !== matched.id).slice(0, 2);
+        related.forEach(r => fakeResult.suggestions.push({ category: r, score: 0.5 }));
+        showDetection(fakeResult);
+      } else {
+        detectedName.textContent = 'Industrie non identifiee';
+        detectedGroup.textContent = 'Clique "Analyser mon idee" pour choisir manuellement';
+        mainDetected.onclick = null;
+        mainDetected.style.cursor = 'default';
+        altSuggestions.innerHTML = '';
+      }
+    } catch(e) {
+      console.error('AI classify error:', e);
+      detectedEl.style.display = 'none';
+    }
+  }
 
   // Skip suggestions
   skipBtn.addEventListener('click', () => {
