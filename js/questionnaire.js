@@ -193,6 +193,26 @@ function init() {
   renderCategoryStepper();
   renderQuestion();
   bindNavigation();
+  bindReset();
+}
+
+// --- Reset (Nouveau plan) ---
+function bindReset() {
+  const btnReset = document.getElementById('btnReset');
+  if (btnReset) {
+    btnReset.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('Recommencer un nouveau plan d\'affaires?\n\nToutes tes reponses actuelles seront effacees.')) {
+        localStorage.removeItem('bildop_questionnaire');
+        Object.keys(answers).forEach(k => delete answers[k]);
+        currentQuestion = 0;
+        maxReachedCatIdx = 0;
+        renderCategoryStepper();
+        renderQuestion();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  }
 }
 
 // --- Render Category Stepper ---
