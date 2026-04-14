@@ -251,6 +251,7 @@ function bindSave() {
       return;
     }
 
+    const MAX_PLANS = 3; // Phase test — max 3 plans par testeur
     const plans = getSavedPlans();
     const existing = plans.findIndex(p => p.name === name);
     const planData = {
@@ -264,11 +265,16 @@ function bindSave() {
     };
 
     if (existing !== -1) {
+      // Update existing plan — no limit check needed
       plans[existing] = planData;
       showToast(`Plan "${name}" mis a jour!`, 'success');
+    } else if (plans.length >= MAX_PLANS) {
+      // Limit reached
+      showToast(`Limite atteinte! Maximum ${MAX_PLANS} plans d'affaires en phase test. Supprime un plan existant dans "Mes plans" pour en creer un nouveau.`, 'error');
+      return;
     } else {
       plans.push(planData);
-      showToast(`Plan "${name}" sauvegarde!`, 'success');
+      showToast(`Plan "${name}" sauvegarde! (${plans.length}/${MAX_PLANS})`, 'success');
     }
 
     savePlans(plans);
@@ -295,10 +301,19 @@ function renderPlansList() {
   const list = document.getElementById('plansList');
   const plans = getSavedPlans();
 
+  const MAX_PLANS = 3;
   if (plans.length === 0) {
     list.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">Aucun plan sauvegarde.<br>Remplis le questionnaire et clique "Sauvegarder".</p>';
     return;
   }
+
+  // Show plan count / limit
+  list.innerHTML = `<div style="text-align:center; margin-bottom:16px; font-size:0.85rem; color:#666;">
+    <strong>${plans.length}</strong> / ${MAX_PLANS} plans utilises
+    <div style="background:#f0f0f0; border-radius:4px; height:6px; overflow:hidden; margin-top:6px;">
+      <div style="background:${plans.length >= MAX_PLANS ? '#ff4757' : 'linear-gradient(90deg,#00c1ff,#0066ff)'}; height:100%; width:${(plans.length/MAX_PLANS)*100}%; border-radius:4px;"></div>
+    </div>
+  </div>`;
 
   list.innerHTML = plans.map((plan, i) => {
     const date = new Date(plan.updatedAt);
