@@ -1107,10 +1107,15 @@ function renderIdea() {
         <div class="is-idea-counter"><span id="charCount">${state.ideaText.length}</span>/500</div>
       </div>
 
-      <div class="is-suggestions-live" id="suggestionsLive" style="display:none">
-        <div style="font-size:0.8rem; color:#666; margin-bottom:8px; font-weight:600;">Industries detectees — clique pour selectionner :</div>
-        <div id="suggestionsList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
-        <button type="button" id="skipSuggestions" style="margin-top:8px; background:none; border:none; color:#999; font-size:0.8rem; cursor:pointer; text-decoration:underline;">Aucune de ces options — je choisirai moi-meme</button>
+      <div class="is-detected-live" id="detectedLive" style="display:none">
+        <div style="background:linear-gradient(135deg,rgba(0,193,255,0.1),rgba(0,102,255,0.08)); border:2px solid #00c1ff; border-radius:14px; padding:16px 20px; margin-bottom:12px; cursor:pointer; transition:all 0.2s;" id="mainDetected">
+          <div style="font-size:0.75rem; color:#00c1ff; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Industrie detectee</div>
+          <div style="font-size:1.2rem; font-weight:700; color:#1a1a2e;" id="detectedName"></div>
+          <div style="font-size:0.85rem; color:#666; margin-top:4px;" id="detectedGroup"></div>
+          <div style="font-size:0.8rem; color:#00c1ff; margin-top:8px; font-weight:600;">Cliquer pour selectionner →</div>
+        </div>
+        <div id="altSuggestions" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;"></div>
+        <button type="button" id="skipSuggestions" style="background:none; border:none; color:#999; font-size:0.8rem; cursor:pointer; text-decoration:underline;">Je reste avec mon propre choix d'industrie →</button>
       </div>
 
       <p class="is-idea-examples">Essaie : boulangerie, SaaS, cours de natation, salon de coiffure, food truck, consultant marketing, boutique en ligne...</p>
@@ -1124,8 +1129,11 @@ function renderIdea() {
   const input = document.getElementById('ideaInput');
   const btn = document.getElementById('analyzeBtn');
   const counter = document.getElementById('charCount');
-  const suggestionsEl = document.getElementById('suggestionsLive');
-  const suggestionsList = document.getElementById('suggestionsList');
+  const detectedEl = document.getElementById('detectedLive');
+  const detectedName = document.getElementById('detectedName');
+  const detectedGroup = document.getElementById('detectedGroup');
+  const mainDetected = document.getElementById('mainDetected');
+  const altSuggestions = document.getElementById('altSuggestions');
   const skipBtn = document.getElementById('skipSuggestions');
 
   input.addEventListener('input', () => {
@@ -1133,45 +1141,51 @@ function renderIdea() {
     counter.textContent = input.value.length;
     btn.disabled = input.value.length < 20;
 
-    // Live industry suggestions — clickable pills
-    if (input.value.length >= 10) {
+    // Live industry detection — big visible card + smaller alternatives
+    if (input.value.length >= 5) {
       const result = classifyIdea(input.value);
-      if (result.suggestions && result.suggestions.length > 0) {
-        const top3 = result.suggestions.slice(0, 3);
-        suggestionsList.innerHTML = top3.map(s => `
-          <button type="button" class="is-suggest-pill" data-id="${s.category.id}" style="
-            display:inline-flex; align-items:center; gap:6px; padding:10px 16px;
-            border:2px solid ${s === top3[0] ? '#00c1ff' : '#e0e0e0'}; border-radius:10px;
-            background:${s === top3[0] ? 'rgba(0,193,255,0.08)' : 'white'}; cursor:pointer;
-            font-size:0.9rem; font-weight:${s === top3[0] ? '700' : '500'};
-            transition:all 0.2s; color:#1a1a2e;">
-            <span style="font-size:1.2rem;">${s.category.icon}</span>
-            <span>${s.category.name}</span>
-            ${s === top3[0] ? '<span style="font-size:0.7rem; background:#00c1ff; color:white; padding:2px 8px; border-radius:4px;">Meilleur match</span>' : ''}
-          </button>
-        `).join('');
-        suggestionsEl.style.display = 'block';
+      if (result.detected) {
+        // Main detection — big and visible
+        detectedName.textContent = result.detected.icon + '  ' + result.detected.name;
+        detectedGroup.textContent = result.detected.group;
+        detectedEl.style.display = 'block';
 
-        // Bind click on each suggestion pill
-        document.querySelectorAll('.is-suggest-pill').forEach(pill => {
-          pill.addEventListener('mouseover', () => { pill.style.borderColor = '#00c1ff'; pill.style.boxShadow = '0 2px 8px rgba(0,193,255,0.2)'; });
-          pill.addEventListener('mouseout', () => { if (!pill.dataset.id === top3[0]?.category.id) { pill.style.borderColor = '#e0e0e0'; pill.style.boxShadow = 'none'; } });
-          pill.addEventListener('click', () => {
-            const cat = CATEGORIES.find(c => c.id === pill.dataset.id);
-            if (cat) {
-              selectCategory(cat);
-            }
+        // Click main card → select
+        mainDetected.onclick = () => selectCategory(result.detected);
+        mainDetected.onmouseover = () => { mainDetected.style.transform = 'scale(1.02)'; mainDetected.style.boxShadow = '0 4px 16px rgba(0,193,255,0.25)'; };
+        mainDetected.onmouseout = () => { mainDetected.style.transform = 'scale(1)'; mainDetected.style.boxShadow = 'none'; };
+
+        // Alternative suggestions (2-3 more options)
+        if (result.suggestions && result.suggestions.length > 1) {
+          const alts = result.suggestions.slice(1, 4);
+          altSuggestions.innerHTML = alts.map(s => `
+            <button type="button" class="is-alt-live" data-id="${s.category.id}" style="
+              display:inline-flex; align-items:center; gap:6px; padding:8px 14px;
+              border:1px solid #ddd; border-radius:8px; background:white; cursor:pointer;
+              font-size:0.85rem; transition:all 0.2s; color:#555;">
+              ${s.category.icon} ${s.category.name}
+            </button>
+          `).join('');
+          document.querySelectorAll('.is-alt-live').forEach(pill => {
+            pill.onmouseover = () => { pill.style.borderColor = '#00c1ff'; pill.style.color = '#1a1a2e'; };
+            pill.onmouseout = () => { pill.style.borderColor = '#ddd'; pill.style.color = '#555'; };
+            pill.onclick = () => {
+              const cat = CATEGORIES.find(c => c.id === pill.dataset.id);
+              if (cat) selectCategory(cat);
+            };
           });
-        });
+        } else {
+          altSuggestions.innerHTML = '';
+        }
       } else {
-        suggestionsEl.style.display = 'none';
+        detectedEl.style.display = 'none';
       }
     } else {
-      suggestionsEl.style.display = 'none';
+      detectedEl.style.display = 'none';
     }
   });
 
-  // Skip suggestions — go straight to analyze
+  // Skip suggestions
   skipBtn.addEventListener('click', () => {
     if (state.ideaText.length >= 20) {
       state.phase = 'classification';
