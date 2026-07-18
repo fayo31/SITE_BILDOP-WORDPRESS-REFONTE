@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BILDOP — Accélérateur de croissance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#00045c; --cyan:#00c1ff; --violet:#32047e; --pink:#951b81; --pale:#e9f9fd; --line:#dbe9f0; --muted:#5c6b7a; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:#182238; background:#fff; font-family:'Open Sans',sans-serif; }
+    a { color:inherit; text-decoration:none; }
+    .wrap { width:min(1180px, calc(100% - 40px)); margin:auto; }
+    .nav { height:78px; display:flex; align-items:center; justify-content:space-between; }
+    .logo { color:var(--ink); font:1.42rem 'Audiowide',sans-serif; letter-spacing:.03em; }
+    .logo b { color:var(--cyan); font-weight:400; }
+    .navlinks { display:flex; gap:28px; color:var(--muted); font-size:.86rem; font-weight:600; }
+    .navlinks a:hover { color:var(--ink); }
+    .nav-cta { color:var(--ink); border:1px solid var(--ink); border-radius:99px; padding:11px 18px; font-size:.82rem; font-weight:700; }
+    .hero { position:relative; overflow:hidden; padding:96px 0 112px; background:linear-gradient(120deg,#fff 0%,#fff 58%,var(--pale) 100%); }
+    .hero:after { content:''; position:absolute; right:-110px; top:70px; width:390px; height:390px; border:1px solid rgba(0,193,255,.45); border-radius:50%; box-shadow:0 0 0 34px rgba(0,193,255,.08),0 0 0 68px rgba(0,193,255,.05); }
+    .hero-grid { display:grid; grid-template-columns:1.05fr .95fr; gap:70px; align-items:center; position:relative; z-index:1; }
+    .eyebrow { color:var(--pink); font-size:.76rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; }
+    h1,h2,h3 { color:var(--ink); font-family:'Audiowide',sans-serif; font-weight:400; line-height:1.08; margin:0; }
+    h1 { max-width:690px; margin-top:18px; font-size:clamp(2.8rem,6vw,5.8rem); letter-spacing:-.04em; }
+    .hero h1 span { color:var(--cyan); }
+    .lede { max-width:560px; margin:24px 0 32px; color:var(--muted); font-size:1.12rem; line-height:1.75; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; }
+    .button { display:inline-flex; align-items:center; justify-content:center; border-radius:8px; padding:15px 22px; font-weight:700; font-size:.88rem; }
+    .button.primary { color:#fff; background:var(--ink); box-shadow:0 12px 28px rgba(0,4,92,.18); }
+    .button.primary:hover { background:var(--violet); }
+    .button.ghost { color:var(--ink); border:1px solid var(--line); background:#fff; }
+    .hero-card { border:1px solid rgba(0,4,92,.13); border-radius:18px; padding:22px; background:rgba(255,255,255,.83); box-shadow:0 24px 60px rgba(0,4,92,.14); backdrop-filter:blur(8px); }
+    .card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; color:var(--muted); font-size:.75rem; font-weight:700; }
+    .status { color:#159b72; display:flex; gap:6px; align-items:center; }
+    .status:before { content:''; width:8px; height:8px; background:#25c48b; border-radius:50%; }
+    .score { display:grid; grid-template-columns:130px 1fr; gap:20px; align-items:center; padding:20px; border-radius:12px; background:var(--ink); color:#fff; }
+    .ring { width:108px; height:108px; display:grid; place-items:center; border-radius:50%; background:conic-gradient(var(--cyan) 0 78%,rgba(255,255,255,.15) 78%); position:relative; }
+    .ring:after { content:''; position:absolute; inset:10px; background:var(--ink); border-radius:50%; }
+    .ring strong { position:relative; z-index:1; font:1.6rem 'Audiowide'; }
+    .score h3 { color:#fff; font-size:1rem; margin-bottom:8px; }
+    .score p { margin:0; color:#b8dcf0; font-size:.82rem; line-height:1.6; }
+    .mini-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px; }
+    .mini { padding:14px; border:1px solid var(--line); border-radius:10px; }
+    .mini strong { display:block; color:var(--ink); font-size:1.1rem; }
+    .mini span { color:var(--muted); font-size:.7rem; }
+    .section { padding:94px 0; }
+    .section-head { max-width:670px; margin-bottom:38px; }
+    .section-head h2 { margin-top:13px; font-size:clamp(2rem,4vw,3.4rem); }
+    .section-head p { color:var(--muted); line-height:1.7; }
+    .modules { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+    .module { min-height:170px; padding:22px; border:1px solid var(--line); border-radius:14px; transition:.2s ease; }
+    .module:hover { transform:translateY(-4px); border-color:var(--cyan); box-shadow:0 14px 32px rgba(0,4,92,.08); }
+    .module em { color:var(--cyan); font-style:normal; font-weight:800; font-size:.75rem; }
+    .module h3 { margin:20px 0 8px; font-size:1.04rem; }
+    .module p { margin:0; color:var(--muted); font-size:.82rem; line-height:1.55; }
+    .band { padding:72px 0; color:#fff; background:linear-gradient(110deg,var(--ink),var(--violet)); }
+    .band-grid { display:flex; gap:30px; align-items:end; justify-content:space-between; }
+    .band h2 { max-width:730px; color:#fff; font-size:clamp(2rem,4vw,3.7rem); }
+    .band p { max-width:470px; color:#c7d9ed; line-height:1.7; }
+    footer { padding:30px 0; color:var(--muted); font-size:.78rem; }
+    @media (max-width:800px) { .navlinks { display:none; } .hero-grid { grid-template-columns:1fr; gap:45px; } .hero { padding:70px 0 80px; } .modules { grid-template-columns:repeat(2,1fr); } .band-grid { display:block; } .band .button { margin-top:20px; } }
+    @media (max-width:520px) { .wrap { width:min(100% - 28px,1180px); } h1 { font-size:2.7rem; } .modules { grid-template-columns:1fr; } .score { grid-template-columns:1fr; text-align:center; } .ring { margin:auto; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap nav"><a class="logo" href="#top">bild<span>op</span></a><nav class="navlinks"><a href="#modules">Modules</a><a href="#methode">Méthode</a><a href="#contact">Contact</a></nav><a class="nav-cta" href="#modules">Explorer BILDOP</a></div></header>
+  <main id="top">
+    <section class="hero"><div class="wrap hero-grid"><div><div class="eyebrow">Accélérateur de croissance</div><h1>Construisez une entreprise qui <span>tient debout.</span></h1><p class="lede">BILDOP transforme une idée en décisions concrètes : diagnostic, stratégie, chiffres et plan d’action — réunis dans une expérience guidée par l’IA.</p><div class="actions"><a class="button primary" href="#modules">Commencer le diagnostic</a><a class="button ghost" href="#methode">Voir la méthode</a></div></div><div class="hero-card"><div class="card-top"><span>IDEASCORE PRO</span><span class="status">Analyse complétée</span></div><div class="score"><div class="ring"><strong>78</strong></div><div><h3>Potentiel solide</h3><p>Votre idée possède une base claire. Voici les trois leviers à renforcer avant d’investir.</p></div></div><div class="mini-grid"><div class="mini"><strong>8/10</strong><span>Clarté</span></div><div class="mini"><strong>7/10</strong><span>Marché</span></div><div class="mini"><strong>9/10</strong><span>Action</span></div></div></div></div></section>
+    <section class="section" id="modules"><div class="wrap"><div class="section-head"><div class="eyebrow">Un système complet</div><h2>De l’idée au plan d’action.</h2><p>Chaque module répond à une question précise. Ensemble, ils forment une trajectoire lisible pour décider, construire et accélérer.</p></div><div class="modules"><article class="module"><em>01</em><h3>Plan d’affaires IA</h3><p>Structurez votre vision en un plan solide et exploitable.</p></article><article class="module"><em>02</em><h3>Diagnostic</h3><p>Identifiez ce qui bloque réellement votre entreprise.</p></article><article class="module"><em>03</em><h3>Remèdes</h3><p>Passez du constat à des actions priorisées.</p></article><article class="module"><em>04</em><h3>Architecture de marque</h3><p>Clarifiez votre positionnement et votre avantage.</p></article><article class="module"><em>05</em><h3>Simulateur financier</h3><p>Testez vos hypothèses avant de dépenser.</p></article><article class="module"><em>06</em><h3>Intelligence marché</h3><p>Comprenez vos clients, concurrents et signaux.</p></article><article class="module"><em>07</em><h3>Étude temps réel</h3><p>Validez la taille et la dynamique de votre marché.</p></article><article class="module"><em>08</em><h3>Sprint 90 jours</h3><p>Sachez exactement quoi faire lundi matin.</p></article></div></div></section>
+    <section class="band" id="methode"><div class="wrap band-grid"><div><div class="eyebrow">La règle BILDOP</div><h2>L’IA ne vous rassure pas. Elle vous prépare.</h2></div><div><p>Des sources nommées, de vrais chiffres et une lecture comme une banque : BILDOP transforme l’ambition en décisions défendables.</p><a class="button" style="background:var(--cyan);color:var(--ink)" href="#contact">Découvrir la méthode</a></div></div></section>
+  </main>
+  <footer id="contact"><div class="wrap"><span class="logo">bild<span>op</span></span> <span style="float:right">Un concept par UNIKUB · Québec</span></div></footer>
+</body>
+</html>
