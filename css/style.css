@@ -1,14 +1,15 @@
 /* ============================================
-   BILDOP.COM — Global Stylesheet
-   Brand: #00045C (navy) · #00C1FF (cyan) · #B3E8F5 (pale)
-   Complément: #32047E (violet) · #951B81 (magenta)
-   Typo: Audiowide (headings/logo) · Arial (body)
-   Charte officielle BILDOP par UNIKUB
+   BILDOP — Charte de marque UNIKUB
+   Palette officielle : #00C1FF · #00045C · #32047E · #951B81
+   Typographie officielle : Audiowide Regular + Lovelo Black
    ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
 /* --- CSS Variables --- */
 :root {
   --navy: #00045C;
+  --navy-deep: #000344;
   --sky: #00C1FF;
   --sky-hover: #009dd4;
   --pale: #B3E8F5;
@@ -17,12 +18,13 @@
   --gray-light: #dfe4e6;
   --gray-bg: #f5f7f8;
   --white: #ffffff;
-  --text-dark: #1a1a2e;
+  --text-dark: #16162d;
   --text-muted: #5a6270;
   --success: #28a745;
   --warning: #f4a261;
   --danger: #e63946;
   --font-heading: 'Audiowide', sans-serif;
+  --font-body: 'Lovelo', 'Open Sans', sans-serif;
   --slate: #5a6270;
   --gray-200: #e2e8f0;
   --gray: #dfe4e6;
@@ -48,7 +50,7 @@ html {
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
   color: var(--text-dark);
   background: var(--white);
   line-height: 1.7;
@@ -56,7 +58,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-weight: 600;
   line-height: 1.2;
   color: var(--navy);
@@ -121,7 +123,7 @@ img {
   gap: 8px;
   padding: 16px 36px;
   border-radius: var(--radius);
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.1rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -187,7 +189,7 @@ img {
   cursor: pointer;
   background: none;
   border: none;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
 }
 .btn-link:hover { color: var(--navy); }
 
@@ -219,7 +221,7 @@ img {
 }
 
 .nav__logo {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.6rem;
   font-weight: 700;
   color: var(--navy);
@@ -539,7 +541,7 @@ img {
   border-radius: 50%;
   background: var(--navy);
   color: var(--white);
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 700;
   display: flex;
@@ -638,7 +640,7 @@ img {
 }
 .testimonial::before {
   content: '\201C';
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 4rem;
   color: var(--sky);
   opacity: 0.3;
@@ -733,7 +735,7 @@ img {
   color: var(--white);
   padding: 6px 20px;
   border-radius: 100px;
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 0.85rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -751,7 +753,7 @@ img {
 }
 
 .pricing-card__price {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   font-weight: 700;
   color: var(--navy);
@@ -823,7 +825,7 @@ img {
   background: none;
   border: none;
   cursor: pointer;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--text-dark);
@@ -893,7 +895,7 @@ img {
 }
 
 .footer__brand {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--white);
@@ -1100,7 +1102,7 @@ img {
 }
 
 .question-card__number {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 0.9rem;
   color: var(--text-muted);
   margin-bottom: 8px;
@@ -1138,7 +1140,7 @@ img {
   padding: 14px 18px;
   border: 2px solid var(--gray-light);
   border-radius: var(--radius-sm);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
   font-size: 1rem;
   color: var(--text-dark);
   transition: var(--transition);
@@ -1994,7 +1996,7 @@ img {
   margin-bottom: 16px;
 }
 .marque-intro h1 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   color: var(--navy);
   margin-bottom: 12px;
@@ -2010,7 +2012,7 @@ img {
   margin: 32px 0;
 }
 .marque-intro__why h3 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   color: var(--navy);
   margin-bottom: 16px;
   text-align: center;
@@ -2156,7 +2158,7 @@ img {
   font-weight: 600;
 }
 .marque-audit__question {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   color: var(--navy);
   margin: 20px 0 28px;
@@ -2224,7 +2226,7 @@ img {
   flex-shrink: 0;
 }
 .marque-results__score-value {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   font-weight: 700;
   line-height: 1;
@@ -2234,7 +2236,7 @@ img {
   color: var(--text-muted);
 }
 .marque-results__header h1 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.6rem;
   color: var(--navy);
   margin-bottom: 8px;
@@ -2258,7 +2260,7 @@ img {
   margin: 32px 0;
 }
 .marque-results__dimensions h2 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   color: var(--navy);
   margin-bottom: 16px;
 }
@@ -2277,7 +2279,7 @@ img {
   font-weight: 600;
 }
 .marque-result__dim-score {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.1rem;
 }
 .marque-result__dim-rec {
@@ -2292,7 +2294,7 @@ img {
   text-align: center;
 }
 .marque-results__cta h2 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   color: var(--navy);
   margin-bottom: 12px;
 }
@@ -2380,13 +2382,13 @@ img {
   min-height: 400px;
 }
 .marque-builder__content h2 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   color: var(--navy);
   font-size: 1.5rem;
   margin-bottom: 8px;
 }
 .marque-builder__content h3 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   color: var(--navy);
   margin: 20px 0 12px;
 }
@@ -2421,7 +2423,7 @@ img {
   border: 2px solid #e0e0e0;
   border-radius: 10px;
   font-size: 0.95rem;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
   transition: border-color 0.2s;
 }
 .marque-form__field input:focus,
@@ -2511,7 +2513,7 @@ img {
   color: white;
   padding: 14px 28px;
   border-radius: 12px;
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.2rem;
   font-weight: 600;
 }
@@ -2676,7 +2678,7 @@ img {
   padding: 40px 0;
 }
 .marque-builder-results h1 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   color: var(--navy);
   text-align: center;
   margin-bottom: 24px;
@@ -2695,7 +2697,7 @@ img {
   border: 1px solid #f0f0f0;
 }
 .marque-builder-results__card h3 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   color: var(--navy);
   margin-bottom: 12px;
 }
@@ -2707,7 +2709,7 @@ img {
   margin: 32px 0;
 }
 .marque-builder-results__actions h2 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   color: var(--navy);
   margin-bottom: 16px;
 }
@@ -2764,7 +2766,7 @@ img {
   margin-bottom: 16px;
 }
 .veille-intro__header h1 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(2rem, 4vw, 2.8rem);
   color: var(--navy);
   margin-bottom: 12px;
@@ -2799,7 +2801,7 @@ img {
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
 }
 .veille-search__tab--active {
   border-color: var(--navy);
@@ -2816,7 +2818,7 @@ img {
   border: 2px solid var(--gray-light);
   border-radius: var(--radius-sm);
   font-size: 1.05rem;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
   transition: var(--transition);
 }
 .veille-search__input:focus {
@@ -2834,7 +2836,7 @@ img {
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
   white-space: nowrap;
 }
 .veille-search__btn:hover {
@@ -2891,7 +2893,7 @@ img {
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
   transition: var(--transition);
 }
 .veille-link-btn:hover {
@@ -2967,7 +2969,7 @@ img {
   border-bottom: 1px solid var(--gray-light);
 }
 .veille-results__header h1 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2rem;
   color: var(--navy);
   margin-bottom: 4px;
@@ -3002,7 +3004,7 @@ img {
 }
 .veille-score-bar__label strong {
   font-size: 1.4rem;
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
 }
 .veille-score-bar__track {
   height: 12px;
@@ -3040,7 +3042,7 @@ img {
   border-radius: var(--radius-sm);
   white-space: nowrap;
   transition: var(--transition);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
 }
 .veille-tabs__tab:hover {
   background: var(--gray-bg);
@@ -3085,7 +3087,7 @@ img {
   margin-bottom: 32px;
 }
 .veille-swot h3 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.3rem;
   margin-bottom: 16px;
 }
@@ -3100,7 +3102,7 @@ img {
   border: 2px solid;
 }
 .veille-swot__card h4 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1rem;
   margin-bottom: 12px;
 }
@@ -3145,7 +3147,7 @@ img {
   margin-bottom: 32px;
 }
 .veille-recommendations h3 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.3rem;
   margin-bottom: 16px;
 }
@@ -3227,7 +3229,7 @@ img {
   padding: 40px 0 0;
 }
 .veille-history__header h2 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
 }
 .veille-history__item {
   display: flex;
@@ -3314,7 +3316,7 @@ img {
   margin-bottom: 24px;
 }
 .veille-comparison__header h3 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   color: var(--navy);
   margin-bottom: 4px;
@@ -3338,7 +3340,7 @@ img {
   border: 2px solid;
 }
 .veille-comparison__card h4 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.1rem;
   margin-bottom: 8px;
 }
@@ -3385,7 +3387,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--navy);
@@ -3448,7 +3450,7 @@ img {
   border: 1px solid var(--gray-light);
 }
 .veille-ceo h4 {
-  font-family: 'Audiowide', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.1rem;
   color: var(--navy);
   margin-bottom: 20px;
@@ -4901,3 +4903,18 @@ img {
   .is-question-card { padding: 20px; }
   .is-dash-kpis { grid-template-columns: 1fr 1fr; }
 }
+
+
+/* --- Official BILDOP/UNIKUB brand alignment --- */
+:root {
+  --brand-blue-1: #00C1FF;
+  --brand-blue-2: #00045C;
+  --brand-complement-1: #32047E;
+  --brand-complement-2: #951B81;
+}
+
+.btn-primary, .button-primary, .cta-primary { background: var(--brand-blue-2); color: var(--white); }
+.btn-primary:hover, .button-primary:hover, .cta-primary:hover { background: var(--brand-complement-1); }
+.btn-secondary, .button-secondary, .cta-secondary { background: var(--brand-blue-1); color: var(--brand-blue-2); }
+a { color: var(--brand-blue-2); }
+a:hover { color: var(--brand-complement-2); }
