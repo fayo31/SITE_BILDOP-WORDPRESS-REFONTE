@@ -4901,3 +4901,315 @@ img {
   .is-question-card { padding: 20px; }
   .is-dash-kpis { grid-template-columns: 1fr 1fr; }
 }
+
+/* --- Moment portail (accueil) --- */
+.portail-kicker {
+  font-family: var(--font-heading);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sky);
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+}
+.section--navy .portail-kicker { color: var(--sky); }
+.portail-moment__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.portail-moment__card {
+  display: block;
+  background: var(--white);
+  color: var(--text-dark);
+  border-radius: 16px;
+  padding: 24px;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  min-height: 100%;
+}
+.portail-moment__card:hover {
+  transform: translateY(-3px);
+  color: var(--text-dark);
+}
+.portail-moment__card h3 {
+  font-family: var(--font-heading);
+  color: var(--navy);
+  font-size: 1.15rem;
+  margin: 12px 0 8px;
+}
+.portail-moment__card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+.portail-moment__go {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* --- Page portail --- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.portail-page { background: var(--gray-bg); }
+.portail-hero {
+  background: var(--navy);
+  color: var(--white);
+  padding: 120px 0 40px;
+}
+.portail-hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: var(--white);
+  margin-bottom: 12px;
+}
+.portail-hero__lead {
+  max-width: 680px;
+  color: rgba(255,255,255,0.85);
+  font-size: 1.05rem;
+  margin-bottom: 24px;
+}
+.portail-hero__lead a { color: var(--sky); }
+.portail-search input {
+  width: 100%;
+  max-width: 640px;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--navy);
+}
+.portail-search input:focus {
+  outline: 3px solid var(--sky);
+}
+.portail-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.portail-chip {
+  border: 1px solid rgba(255,255,255,0.35);
+  background: transparent;
+  color: var(--white);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.portail-chip.is-active,
+.portail-chip:hover {
+  background: var(--white);
+  color: var(--navy);
+  border-color: var(--white);
+}
+.portail-main { padding-top: 32px; }
+.portail-count {
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.portail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.portail-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.portail-card:hover { border-color: var(--sky); }
+.portail-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.portail-card__type {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.portail-card h3 {
+  font-family: var(--font-heading);
+  color: var(--navy);
+  font-size: 1.15rem;
+  margin-bottom: 8px;
+}
+.portail-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  flex: 1;
+}
+.portail-card__open {
+  margin-top: 16px;
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--navy);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+.portail-pill {
+  display: inline-block;
+  background: rgba(0, 193, 255, 0.15);
+  color: var(--navy);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.portail-hero .portail-kicker { color: var(--sky); }
+.portail-empty {
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--white);
+  border-radius: 12px;
+}
+.portail-footnote {
+  margin-top: 28px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  max-width: 760px;
+}
+body.portail-lock { overflow: hidden; }
+.portail-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 4, 92, 0.55);
+  z-index: 1200;
+  display: flex;
+  justify-content: flex-end;
+}
+.portail-dialog[hidden] { display: none; }
+.portail-fiche {
+  background: var(--white);
+  width: min(520px, 100%);
+  height: 100%;
+  overflow: auto;
+  padding: 28px 24px 48px;
+  box-shadow: var(--shadow-lg);
+}
+.portail-fiche__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+.portail-fiche h2 {
+  font-family: var(--font-heading);
+  color: var(--navy);
+  font-size: 1.6rem;
+  margin-top: 10px;
+}
+.portail-fiche__type { color: var(--text-muted); margin-top: 4px; }
+.portail-fiche__close {
+  border: none;
+  background: var(--gray-bg);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--navy);
+}
+.portail-fiche__pitch {
+  margin: 16px 0;
+  font-size: 1.05rem;
+  color: var(--text-dark);
+}
+.portail-fiche__block { margin-bottom: 16px; }
+.portail-fiche__block h3,
+.portail-form h3 {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.portail-fiche__block p { color: var(--text-dark); }
+.portail-fiche__facts {
+  background: var(--gray-bg);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 8px 0 16px;
+}
+.portail-fiche__row { margin-bottom: 10px; }
+.portail-fiche__row span {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.portail-fiche__note,
+.portail-form > p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+.portail-fiche__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.portail-fiche__actions .btn {
+  font-size: 0.85rem;
+  padding: 12px 16px;
+}
+.portail-form {
+  border-top: 1px solid var(--gray-light);
+  padding-top: 16px;
+}
+.portail-form[hidden] { display: none; }
+.portail-form label {
+  display: block;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+.portail-form input,
+.portail-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  border: 1px solid var(--gray-light);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  font-weight: 400;
+}
+.portail-form__error { color: var(--danger); font-size: 0.9rem; }
+.portail-form__done { color: var(--navy); font-weight: 600; }
+@media (max-width: 800px) {
+  .portail-moment__grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portail-moment__card,
+  .portail-card { transition: none; }
+  .portail-moment__card:hover { transform: none; }
+}
