@@ -471,6 +471,7 @@ function saveConceptForPlan(concept) {
     offre: concept.offre,
     modele: concept.modele,
     savedAt: new Date().toISOString(),
+    pending: true,
   };
   localStorage.setItem('bildop_portail', JSON.stringify(payload));
 }

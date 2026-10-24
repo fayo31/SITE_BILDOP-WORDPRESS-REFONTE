@@ -976,6 +976,12 @@ img {
 }
 
 /* --- Responsive --- */
+@media (max-width: 1200px) {
+  .nav__links { gap: 16px; }
+  .nav__links a { font-size: 0.85rem; }
+  .nav__cta { padding: 8px 14px !important; font-size: 0.75rem !important; }
+}
+
 @media (max-width: 1024px) {
   .hero__inner {
     grid-template-columns: 1fr;
