@@ -158,6 +158,26 @@ try {
   }
 } catch(e) {}
 
+// Apply a concept chosen in the portal once, even if an older plan is saved
+try {
+  const portalData = localStorage.getItem('bildop_portail');
+  if (portalData) {
+    const portal = JSON.parse(portalData);
+    if (portal.pending) {
+      if (portal.nom) answers[1] = portal.nom;
+      if (portal.pitch) answers[2] = portal.pitch;
+      if (portal.secteur) answers[3] = portal.secteur;
+      if (portal.client) answers[11] = portal.client;
+      if (portal.douleur) answers[12] = portal.douleur;
+      if (portal.offre) answers[21] = portal.offre;
+      if (portal.modele) answers[31] = portal.modele;
+      try { localStorage.setItem('bildop_questionnaire', JSON.stringify(answers)); } catch (err) {}
+      portal.pending = false;
+      localStorage.setItem('bildop_portail', JSON.stringify(portal));
+    }
+  }
+} catch(e) {}
+
 // --- DOM Elements ---
 const questionCard = document.getElementById('questionCard');
 const progressFill = document.getElementById('progressFill');

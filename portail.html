@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Le portail Bildop : parcours des concepts d'entreprise déjà regardés, ouvre une fiche, et pars avec un plan.">
+  <title>Portail des concepts — Bildop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="portail-page">
+
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo"><span style="color:var(--sky)">bild</span><span style="color:var(--navy)">op</span></a>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="index.html#moment-portail">← Le moment portail</a></li>
+        <li><a href="index.html#modules">Outils</a></li>
+        <li><a href="questionnaire.html">Plan d'affaires</a></li>
+        <li><a href="ideascore.html" class="btn btn--primary nav__cta">Tester mon idée →</a></li>
+      </ul>
+      <button class="nav__toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="portail-hero">
+    <div class="container">
+      <p class="portail-kicker">Le portail</p>
+      <h1>Choisis un concept. Pars avec.</h1>
+      <p class="portail-hero__lead">Des idées déjà regardées : la douleur, le client, la façon de faire de l'argent. Tu en ouvres une, tu la prends, et le plan d'affaires part de là. Si t'as déjà ton idée, <a href="ideascore.html">teste-la plutôt</a>.</p>
+      <label class="portail-search">
+        <span class="visually-hidden">Chercher un concept</span>
+        <input id="portailSearch" type="search" placeholder="Cherche un concept, un client, une douleur…" autocomplete="off">
+      </label>
+      <div class="portail-filters" id="portailFilters" role="toolbar" aria-label="Filtrer par univers"></div>
+    </div>
+  </header>
+
+  <main class="section portail-main">
+    <div class="container">
+      <p class="portail-count" id="portailCount" aria-live="polite"></p>
+      <div class="portail-grid" id="portailGrid"></div>
+      <p class="portail-empty" id="portailEmpty" hidden>Aucun concept avec ces mots. Essaie un univers, ou un mot plus simple — client, cash, livraison, coupe.</p>
+      <p class="portail-footnote">Sélection publique du catalogue, pas les 600 fiches. Chaque fiche est un point de départ. Les montants sont des ordres de grandeur à vérifier avec le simulateur et un comptable. Ce portail ne vend pas une licence et ne garantit pas un résultat.</p>
+    </div>
+  </main>
+
+  <div class="portail-dialog" id="portailDialog" hidden>
+    <div class="portail-fiche" id="portailFiche" role="dialog" aria-modal="true" aria-labelledby="portailFicheTitle"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <span>© 2026 BILDOP INC — Portail des concepts</span>
+        <div class="footer__legal">
+          <a href="index.html">Retour au site</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/portail.js"></script>
+</body>
+</html>

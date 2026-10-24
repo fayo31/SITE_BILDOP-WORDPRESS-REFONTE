@@ -1,7 +1,7 @@
 # Bildop — Site Web (Refonte)
 
-> **Dernière mise à jour :** 10 mars 2026 — 8 modules livrés + processus vente H2H
-> **Commit actuel :** `ff8048a` — M8 intégration processus de vente H2H
+> **Dernière mise à jour :** 24 octobre 2026 — portail des concepts (moment + page)
+> **Commit actuel :** branche `cursor/portail-concepts-f4bc`
 
 ---
 
@@ -36,11 +36,12 @@ Bildop est une plateforme SaaS québécoise qui aide les entrepreneurs à passer
 
 ### 📦 PRODUITS SÉPARÉS (écosystème Bildop — hors site)
 
-**P1 — Catalogue 600+ Concepts**
-Portail dédié (pas un module). Bibliothèque de concepts business pré-analysés — chaque fiche : idée + marché + investissement requis + modèle de revenus. Base Notion existante à transformer en interface web.
-- Modèle : achat unitaire (9–29$ CAD) ou abonnement mensuel
-- Modèle 50/50 reprenariat ou vente complète du plan
-- Statut : Base Notion existante → à structurer pour accès client
+**P1 — Catalogue de concepts (portail)**
+Portail dédié (pas un des 8 modules). Page `portail.html` : sélection publique de concepts, recherche, filtres par univers, fiche (douleur, client, offre, modèle, mise de départ), départ vers le plan d'affaires prérempli, candidature locale + courriel.
+- Le moment d'entrée est sur l'accueil (`#moment-portail`) : trois fiches en avant, puis le portail complet.
+- La base Notion reste la source interne. Le site n'expose pas les notes brutes (décisions AVANCER / ABANDONNER, holdings, notes de marge).
+- Modèle prévu : achat unitaire (9–29$ CAD) ou abonnement mensuel — pas encore branché sur un paiement.
+- Statut : sélection navigable livrée. Le catalogue complet (~600) et le paiement restent à brancher.
 
 **P2 — Communauté Entrepreneurs QC** *(inspiré Nas.io)*
 Plateforme communautaire : forums, events live, challenges 30 jours, sessions de pitch, hackathons.
@@ -95,6 +96,7 @@ bildop-redesign/
 ├── ideascore-pro.html          # IdeaScore Pro — standalone landing page (lead magnet)
 ├── marche-reel.html            # Module 7 — Étude de marché temps réel
 ├── sprint.html                 # Module 8 — Sprint 90 jours + H2H
+├── portail.html                # Portail des concepts (produit P1, pas un module)
 ├── css/
 │   └── style.css               # Styles globaux (~4900 lignes)
 ├── js/
@@ -108,6 +110,7 @@ bildop-redesign/
 │   ├── market-intelligence.js  # Module 6 — 6 étapes d'intelligence marché
 │   ├── marche-reel.js          # Module 7 — données marché temps réel
 │   ├── sprint.js               # Module 8 — Sprint 90 jours + H2H
+│   ├── portail.js              # Portail — catalogue, fiche, candidature
 │   └── ideascore.js            # IdeaScore Pro — 42 catégories, scoring
 └── images/                     # Assets visuels
 ```
